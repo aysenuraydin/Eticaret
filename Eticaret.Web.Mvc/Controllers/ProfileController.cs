@@ -8,25 +8,24 @@ using Microsoft.Extensions.Logging;
 
 namespace Eticaret.Web.Mvc.Controllers
 {
-    [Route("[controller]")]
     public class ProfileController : Controller
     {
-        private readonly ILogger<ProfileController> _logger;
 
-        public ProfileController(ILogger<ProfileController> logger)
-        {
-            _logger = logger;
-        }
-
-        public IActionResult Index()
+        public IActionResult Details()
         {
             return View();
         }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Edit()
         {
-            return View("Error!");
+            return View();
+        }
+        public IActionResult MyOrders()
+        {
+            return View();
+        }
+        public IActionResult MyProducts()
+        {
+            return View();
         }
     }
 }

@@ -1,6 +1,13 @@
-var builder = WebApplication.CreateBuilder(args);
+using Eticaret.Persistence.Ef;
+using Eticaret.Application;
+using Microsoft.EntityFrameworkCore;
 
+var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddPersistenceServices(builder.Configuration);
+builder.Services.AddApplicationServices();
+
 
 var app = builder.Build();
 
@@ -9,8 +16,6 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
-
-app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -21,13 +26,11 @@ app.UseAuthentication(); // admin login i�in ekliyoruz.
 app.UseAuthorization(); // kullan�c� yetkilendirme
 
 app.MapControllerRoute(
-    name: "Admin",
-    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-    );
-
-app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}"
+    pattern: "{controller=Template}/{action=Index}/{id?}"
     );
-
+// using var scope = ((IApplicationBuilder)app).ApplicationServices.CreateScope();
+// using var context = scope.ServiceProvider.GetService<EticaretDbContext>()!;
+// context.Database.EnsureDeleted();
+// context.Database.EnsureCreated();
 app.Run();
