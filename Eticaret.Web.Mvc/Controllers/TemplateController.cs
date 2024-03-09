@@ -10,17 +10,6 @@ namespace Eticaret.Web.Mvc.Controllers
 {
     public class TemplateController : Controller
     {
-
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult about()
-        {
-            return View();
-        }
-
         public IActionResult blog()
         {
             return View();
@@ -29,36 +18,5 @@ namespace Eticaret.Web.Mvc.Controllers
         {
             return View();
         }
-
-        public IActionResult categories()
-        {
-            return View();
-        }
-
-        public IActionResult contact()
-        {
-            return View();
-        }
-
-        public IActionResult product()
-        {
-            return View();
-        }
-
-        public IActionResult productdetail()
-        {
-            return View();
-        }
-
-        public IActionResult shopingcart()
-        {
-            return View();
-        }
-
-        public IActionResult single()
-        {
-            return View();
-        }
-
     }
 }

@@ -20,16 +20,16 @@ public class EticaretDbContext : DbContext
         // Database.EnsureCreated();
     }
 
-    public DbSet<CartItem> Categories { get; set; }
-    public DbSet<Category> Category { get; set; }
+    public DbSet<CartItem> CartItems { get; set; }
+    public DbSet<Category> Categories { get; set; }
     public DbSet<Product> Products { get; set; }
-    public DbSet<Order> Order { get; set; }
-    public DbSet<OrderItem> OrderItem { get; set; }
-    public DbSet<ProductComment> ProductComment { get; set; }
-    public DbSet<ProductImage> ProductImage { get; set; }
-    public DbSet<Role> Role { get; set; }
-    public DbSet<Seller> Seller { get; set; }
-    public DbSet<User> User { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
+    public DbSet<ProductComment> ProductComments { get; set; }
+    public DbSet<ProductImage> ProductImages { get; set; }
+    public DbSet<Role> Roles { get; set; }
+    public DbSet<Seller> Sellers { get; set; }
+    public DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder builder)
     {

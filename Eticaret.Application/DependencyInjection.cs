@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Eticaret.Application.Services;
-using Eticaret.Application.Services.Interfaces;
+using Eticaret.Application.Abstract;
+using Eticaret.Application.Concrete;
+using Eticaret.Application.Repositories;
 
 namespace Eticaret.Application
 {
@@ -8,8 +9,8 @@ namespace Eticaret.Application
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            services.AddTransient<IProductService, ProductService>();
-            services.AddTransient<ICategoryService, CategoryService>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
 
             return services;
         }

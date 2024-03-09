@@ -27,10 +27,12 @@ app.UseAuthorization(); // kullan�c� yetkilendirme
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Template}/{action=Index}/{id?}"
+    pattern: "{controller=Product}/{action=Index}/{id?}"
     );
+
 // using var scope = ((IApplicationBuilder)app).ApplicationServices.CreateScope();
 // using var context = scope.ServiceProvider.GetService<EticaretDbContext>()!;
 // context.Database.EnsureDeleted();
 // context.Database.EnsureCreated();
+
 app.Run();

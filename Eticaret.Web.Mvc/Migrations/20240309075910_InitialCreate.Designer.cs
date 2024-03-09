@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Eticaret.Web.Mvc.Migrations
 {
     [DbContext(typeof(EticaretDbContext))]
-    [Migration("20240308184230_InitialCreate")]
+    [Migration("20240309075910_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -55,7 +55,7 @@ namespace Eticaret.Web.Mvc.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("Eticaret.Domain.Category", b =>
@@ -81,14 +81,14 @@ namespace Eticaret.Web.Mvc.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category");
+                    b.ToTable("Categories");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
                             Color = "pink",
-                            CreatedAt = new DateTime(2024, 3, 8, 21, 42, 30, 174, DateTimeKind.Local).AddTicks(4980),
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2420),
                             IconCssClass = "",
                             Name = "dress"
                         },
@@ -96,7 +96,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 2,
                             Color = "red",
-                            CreatedAt = new DateTime(2024, 3, 8, 21, 42, 30, 174, DateTimeKind.Local).AddTicks(5010),
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2450),
                             IconCssClass = "",
                             Name = "jean"
                         },
@@ -104,7 +104,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 3,
                             Color = "blue",
-                            CreatedAt = new DateTime(2024, 3, 8, 21, 42, 30, 174, DateTimeKind.Local).AddTicks(5010),
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2460),
                             IconCssClass = "",
                             Name = "Sweatshirt"
                         },
@@ -112,7 +112,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 4,
                             Color = "yellow",
-                            CreatedAt = new DateTime(2024, 3, 8, 21, 42, 30, 174, DateTimeKind.Local).AddTicks(5010),
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2460),
                             IconCssClass = "",
                             Name = "Sweatpants"
                         },
@@ -120,7 +120,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 5,
                             Color = "black",
-                            CreatedAt = new DateTime(2024, 3, 8, 21, 42, 30, 174, DateTimeKind.Local).AddTicks(5020),
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2490),
                             IconCssClass = "",
                             Name = "Jumper"
                         },
@@ -128,7 +128,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 6,
                             Color = "white",
-                            CreatedAt = new DateTime(2024, 3, 8, 21, 42, 30, 174, DateTimeKind.Local).AddTicks(5020),
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2490),
                             IconCssClass = "",
                             Name = "Cardigan"
                         },
@@ -136,7 +136,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 7,
                             Color = "gray",
-                            CreatedAt = new DateTime(2024, 3, 8, 21, 42, 30, 174, DateTimeKind.Local).AddTicks(5020),
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2500),
                             IconCssClass = "",
                             Name = "Outerwear"
                         },
@@ -144,7 +144,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 8,
                             Color = "darkred",
-                            CreatedAt = new DateTime(2024, 3, 8, 21, 42, 30, 174, DateTimeKind.Local).AddTicks(5020),
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2500),
                             IconCssClass = "",
                             Name = "Trousers"
                         },
@@ -152,7 +152,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 9,
                             Color = "blue",
-                            CreatedAt = new DateTime(2024, 3, 8, 21, 42, 30, 174, DateTimeKind.Local).AddTicks(5020),
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2500),
                             IconCssClass = "",
                             Name = "Shirt"
                         },
@@ -160,7 +160,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 10,
                             Color = "white",
-                            CreatedAt = new DateTime(2024, 3, 8, 21, 42, 30, 174, DateTimeKind.Local).AddTicks(5020),
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2500),
                             IconCssClass = "",
                             Name = "T-shirt"
                         });
@@ -189,7 +189,7 @@ namespace Eticaret.Web.Mvc.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Order");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Eticaret.Domain.OrderItem", b =>
@@ -219,7 +219,7 @@ namespace Eticaret.Web.Mvc.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItem");
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("Eticaret.Domain.Product", b =>
@@ -261,6 +261,188 @@ namespace Eticaret.Web.Mvc.Migrations
                     b.HasIndex("SellerId");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CategoryId = 1,
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2570),
+                            Details = "ürün açıklama",
+                            Enabled = true,
+                            Name = "Product 1",
+                            Price = 10m,
+                            SellerId = 1,
+                            StockAmount = (byte)10
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CategoryId = 2,
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2580),
+                            Details = "ürün açıklama",
+                            Enabled = true,
+                            Name = "Product 2",
+                            Price = 10m,
+                            SellerId = 2,
+                            StockAmount = (byte)10
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CategoryId = 3,
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2580),
+                            Details = "ürün açıklama",
+                            Enabled = true,
+                            Name = "Product 3",
+                            Price = 10m,
+                            SellerId = 1,
+                            StockAmount = (byte)10
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CategoryId = 4,
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2580),
+                            Details = "ürün açıklama",
+                            Enabled = true,
+                            Name = "Product 4",
+                            Price = 10m,
+                            SellerId = 2,
+                            StockAmount = (byte)10
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CategoryId = 5,
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2580),
+                            Details = "ürün açıklama",
+                            Enabled = true,
+                            Name = "Product 5",
+                            Price = 10m,
+                            SellerId = 1,
+                            StockAmount = (byte)10
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CategoryId = 6,
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2590),
+                            Details = "ürün açıklama",
+                            Enabled = true,
+                            Name = "Product 6",
+                            Price = 10m,
+                            SellerId = 1,
+                            StockAmount = (byte)10
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CategoryId = 7,
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2590),
+                            Details = "ürün açıklama",
+                            Enabled = true,
+                            Name = "Product 7",
+                            Price = 10m,
+                            SellerId = 2,
+                            StockAmount = (byte)10
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CategoryId = 8,
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2590),
+                            Details = "ürün açıklama",
+                            Enabled = true,
+                            Name = "Product 8",
+                            Price = 10m,
+                            SellerId = 1,
+                            StockAmount = (byte)10
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CategoryId = 9,
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2590),
+                            Details = "ürün açıklama",
+                            Enabled = true,
+                            Name = "Product 9",
+                            Price = 10m,
+                            SellerId = 2,
+                            StockAmount = (byte)10
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CategoryId = 10,
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2600),
+                            Details = "ürün açıklama",
+                            Enabled = true,
+                            Name = "Product 10",
+                            Price = 10m,
+                            SellerId = 1,
+                            StockAmount = (byte)10
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CategoryId = 2,
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2600),
+                            Details = "ürün açıklama",
+                            Enabled = true,
+                            Name = "Product 11",
+                            Price = 10m,
+                            SellerId = 1,
+                            StockAmount = (byte)10
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CategoryId = 4,
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2600),
+                            Details = "ürün açıklama",
+                            Enabled = true,
+                            Name = "Product 12",
+                            Price = 10m,
+                            SellerId = 2,
+                            StockAmount = (byte)10
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CategoryId = 6,
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2600),
+                            Details = "ürün açıklama",
+                            Enabled = true,
+                            Name = "Product 13",
+                            Price = 10m,
+                            SellerId = 2,
+                            StockAmount = (byte)10
+                        },
+                        new
+                        {
+                            Id = 14,
+                            CategoryId = 8,
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2600),
+                            Details = "ürün açıklama",
+                            Enabled = true,
+                            Name = "Product 14",
+                            Price = 10m,
+                            SellerId = 1,
+                            StockAmount = (byte)10
+                        },
+                        new
+                        {
+                            Id = 15,
+                            CategoryId = 10,
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2610),
+                            Details = "ürün açıklama",
+                            Enabled = true,
+                            Name = "Product 15",
+                            Price = 10m,
+                            SellerId = 1,
+                            StockAmount = (byte)10
+                        });
                 });
 
             modelBuilder.Entity("Eticaret.Domain.ProductComment", b =>
@@ -292,7 +474,7 @@ namespace Eticaret.Web.Mvc.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ProductComment");
+                    b.ToTable("ProductComments");
                 });
 
             modelBuilder.Entity("Eticaret.Domain.ProductImage", b =>
@@ -320,7 +502,7 @@ namespace Eticaret.Web.Mvc.Migrations
 
                     b.HasIndex("SellerId");
 
-                    b.ToTable("ProductImage");
+                    b.ToTable("ProductImages");
                 });
 
             modelBuilder.Entity("Eticaret.Domain.Role", b =>
@@ -338,25 +520,25 @@ namespace Eticaret.Web.Mvc.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Role");
+                    b.ToTable("Roles");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 3, 8, 21, 42, 30, 174, DateTimeKind.Local).AddTicks(5060),
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2550),
                             Name = "seller"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 3, 8, 21, 42, 30, 174, DateTimeKind.Local).AddTicks(5060),
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2550),
                             Name = "buyer"
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2024, 3, 8, 21, 42, 30, 174, DateTimeKind.Local).AddTicks(5070),
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2550),
                             Name = "admin"
                         });
                 });
@@ -404,7 +586,7 @@ namespace Eticaret.Web.Mvc.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("User");
+                    b.ToTable("Users");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("User");
 
@@ -414,13 +596,67 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 3, 8, 21, 42, 30, 174, DateTimeKind.Local).AddTicks(5080),
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2630),
                             Email = "ays@ayd.com",
                             Enabled = true,
-                            FirstName = "Ayşenur",
-                            LastName = "Aydın",
+                            FirstName = "Admin",
                             Password = "123456",
                             RoleId = 3
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2630),
+                            Email = "ays@ayd.com",
+                            Enabled = true,
+                            FirstName = "Ayşenur4",
+                            LastName = "Aydın4",
+                            Password = "123456",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2630),
+                            Email = "ays@ayd.com",
+                            Enabled = true,
+                            FirstName = "Ayşenur5",
+                            LastName = "Aydın5",
+                            Password = "123456",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2640),
+                            Email = "ays@ayd.com",
+                            Enabled = true,
+                            FirstName = "Ayşenur6",
+                            LastName = "Aydın6",
+                            Password = "123456",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2640),
+                            Email = "ays@ayd.com",
+                            Enabled = true,
+                            FirstName = "Ayşenur7",
+                            LastName = "Aydın7",
+                            Password = "123456",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2640),
+                            Email = "ays@ayd.com",
+                            Enabled = true,
+                            FirstName = "Ayşenur2",
+                            LastName = "Aydın2",
+                            Password = "123456",
+                            RoleId = 2
                         });
                 });
 
@@ -436,6 +672,34 @@ namespace Eticaret.Web.Mvc.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasDiscriminator().HasValue("Seller");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 7,
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2660),
+                            Email = "ays@ayd.com",
+                            Enabled = true,
+                            FirstName = "Ayşenur1",
+                            LastName = "Aydın1",
+                            Password = "123456",
+                            RoleId = 1,
+                            Adress = "Bursa",
+                            CallNumber = 5552552525L
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2660),
+                            Email = "ays@ayd.com",
+                            Enabled = true,
+                            FirstName = "Ayşenur3",
+                            LastName = "Aydın3",
+                            Password = "123456",
+                            RoleId = 1,
+                            Adress = "Bursa",
+                            CallNumber = 5552552525L
+                        });
                 });
 
             modelBuilder.Entity("Eticaret.Domain.CartItem", b =>
