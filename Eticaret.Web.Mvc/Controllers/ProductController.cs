@@ -14,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Web.Mvc.Controllers
 {
-    // [Authorize(Roles = "seller")]
+    [Authorize(Roles = "seller")]
     public class ProductController : Controller
     {
         private readonly IProductRepository _productService;
@@ -30,7 +30,6 @@ namespace Eticaret.Web.Mvc.Controllers
 
         public IActionResult Index()
         {
-
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId != null && int.TryParse(userId, out int Id))
             {
@@ -57,6 +56,7 @@ namespace Eticaret.Web.Mvc.Controllers
             return View(product);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Product product)
         {
             if (ModelState.IsValid)
@@ -65,7 +65,6 @@ namespace Eticaret.Web.Mvc.Controllers
                 {
                     _productService.Add(product);
                     return RedirectToAction(nameof(Index));
-
                 }
                 catch
                 {
@@ -88,8 +87,9 @@ namespace Eticaret.Web.Mvc.Controllers
             ViewBag.Category = new SelectList(await _categoryService.GetAllAsync(), "Id", "Name");
             return View(product);
         }
-        [HttpPost]
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Product product)
         {
             if (ModelState.IsValid)
@@ -120,6 +120,7 @@ namespace Eticaret.Web.Mvc.Controllers
             return View(product);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(Product product)
         {
             try
@@ -135,6 +136,7 @@ namespace Eticaret.Web.Mvc.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [AllowAnonymous]
         public IActionResult Comment(int ProductId, byte StarCount, string Text)
         {

@@ -215,17 +215,17 @@
             class="footer_nav_container d-flex flex-sm-row flex-column align-items-center justify-content-lg-start justify-content-center text-center">
             <ul class="footer_nav">
               <li>
-                <a class="dropdown-item" asp-controller="Home" asp-action="MyOrders">
+                <a class="dropdown-item" asp-controller="Home" asp-action="Index">
                   <span>Anasayfa</span>
                 </a>
               </li>
               <li>
-                <a class="dropdown-item" asp-controller="AboutUs" asp-action="MyOrders">
+                <a class="dropdown-item" asp-controller="Home" asp-action="AboutUs">
                   <span>Hakkımızda</span>
                 </a>
               </li>
               <li>
-                <a class="dropdown-item" asp-controller="Contact" asp-action="MyOrders">
+                <a class="dropdown-item" asp-controller="Home" asp-action="Contact">
                   <span>İletişim</span>
                 </a>
               </li>
@@ -290,9 +290,6 @@
   @await Html.PartialAsync("_FootPartial")
   @RenderSection("Styles", false);
   @RenderSection("Scripts", false);
-
-
-
 
 
 </body>

@@ -36,6 +36,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
                             .Include(u => u.ProductComments)
                             .Include(u => u.Orders)
                             .OrderBy(u => u.Enabled)
+                            .Where(u => u.RoleId != 3)
                             .ToList();
 
             return View(user);
@@ -53,52 +54,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        /*
-         [HttpPost]
-         public async Task<IActionResult> Approve(User user)
-         {
-             var seller = new User()
-             {
-                 Email = user.Email,
-                 FirstName = user.FirstName,
-                 LastName = user.LastName,
-                 Password = user.Password,
-                 RoleId = 1,
-                 Enabled = user.Enabled
-             };
-             User? oldUser = _userService.GetDb()
-                             .Include(u => u.RoleFk)
-                             .Include(u => u.CartItems)
-                             .Include(u => u.ProductComments)
-                             .Include(u => u.Orders)
-                             .FirstOrDefault(p => p.Id == user.Id);
-             try
-             {
-                 if (oldUser!.Id != user.RoleId && user.RoleId == 1)
-                 {
-                     //     //_userService.Add(seller);
-                     //     //_userService.Delete(user);
-                     //     //return RedirectToAction(nameof(List));
-
-                     //     _userService.Update(user);
-                     //     return RedirectToAction(nameof(List));
-                     return RedirectToAction(nameof(Delete));
-
-                 }
-
-                 _userService.Update(user);
-                 return RedirectToAction(nameof(List));
-             }
-             catch
-             {
-                 ViewBag.Role = new SelectList(await _roleService.GetAllAsync(), "Id", "Name");
-                 return View(user);
-             }
-         } 
-         
-          */
-
-        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Approve(User user)
         {
             try

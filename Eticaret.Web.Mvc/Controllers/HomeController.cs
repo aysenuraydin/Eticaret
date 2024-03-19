@@ -72,11 +72,6 @@ namespace Eticaret.Web.Mvc.Controllers
                                 .FirstOrDefault(p => p.Id == id);
             return View(product);
         }
-        public IActionResult ProductModal(int id)
-        {
-            return View(_productService.Find(id));
-        }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

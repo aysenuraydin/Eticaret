@@ -21,12 +21,12 @@ namespace Eticaret.Web.Mvc.Models
         [DataType(DataType.Password)]
         [MinLength(6, ErrorMessage = "Şifre en az 6 karakter olmalıdır.")]
         [Compare("Password", ErrorMessage = "Şifreler eşleşmiyor.")]
-        public string? Password { get; set; }
+        public string? Password { get; set; } = string.Empty;
         [Required(ErrorMessage = "Şifre alanı gereklidir.")]
         [DataType(DataType.Password)]
         [MinLength(6, ErrorMessage = "Şifre en az 6 karakter olmalıdır.")]
         [Compare("Password", ErrorMessage = "Şifreler eşleşmiyor.")]
-        public string? ConfirmPassword { get; set; }
+        public string? ConfirmPassword { get; set; } = string.Empty;
 
     }
 }

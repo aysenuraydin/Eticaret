@@ -1,15 +1,16 @@
 ﻿@model Product;
 @{
-    ViewData["Title"] = "Edit Product";
+    ViewData["Title"] = "Ürünü Düzenle";
 }
-<div class="container">
-    <h1>@ViewData["Title"]</h1>
+<div class="container mt-5 pt-5">
+    <h2>@ViewData["Title"]</h2>
 
 
     <hr />
     <div class="row">
         <div class="col-md-4">
             <form asp-action="Edit" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="Id" />
                 <input type="hidden" asp-for="CreatedAt" />

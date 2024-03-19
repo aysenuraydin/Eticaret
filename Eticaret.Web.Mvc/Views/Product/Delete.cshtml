@@ -2,10 +2,9 @@
 @{
     ViewData["Title"] = "Delete Product";
 }
-<div class="container">
-    <h1>@ViewData["Title"]</h1>
+<div class="container mt-5 pt-5">
+    <h2>@ViewData["Title"]</h2>
     <hr>
-    <h3>Ürün Silinsin mi?</h3>
     <div>
         <h4>Silinecek Ürün Bilgileri</h4>
         <hr />
@@ -80,6 +79,7 @@
         </dl>
 
         <form asp-action="Delete">
+            @Html.AntiForgeryToken()
             <input type="hidden" asp-for="Id" />
             <input type="submit" value="Sil" class="btn btn-outline-danger" /> |
             <a asp-action="Index">Listeye Dön</a>

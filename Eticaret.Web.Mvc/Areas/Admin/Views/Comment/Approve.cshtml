@@ -59,6 +59,7 @@
         </dt>
     </dl>
     <form asp-action="Approve" asp-Controller="Comment">
+        @Html.AntiForgeryToken()
         <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="Text" />
         <input type="hidden" asp-for="StarCount" />

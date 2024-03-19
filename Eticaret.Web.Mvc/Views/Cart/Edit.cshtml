@@ -57,6 +57,7 @@
                                         }
                                         <td class="column-4">
                                             <form asp-action="Edit" asp-Controller="Cart" method="post" class="quantityForms">
+                                                @Html.AntiForgeryToken()
                                                 <input type="hidden" asp-for="@item.Id" />
                                                 <input type="hidden" asp-for="@item.ProductId" />
                                                 <input type="hidden" asp-for="@item.UserId" />
@@ -84,6 +85,7 @@
                                         }
                                         <td>
                                             <form asp-action="Delete" asp-Controller="Cart" method="post">
+                                                @Html.AntiForgeryToken()
                                                 <input type="hidden" asp-for="@item.Id" />
                                                 <input type="submit" value="X" class="btn btn-outline-danger p-3  mx-4" />
                                             </form>
@@ -128,6 +130,7 @@
                         </div>
                     </div>
                     <form id="orderForm" asp-action="Create" asp-Controller="Order" method="post">
+                        @Html.AntiForgeryToken()
                         <div class="flex-w flex-t bor12 p-t-15 p-b-30">
                             <div class="form-group" style="width: 100% !important;">
                                 <label asp-for="Address" class="control-label"></label>

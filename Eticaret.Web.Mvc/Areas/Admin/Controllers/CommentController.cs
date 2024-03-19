@@ -42,6 +42,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
             return View(comment);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Approve(ProductComment comment)
         {
             try
@@ -64,6 +65,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
             return View(comment);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(int id, ProductComment comment)
         {
             try

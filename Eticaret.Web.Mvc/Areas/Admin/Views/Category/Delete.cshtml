@@ -54,6 +54,7 @@
     </dl>
 
     <form asp-action="Delete" asp-Controller="Category">
+        @Html.AntiForgeryToken()
         <input type="hidden" asp-for="Id" />
         <input type="submit" value="Sil" class="btn btn-outline-danger" /> |
         <a asp-action="Index" asp-Controller="Home">Listeye Dön</a>

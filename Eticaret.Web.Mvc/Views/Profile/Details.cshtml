@@ -1,7 +1,84 @@
-﻿@{
+﻿@model User
+@{
     Layout = "_ProfileLayout";
 }
-<a class="" asp-controller="Profile" asp-action="Edit">
-    <i class="fa-solid fa-gear"></i>
-    <span>Düzenle </span>
-</a>
+
+<div class="p-5 m-4 row">
+    <div class="col-6 border p-5 shadow offset-3">
+        <h5 class="mb-5">
+            @Html.DisplayFor(model => model.FirstName)
+            @Html.DisplayFor(model => model.LastName)
+        </h5>
+        <h4>Kullacı Bilgileri</h4>
+        <hr />
+
+        <dl class="row">
+            <dt class="col-sm-5">
+                @Html.DisplayNameFor(model => model.Email)
+            </dt>
+            <dt class="col-sm-7">
+                @Html.DisplayFor(model => model.Email)
+            </dt>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-5">
+                @Html.DisplayNameFor(model => model.FirstName)
+            </dt>
+            <dt class="col-sm-7">
+                @Html.DisplayFor(model => model.FirstName)
+            </dt>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-5">
+                @Html.DisplayNameFor(model => model.LastName)
+            </dt>
+            <dt class="col-sm-7">
+                @Html.DisplayFor(model => model.LastName)
+            </dt>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-5">
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </dt>
+            <dt class="col-sm-7">
+                @Html.DisplayFor(model => model.CreatedAt)
+            </dt>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-5">
+                @Html.DisplayNameFor(model => model.RoleFk.Name)
+            </dt>
+            <dt class="col-sm-7">
+                @Html.DisplayFor(model => model.RoleFk.Name)
+            </dt>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-5">
+                @Html.DisplayNameFor(model => model.CartItems)
+            </dt>
+            <dt class="col-sm-7">
+                @Html.DisplayFor(model => model.CartItems.Count)
+            </dt>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-5">
+                @Html.DisplayNameFor(model => model.ProductComments)
+            </dt>
+            <dt class="col-sm-7">
+                @Html.DisplayFor(model => model.ProductComments.Count)
+            </dt>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-5">
+                @Html.DisplayNameFor(model => model.Orders)
+            </dt>
+            <dt class="col-sm-7">
+                @Html.DisplayFor(model => model.Orders!.Count)
+            </dt>
+        </dl>
+        <a class="btn btn-primary mt-5 w-100" asp-controller="Profile" asp-action="Edit">
+            <i class="fa-solid fa-gear"></i>
+            <span>Düzenle </span>
+        </a>
+    </div>
+</div>
