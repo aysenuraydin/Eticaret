@@ -8,11 +8,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Eticaret.Web.Mvc.Controllers
 {
-    [Area("Admin")]
     public class CartController : Controller
     {
-
-        public IActionResult Index()
+        public IActionResult AddProduct()
+        {
+            return View();
+        }
+        public IActionResult Edit()
         {
             return View();
         }
