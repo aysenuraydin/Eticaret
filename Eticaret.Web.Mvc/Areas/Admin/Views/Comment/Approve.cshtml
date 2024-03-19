@@ -1,0 +1,83 @@
+﻿@model ProductComment
+@{
+    ViewData["Title"] = "Products Approve";
+}
+<h1>@ViewData["Title"]</h1>
+<hr>
+
+
+<h3>Kullanıcı Onaylasın Mı?</h3>
+<div>
+    <h4>Onaylanacak Kullacı Bilgileri</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.Id)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Text)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.Text)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.StarCount)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.StarCount)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.CreatedAt)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.CreatedAt)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.UserFk!.Email)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.UserFk!.Email)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ProductFk!.Name)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.ProductFk!.Name)
+        </dt>
+    </dl>
+    <form asp-action="Approve" asp-Controller="Comment">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="Text" />
+        <input type="hidden" asp-for="StarCount" />
+        <input type="hidden" asp-for="CreatedAt" />
+        <input type="hidden" asp-for="UserId" />
+        <input type="hidden" asp-for="ProductId" />
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-3">
+                    <label asp-for="IsConfirmed" class="control-label"></label>
+                </div>
+                <div class="col-sm-9">
+                    <input asp-for=" IsConfirmed" class="form-control" style="Width:20px !important;" />
+                </div>
+                <span asp-validation-for="IsConfirmed" class="text-danger"></span>
+            </div>
+        </div>
+        <input type="submit" value="Kaydet" class="btn btn-primary" />
+    </form>
+    <a asp-action="List" asp-Controller="Comment">Listeye Dön</a>
+</div>

@@ -1,0 +1,61 @@
+﻿@model Category
+@{
+    ViewData["Title"] = "Delete Category";
+    Layout = "_AdminLayout";
+}
+<h1>@ViewData["Title"]</h1>
+<hr>
+
+
+<h3>Ürün Silinsin mi?</h3>
+<div>
+    <h4>Silinecek Ürün Bilgileri</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.Id)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.Name)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Color)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.Color)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.IconCssClass)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.IconCssClass)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dd class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Products)
+        </dd>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Products.Count)
+        </dd>
+    </dl>
+    </dl>
+
+    <form asp-action="Delete" asp-Controller="Category">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Sil" class="btn btn-outline-danger" /> |
+        <a asp-action="Index" asp-Controller="Home">Listeye Dön</a>
+    </form>
+</div>

@@ -5,12 +5,14 @@ namespace Eticaret.Domain
 {
     public class Seller : User
     {
-        [MaxLength(250), MinLength(10)]
-        public string? Adress { get; set; }
-        public long CallNumber { get; set; }
-
+        #region Navigation Properties
+        [Display(Name = "Satıcı Ürünleri")]
         public List<Product> Products { get; set; } = new();
-        public List<ProductImage> ProductImages { get; set; } = new();
 
+        [Display(Name = "Ürün Resimleri")]
+        public List<ProductImage> ProductImages { get; set; } = new();
+        [Display(Name = "Siparişleri")]
+        public List<OrderItem> OrderItems { get; set; } = new();
+        #endregion
     }
 }

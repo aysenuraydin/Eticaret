@@ -1,0 +1,126 @@
+﻿@model Product
+@{
+    ViewData["Title"] = "Delete Product";
+}
+<h1>@ViewData["Title"]</h1>
+<hr>
+
+
+<h3>Ürün Silinsin mi?</h3>
+<div>
+    <h4>Silinecek Ürün Bilgileri</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.Id)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.Name)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dd class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Price)
+        </dd>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Details)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.Details)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dd class="col-sm-3">
+            @Html.DisplayNameFor(model => model.StockAmount)
+        </dd>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.StockAmount)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dd class="col-sm-3">
+            @Html.DisplayNameFor(model => model.CreatedAt)
+        </dd>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.CreatedAt)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dd class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Enabled)
+        </dd>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Enabled)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            Satıcı
+            @Html.DisplayNameFor(model => model.SellerFk!.Email)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.SellerFk!.Email)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dd class="col-sm-3">
+            @Html.DisplayNameFor(model => model.CategoryId)
+        </dd>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.CategoryId)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dd class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ProductComments)
+        </dd>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ProductComments.Count)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dd class="col-sm-3">
+            @Html.DisplayNameFor(model => model.OrderItems)
+        </dd>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.OrderItems.Count)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dd class="col-sm-3">
+            @Html.DisplayNameFor(model => model.CartItems)
+        </dd>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.CartItems.Count)
+        </dd>
+    </dl>
+    </dl>
+    <dl class="row">
+        <dd class="col-sm-3">
+            @Html.DisplayNameFor(model => model.IsConfirmed)
+        </dd>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.IsConfirmed)
+        </dd>
+    </dl>
+
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Sil" class="btn btn-outline-danger" /> |
+        <a asp-action="Index">Listeye Dön</a>
+    </form>
+</div>

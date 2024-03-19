@@ -1,6 +1,95 @@
-﻿@{
-    ViewData["Title"] = "Privacy Policy";
-}
-<h1>@ViewData["Title"]</h1>
+﻿@model Order
+<div class="container">
+    <div class="mt-5">
+        <div class="text-center">
+            <i class="fa-solid fa-circle-check text-primary d-block m-2" style="font-size: 100px;"></i>
+            <h3 class="text-primary p-2">Siparişiniz Tamamlandı!</h3>
+        </div>
+    </div>
+    <p class="my-4 py-5">
+        Siparişiniz başarıyla tarafımıza ulaşmıştır! <br>
+        Herhangi bir sorununuz var ise Mağaza Müşteri İlişikleri bölümüze bildirebilirsiniz..
+        Mağzamızdan alışveriş yaptıdıgın için teşekkür ederiz!
+    </p>
+    <table class="table my-4 py-l-150 table-striped table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Sipariş Numarası</th>
+                <th scope="col">Teslimat Adresi</th>
+                <th scope="col">Oluşturma Tarihi</th>
+                <th scope="col">Ürün Sayısı</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider tableCss">
+            <tr>
+                <td>@Model.OrderCode</td>
+                <td>@Model.Address</td>
+                <td>@Model.CreatedAt</td>
+                <td>@Model.OrderItems.Sum(o => o.Quantity)</td>
+            </tr>
+        </tbody>
+    </table>
 
-Details
+    <table class="table my-4 py-l-150-50 table-striped table-hover">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Ürün Adı</th>
+                <th scope="col">Satıcı Adı Soyadı</th>
+                <th scope="col">Fiyat</th>
+                <th scope="col">Adet</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider tableCss">
+            @foreach (var order in Model.OrderItems)
+            {
+                <tr>
+                    <td>image</td>
+                    <td>
+                        <a asp-controller="Home" asp-action="ProductDetail" asp-route-id="@order.ProductId">
+                            @order.ProductFk.Name
+                        </a>
+                    </td>
+                    <td>@order.ProductFk.SellerFk!.FirstName @order.ProductFk.SellerFk!.LastName</td>
+                    <td>@order.Quantity</td>
+                    <td>@order.UnitPrice ₺</td>
+                </tr>
+            }
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td> <b>Toplam : </b> </td>
+                <td>@Model.OrderItems.Sum(o => o.Quantity * o.UnitPrice) ₺</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+@section Styles {
+    <style>
+        .tableCss tr td {
+            padding: 25px !important;
+        }
+
+        .table {
+            margin-top: 60px !important;
+        }
+
+        .tableCss tr th {
+            padding: 25px !important;
+            ;
+        }
+
+        .container {
+            max-width: 1200px !important;
+            margin: auto;
+        }
+
+        .text-center {
+            margin: auto;
+            padding: 50px;
+            margin-top: 100px;
+        }
+    </style>
+}

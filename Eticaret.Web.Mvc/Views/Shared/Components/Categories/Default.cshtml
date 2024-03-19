@@ -1,0 +1,13 @@
+﻿@model IEnumerable<Category>
+@{
+    var categories = Model.Take(6);
+}
+
+@foreach (var anaKategori in categories)
+{
+    <li>
+    <a class="nav-link" asp-controller="Home" asp-action="Listing" asp-route-id="@anaKategori.Id">
+        <span>@anaKategori.Name</span>
+    </a>
+</li>
+}

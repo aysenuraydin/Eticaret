@@ -6,9 +6,6 @@ namespace Eticaret.Persistence.Ef.Configurations
 {
     public class RoleConfiguration : IEntityTypeConfiguration<Role>
     {
-        // public string? Name { get; set; }
-        // public DateTime CreatedAt { get; set; }
-
         public void Configure(EntityTypeBuilder<Role> builder)
         {
             builder.HasKey(u => u.Id);

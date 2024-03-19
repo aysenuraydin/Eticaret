@@ -1,0 +1,112 @@
+﻿@model User
+@{
+    ViewData["Title"] = "Products Approve";
+}
+<h1>@ViewData["Title"]</h1>
+<hr>
+
+
+<h3>Kullanıcı Onaylasın Mı?</h3>
+<div>
+    <h4>Onaylanacak Kullacı Bilgileri</h4>
+    <hr />
+
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.Id)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.Email)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.FirstName)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.LastName)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.CreatedAt)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.CreatedAt)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.RoleFk.Name)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.RoleFk.Name)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.CartItems)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.CartItems.Count)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ProductComments)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.ProductComments.Count)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Orders)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.Orders!.Count)
+        </dt>
+    </dl>
+
+    <form asp-action="Approve" asp-Controller="User">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="Email" />
+        <input type="hidden" asp-for="FirstName" />
+        <input type="hidden" asp-for="LastName" />
+        <input type="hidden" asp-for="Password" />
+        <input type="hidden" asp-for="RoleId" />
+        <input type="hidden" asp-for="CreatedAt" />
+        <input type="hidden" asp-for="CartItems" />
+        <input type="hidden" asp-for="Orders" />
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-3">
+                    <label asp-for="Enabled" class="control-label"></label>
+                </div>
+                <div class="col-sm-9">
+                    <input asp-for=" Enabled" class="form-control" style="Width:20px !important;" />
+                </div>
+                <span asp-validation-for="Enabled" class="text-danger"></span>
+            </div>
+        </div>
+        <input type="submit" value="Kaydet" class="btn btn-primary" />
+    </form>
+    <a asp-action="List" asp-Controller="User">Listeye Dön</a>
+</div>
