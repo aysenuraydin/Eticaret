@@ -22,10 +22,17 @@ namespace Eticaret.Application.Repositories
         {
             return _dbSet.ToList();
         }
-
         public List<T> GetAll(Expression<Func<T, bool>> expression)
         {
             return _dbSet.Where(expression).ToList();
+        }
+        public async Task<IEnumerable<T>> GetAllAsync()
+        {
+            return await _dbSet.ToListAsync();
+        }
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> expression)
+        {
+            return await _dbSet.Where(expression).ToListAsync();
         }
 
         public T Get(Expression<Func<T, bool>> expression)
@@ -38,12 +45,19 @@ namespace Eticaret.Application.Repositories
             return _dbSet.Find(id)!;
         }
 
+        // public async Task<T> FindAsync(int id)
+        // {
+        //     return await _dbSet.FindAsync(id);
+        // }
         public int Add(T entity)
         {
             _dbSet.Add(entity);
             return SaveChanges();
         }
-
+        public async Task AddAsync(T entity)
+        {
+            await _dbSet.AddAsync(entity);
+        }
         public int Update(T entity)
         {
             _databaseContext.Update(entity);
@@ -61,6 +75,11 @@ namespace Eticaret.Application.Repositories
             return _databaseContext.SaveChanges();
         }
 
+        public async Task<int> SaveChangesAsync()
+        {
+            return await _databaseContext.SaveChangesAsync();
+        }
+
         public IQueryable<T> GetAllInclude(string table)
         {
             return _dbSet.Include(table);
@@ -70,11 +89,35 @@ namespace Eticaret.Application.Repositories
         {
             return _dbSet.Include(expression);
         }
+        // public List<T> GetAllInclude(params Expression<Func<T, object>>[] tables)
+        // {
+        //     IQueryable<T> db = _dbSet;
+        //     foreach (var table in tables)
+        //     {
+        //         db=db.Include(table);
+        //     }
+
+        //     return db.ToList();;
+        // }
+        // public IQueryable<T> GetAllIncludeQueryable(params Expression<Func<T, object>>[] tables)
+        // {
+        //     IQueryable<T> db = _dbSet;
+        //     foreach (var table in tables)
+        //     {
+        //         db=db.Include(table);
+        //     }
+
+        //     return db;
+        // }
+
+        public DbSet<T> GetDb()
+        {
+            return _dbSet;
+        }
+
 
 #nullable disable
 #nullable restore
-
-
 
     }
 }

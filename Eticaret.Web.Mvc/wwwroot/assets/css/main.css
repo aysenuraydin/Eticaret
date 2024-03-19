@@ -58,9 +58,6 @@
   src: url('../fonts/Montserrat/Montserrat-Bold.ttf'); 
 }
 
-
-
-
 .wrap-sidebar {
   position: fixed;
   z-index: 1100;
@@ -864,7 +861,6 @@
 
 .show-header-cart {
   visibility: visible;
-  background-color: rgba(0,0,0,0.6);
 }
 
 .show-header-cart .header-cart {
@@ -3248,17 +3244,24 @@ input.num-product::-webkit-inner-spin-button {
   min-height: 420px !important;
 }
 
+/* .btn.btn-sm.btn-outline-danger{
+  min-width: 65px !important;
+  margin: 3px 0px !important;
+} */
 
 
+.btn-m{
+  margin: 4px 20px !important;
+}
 
+.alert{
+  width: 100% !important;
+}
 
-
-
-
-
-
-
-
+a:hover{
+  color:rgb(0, 0, 0) !important;
+  display: block !important;
+}
 
 
 

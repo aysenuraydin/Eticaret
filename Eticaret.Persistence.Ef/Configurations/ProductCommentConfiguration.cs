@@ -6,14 +6,6 @@ namespace Eticaret.Persistence.Ef.Configurations
 {
     public class ProductCommentConfiguration : IEntityTypeConfiguration<ProductComment>
     {
-
-        // public string? Text { get; set; }
-        // public byte StarCount { get; set; }
-        // public bool IsConfirmed { get; set; }
-        // public DateTime CreatedAt { get; set; }
-        // public int UserId { get; set; }
-        // public int ProductId { get; set; }
-
         public void Configure(EntityTypeBuilder<ProductComment> builder)
         {
             builder.HasKey(u => u.Id);

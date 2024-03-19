@@ -1,0 +1,99 @@
+﻿@model User
+@{
+    ViewData["Title"] = "Delete User";
+}
+<h1>@ViewData["Title"]</h1>
+<hr>
+
+
+<h3>Ürün Silinsin mi?</h3>
+<div>
+    <h4>Silinecek Ürün Bilgileri</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.Id)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.Email)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.FirstName)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.LastName)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Enabled)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.Enabled)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.CreatedAt)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.CreatedAt)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.RoleFk.Name)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.RoleFk.Name)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.CartItems)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.CartItems.Count)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ProductComments)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.ProductComments.Count)
+        </dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Orders)
+        </dt>
+        <dt class="col-sm-9">
+            @Html.DisplayFor(model => model.Orders.Count)
+        </dt>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Sil" class="btn btn-outline-danger" /> |
+        <a asp-action="List" asp-Controller="User">Listeye Dön</a>
+    </form>
+</div>

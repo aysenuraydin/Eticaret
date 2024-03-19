@@ -17,24 +17,10 @@ namespace Eticaret.Web.Mvc.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.2");
 
-            modelBuilder.Entity("Eticaret.Domain.Cart", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Cart");
-                });
-
             modelBuilder.Entity("Eticaret.Domain.CartItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("CartId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreatedAt")
@@ -46,11 +32,14 @@ namespace Eticaret.Web.Mvc.Migrations
                     b.Property<byte>("Quantity")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CartId");
-
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("CartItems");
                 });
@@ -62,7 +51,8 @@ namespace Eticaret.Web.Mvc.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Color")
-                        .HasMaxLength(6)
+                        .IsRequired()
+                        .HasMaxLength(15)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedAt")
@@ -73,6 +63,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
@@ -85,80 +76,70 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 1,
                             Color = "pink",
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2420),
-                            IconCssClass = "",
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6760),
                             Name = "dress"
                         },
                         new
                         {
                             Id = 2,
                             Color = "red",
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2450),
-                            IconCssClass = "",
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6760),
                             Name = "jean"
                         },
                         new
                         {
                             Id = 3,
                             Color = "blue",
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2460),
-                            IconCssClass = "",
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6760),
                             Name = "Sweatshirt"
                         },
                         new
                         {
                             Id = 4,
                             Color = "yellow",
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2460),
-                            IconCssClass = "",
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6760),
                             Name = "Sweatpants"
                         },
                         new
                         {
                             Id = 5,
                             Color = "black",
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2490),
-                            IconCssClass = "",
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6760),
                             Name = "Jumper"
                         },
                         new
                         {
                             Id = 6,
                             Color = "white",
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2490),
-                            IconCssClass = "",
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6770),
                             Name = "Cardigan"
                         },
                         new
                         {
                             Id = 7,
                             Color = "gray",
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2500),
-                            IconCssClass = "",
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6770),
                             Name = "Outerwear"
                         },
                         new
                         {
                             Id = 8,
                             Color = "darkred",
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2500),
-                            IconCssClass = "",
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6770),
                             Name = "Trousers"
                         },
                         new
                         {
                             Id = 9,
                             Color = "blue",
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2500),
-                            IconCssClass = "",
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6770),
                             Name = "Shirt"
                         },
                         new
                         {
                             Id = 10,
                             Color = "white",
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2500),
-                            IconCssClass = "",
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6770),
                             Name = "T-shirt"
                         });
                 });
@@ -170,6 +151,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Address")
+                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
@@ -177,6 +159,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("OrderCode")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("UserId")
@@ -187,6 +170,24 @@ namespace Eticaret.Web.Mvc.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Orders");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Address = "456 Elm St",
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6950),
+                            OrderCode = "ORD001",
+                            UserId = 9
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Address = "789 Oak St",
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6950),
+                            OrderCode = "ORD002",
+                            UserId = 10
+                        });
                 });
 
             modelBuilder.Entity("Eticaret.Domain.OrderItem", b =>
@@ -207,6 +208,9 @@ namespace Eticaret.Web.Mvc.Migrations
                     b.Property<byte>("Quantity")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("SellerId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("TEXT");
 
@@ -216,7 +220,31 @@ namespace Eticaret.Web.Mvc.Migrations
 
                     b.HasIndex("ProductId");
 
+                    b.HasIndex("SellerId");
+
                     b.ToTable("OrderItems");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6960),
+                            OrderId = 1,
+                            ProductId = 1,
+                            Quantity = (byte)2,
+                            SellerId = 11,
+                            UnitPrice = 10.99m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6970),
+                            OrderId = 2,
+                            ProductId = 2,
+                            Quantity = (byte)1,
+                            SellerId = 12,
+                            UnitPrice = 19.99m
+                        });
                 });
 
             modelBuilder.Entity("Eticaret.Domain.Product", b =>
@@ -232,13 +260,18 @@ namespace Eticaret.Web.Mvc.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Details")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("Enabled")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsConfirmed")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
@@ -264,180 +297,247 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 1,
                             CategoryId = 1,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2570),
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6790),
                             Details = "ürün açıklama",
                             Enabled = true,
+                            IsConfirmed = true,
                             Name = "Product 1",
                             Price = 10m,
-                            SellerId = 1,
+                            SellerId = 11,
                             StockAmount = (byte)10
                         },
                         new
                         {
                             Id = 2,
                             CategoryId = 2,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2580),
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6800),
                             Details = "ürün açıklama",
-                            Enabled = true,
+                            Enabled = false,
+                            IsConfirmed = true,
                             Name = "Product 2",
                             Price = 10m,
-                            SellerId = 2,
+                            SellerId = 11,
                             StockAmount = (byte)10
                         },
                         new
                         {
                             Id = 3,
                             CategoryId = 3,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2580),
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6810),
                             Details = "ürün açıklama",
                             Enabled = true,
+                            IsConfirmed = true,
                             Name = "Product 3",
                             Price = 10m,
-                            SellerId = 1,
+                            SellerId = 11,
                             StockAmount = (byte)10
                         },
                         new
                         {
                             Id = 4,
                             CategoryId = 4,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2580),
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6810),
                             Details = "ürün açıklama",
                             Enabled = true,
+                            IsConfirmed = true,
                             Name = "Product 4",
                             Price = 10m,
-                            SellerId = 2,
+                            SellerId = 11,
                             StockAmount = (byte)10
                         },
                         new
                         {
                             Id = 5,
                             CategoryId = 5,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2580),
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6810),
                             Details = "ürün açıklama",
-                            Enabled = true,
+                            Enabled = false,
+                            IsConfirmed = true,
                             Name = "Product 5",
                             Price = 10m,
-                            SellerId = 1,
+                            SellerId = 11,
                             StockAmount = (byte)10
                         },
                         new
                         {
                             Id = 6,
                             CategoryId = 6,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2590),
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6810),
                             Details = "ürün açıklama",
                             Enabled = true,
+                            IsConfirmed = true,
                             Name = "Product 6",
                             Price = 10m,
-                            SellerId = 1,
+                            SellerId = 11,
                             StockAmount = (byte)10
                         },
                         new
                         {
                             Id = 7,
                             CategoryId = 7,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2590),
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6820),
                             Details = "ürün açıklama",
                             Enabled = true,
+                            IsConfirmed = true,
                             Name = "Product 7",
                             Price = 10m,
-                            SellerId = 2,
+                            SellerId = 11,
                             StockAmount = (byte)10
                         },
                         new
                         {
                             Id = 8,
                             CategoryId = 8,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2590),
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6820),
                             Details = "ürün açıklama",
-                            Enabled = true,
+                            Enabled = false,
+                            IsConfirmed = true,
                             Name = "Product 8",
                             Price = 10m,
-                            SellerId = 1,
+                            SellerId = 11,
                             StockAmount = (byte)10
                         },
                         new
                         {
                             Id = 9,
                             CategoryId = 9,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2590),
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6820),
                             Details = "ürün açıklama",
-                            Enabled = true,
+                            Enabled = false,
+                            IsConfirmed = true,
                             Name = "Product 9",
                             Price = 10m,
-                            SellerId = 2,
+                            SellerId = 12,
                             StockAmount = (byte)10
                         },
                         new
                         {
                             Id = 10,
                             CategoryId = 10,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2600),
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6830),
                             Details = "ürün açıklama",
                             Enabled = true,
+                            IsConfirmed = true,
                             Name = "Product 10",
                             Price = 10m,
-                            SellerId = 1,
+                            SellerId = 12,
                             StockAmount = (byte)10
                         },
                         new
                         {
                             Id = 11,
                             CategoryId = 2,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2600),
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6830),
                             Details = "ürün açıklama",
                             Enabled = true,
+                            IsConfirmed = true,
                             Name = "Product 11",
                             Price = 10m,
-                            SellerId = 1,
+                            SellerId = 12,
                             StockAmount = (byte)10
                         },
                         new
                         {
                             Id = 12,
                             CategoryId = 4,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2600),
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6830),
                             Details = "ürün açıklama",
-                            Enabled = true,
+                            Enabled = false,
+                            IsConfirmed = true,
                             Name = "Product 12",
                             Price = 10m,
-                            SellerId = 2,
+                            SellerId = 12,
                             StockAmount = (byte)10
                         },
                         new
                         {
                             Id = 13,
                             CategoryId = 6,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2600),
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6830),
                             Details = "ürün açıklama",
                             Enabled = true,
+                            IsConfirmed = true,
                             Name = "Product 13",
                             Price = 10m,
-                            SellerId = 2,
+                            SellerId = 12,
                             StockAmount = (byte)10
                         },
                         new
                         {
                             Id = 14,
                             CategoryId = 8,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2600),
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6840),
                             Details = "ürün açıklama",
                             Enabled = true,
+                            IsConfirmed = true,
                             Name = "Product 14",
                             Price = 10m,
-                            SellerId = 1,
+                            SellerId = 12,
                             StockAmount = (byte)10
                         },
                         new
                         {
                             Id = 15,
                             CategoryId = 10,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2610),
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6840),
                             Details = "ürün açıklama",
-                            Enabled = true,
+                            Enabled = false,
+                            IsConfirmed = true,
                             Name = "Product 15",
                             Price = 10m,
-                            SellerId = 1,
+                            SellerId = 13,
+                            StockAmount = (byte)10
+                        },
+                        new
+                        {
+                            Id = 16,
+                            CategoryId = 4,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6840),
+                            Details = "ürün açıklama",
+                            Enabled = false,
+                            IsConfirmed = true,
+                            Name = "Product 16",
+                            Price = 10m,
+                            SellerId = 13,
+                            StockAmount = (byte)10
+                        },
+                        new
+                        {
+                            Id = 17,
+                            CategoryId = 6,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6840),
+                            Details = "ürün açıklama",
+                            Enabled = true,
+                            IsConfirmed = true,
+                            Name = "Product 17",
+                            Price = 10m,
+                            SellerId = 13,
+                            StockAmount = (byte)10
+                        },
+                        new
+                        {
+                            Id = 18,
+                            CategoryId = 8,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6850),
+                            Details = "ürün açıklama",
+                            Enabled = true,
+                            IsConfirmed = true,
+                            Name = "Product 18",
+                            Price = 10m,
+                            SellerId = 12,
+                            StockAmount = (byte)10
+                        },
+                        new
+                        {
+                            Id = 19,
+                            CategoryId = 10,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6850),
+                            Details = "ürün açıklama",
+                            Enabled = false,
+                            IsConfirmed = true,
+                            Name = "Product 19",
+                            Price = 10m,
+                            SellerId = 12,
                             StockAmount = (byte)10
                         });
                 });
@@ -451,14 +551,17 @@ namespace Eticaret.Web.Mvc.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsConfirmed")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("ProductId")
                         .HasColumnType("INTEGER");
 
                     b.Property<byte>("StarCount")
-                        .HasMaxLength(5)
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Text")
+                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
@@ -472,6 +575,158 @@ namespace Eticaret.Web.Mvc.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("ProductComments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6900),
+                            IsConfirmed = true,
+                            ProductId = 1,
+                            StarCount = (byte)5,
+                            Text = "Great product!",
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6900),
+                            IsConfirmed = true,
+                            ProductId = 2,
+                            StarCount = (byte)5,
+                            Text = "Great product!",
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6910),
+                            IsConfirmed = true,
+                            ProductId = 3,
+                            StarCount = (byte)3,
+                            Text = "Great product!",
+                            UserId = 3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6910),
+                            IsConfirmed = true,
+                            ProductId = 4,
+                            StarCount = (byte)5,
+                            Text = "Great product!",
+                            UserId = 4
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6910),
+                            IsConfirmed = true,
+                            ProductId = 5,
+                            StarCount = (byte)5,
+                            Text = "Great product!",
+                            UserId = 5
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6910),
+                            IsConfirmed = true,
+                            ProductId = 6,
+                            StarCount = (byte)1,
+                            Text = "Great product!",
+                            UserId = 6
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6910),
+                            IsConfirmed = true,
+                            ProductId = 7,
+                            StarCount = (byte)5,
+                            Text = "Great product!",
+                            UserId = 7
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6910),
+                            IsConfirmed = true,
+                            ProductId = 8,
+                            StarCount = (byte)5,
+                            Text = "Great product!",
+                            UserId = 8
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6920),
+                            IsConfirmed = true,
+                            ProductId = 9,
+                            StarCount = (byte)5,
+                            Text = "Great product!",
+                            UserId = 9
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6920),
+                            IsConfirmed = true,
+                            ProductId = 10,
+                            StarCount = (byte)4,
+                            Text = "Great product!",
+                            UserId = 10
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6920),
+                            IsConfirmed = true,
+                            ProductId = 11,
+                            StarCount = (byte)5,
+                            Text = "Great product!",
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6920),
+                            IsConfirmed = true,
+                            ProductId = 12,
+                            StarCount = (byte)5,
+                            Text = "Great product!",
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6920),
+                            IsConfirmed = true,
+                            ProductId = 13,
+                            StarCount = (byte)5,
+                            Text = "Great product!",
+                            UserId = 3
+                        },
+                        new
+                        {
+                            Id = 14,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6920),
+                            IsConfirmed = true,
+                            ProductId = 14,
+                            StarCount = (byte)5,
+                            Text = "Great product!",
+                            UserId = 4
+                        },
+                        new
+                        {
+                            Id = 15,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6930),
+                            IsConfirmed = true,
+                            ProductId = 15,
+                            StarCount = (byte)4,
+                            Text = "Nice product!",
+                            UserId = 2
+                        });
                 });
 
             modelBuilder.Entity("Eticaret.Domain.ProductImage", b =>
@@ -486,10 +741,11 @@ namespace Eticaret.Web.Mvc.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("SellerId")
+                    b.Property<int>("SellerId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Url")
+                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
@@ -500,6 +756,24 @@ namespace Eticaret.Web.Mvc.Migrations
                     b.HasIndex("SellerId");
 
                     b.ToTable("ProductImages");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6880),
+                            ProductId = 1,
+                            SellerId = 11,
+                            Url = "https://example.com/image1.jpg"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6890),
+                            ProductId = 2,
+                            SellerId = 11,
+                            Url = "https://example.com/image2.jpg"
+                        });
                 });
 
             modelBuilder.Entity("Eticaret.Domain.Role", b =>
@@ -512,6 +786,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
@@ -523,19 +798,19 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2550),
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6550),
                             Name = "seller"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2550),
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6610),
                             Name = "buyer"
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2550),
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6610),
                             Name = "admin"
                         });
                 });
@@ -544,9 +819,6 @@ namespace Eticaret.Web.Mvc.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("CartId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreatedAt")
@@ -558,28 +830,30 @@ namespace Eticaret.Web.Mvc.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("Enabled")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Password")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("RoleId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CartId");
 
                     b.HasIndex("RoleId");
 
@@ -593,18 +867,19 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2630),
-                            Email = "ays@ayd.com",
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6650),
+                            Email = "aysenur@aydin.com",
                             Enabled = true,
                             FirstName = "Admin",
+                            LastName = "Admin",
                             Password = "123456",
                             RoleId = 3
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2630),
-                            Email = "ays@ayd.com",
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6660),
+                            Email = "ays2@ayd.com",
                             Enabled = true,
                             FirstName = "Ayşenur4",
                             LastName = "Aydın4",
@@ -614,8 +889,8 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2630),
-                            Email = "ays@ayd.com",
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6660),
+                            Email = "ays3@ayd.com",
                             Enabled = true,
                             FirstName = "Ayşenur5",
                             LastName = "Aydın5",
@@ -625,8 +900,8 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2640),
-                            Email = "ays@ayd.com",
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6660),
+                            Email = "ays4@ayd.com",
                             Enabled = true,
                             FirstName = "Ayşenur6",
                             LastName = "Aydın6",
@@ -636,8 +911,8 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2640),
-                            Email = "ays@ayd.com",
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6660),
+                            Email = "ays5@ayd.com",
                             Enabled = true,
                             FirstName = "Ayşenur7",
                             LastName = "Aydın7",
@@ -647,8 +922,52 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 6,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2640),
-                            Email = "ays@ayd.com",
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6670),
+                            Email = "ays6@ayd.com",
+                            Enabled = true,
+                            FirstName = "Ayşenur4",
+                            LastName = "Aydın4",
+                            Password = "123456",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6670),
+                            Email = "ays7@ayd.com",
+                            Enabled = true,
+                            FirstName = "Ayşenur5",
+                            LastName = "Aydın5",
+                            Password = "123456",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6670),
+                            Email = "ays8@ayd.com",
+                            Enabled = true,
+                            FirstName = "Ayşenur6",
+                            LastName = "Aydın6",
+                            Password = "123456",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6670),
+                            Email = "ays9@ayd.com",
+                            Enabled = true,
+                            FirstName = "Ayşenur7",
+                            LastName = "Aydın7",
+                            Password = "123456",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6670),
+                            Email = "ays10@ayd.com",
                             Enabled = true,
                             FirstName = "Ayşenur2",
                             LastName = "Aydın2",
@@ -661,57 +980,61 @@ namespace Eticaret.Web.Mvc.Migrations
                 {
                     b.HasBaseType("Eticaret.Domain.User");
 
-                    b.Property<string>("Adress")
-                        .HasMaxLength(250)
-                        .HasColumnType("TEXT");
-
-                    b.Property<long>("CallNumber")
-                        .HasColumnType("INTEGER");
-
                     b.HasDiscriminator().HasValue("Seller");
 
                     b.HasData(
                         new
                         {
-                            Id = 7,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2660),
-                            Email = "ays@ayd.com",
+                            Id = 11,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6700),
+                            Email = "ays11@ayd.com",
                             Enabled = true,
-                            FirstName = "Ayşenur1",
-                            LastName = "Aydın1",
+                            FirstName = "Ayşenur5",
+                            LastName = "Aydın5",
                             Password = "123456",
-                            RoleId = 1,
-                            Adress = "Bursa",
-                            CallNumber = 5552552525L
+                            RoleId = 1
                         },
                         new
                         {
-                            Id = 8,
-                            CreatedAt = new DateTime(2024, 3, 9, 10, 59, 10, 691, DateTimeKind.Local).AddTicks(2660),
-                            Email = "ays@ayd.com",
+                            Id = 12,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6700),
+                            Email = "ays12@ayd.com",
                             Enabled = true,
-                            FirstName = "Ayşenur3",
-                            LastName = "Aydın3",
+                            FirstName = "Ayşenur6",
+                            LastName = "Aydın6",
                             Password = "123456",
-                            RoleId = 1,
-                            Adress = "Bursa",
-                            CallNumber = 5552552525L
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CreatedAt = new DateTime(2024, 3, 18, 7, 25, 3, 827, DateTimeKind.Local).AddTicks(6700),
+                            Email = "ays13@ayd.com",
+                            Enabled = true,
+                            FirstName = "Ayşenur7",
+                            LastName = "Aydın7",
+                            Password = "123456",
+                            RoleId = 1
                         });
                 });
 
             modelBuilder.Entity("Eticaret.Domain.CartItem", b =>
                 {
-                    b.HasOne("Eticaret.Domain.Cart", null)
-                        .WithMany("CartItems")
-                        .HasForeignKey("CartId");
-
                     b.HasOne("Eticaret.Domain.Product", "ProductFk")
                         .WithMany("CartItems")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Eticaret.Domain.User", "UserFk")
+                        .WithMany("CartItems")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("ProductFk");
+
+                    b.Navigation("UserFk");
                 });
 
             modelBuilder.Entity("Eticaret.Domain.Order", b =>
@@ -739,9 +1062,17 @@ namespace Eticaret.Web.Mvc.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Eticaret.Domain.Seller", "SellerFk")
+                        .WithMany("OrderItems")
+                        .HasForeignKey("SellerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("OrderFk");
 
                     b.Navigation("ProductFk");
+
+                    b.Navigation("SellerFk");
                 });
 
             modelBuilder.Entity("Eticaret.Domain.Product", b =>
@@ -790,33 +1121,26 @@ namespace Eticaret.Web.Mvc.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Eticaret.Domain.Seller", null)
+                    b.HasOne("Eticaret.Domain.Seller", "SellerFk")
                         .WithMany("ProductImages")
-                        .HasForeignKey("SellerId");
+                        .HasForeignKey("SellerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ProductFk");
+
+                    b.Navigation("SellerFk");
                 });
 
             modelBuilder.Entity("Eticaret.Domain.User", b =>
                 {
-                    b.HasOne("Eticaret.Domain.Cart", "CartFk")
-                        .WithMany()
-                        .HasForeignKey("CartId");
-
                     b.HasOne("Eticaret.Domain.Role", "RoleFk")
                         .WithMany("Users")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CartFk");
-
                     b.Navigation("RoleFk");
-                });
-
-            modelBuilder.Entity("Eticaret.Domain.Cart", b =>
-                {
-                    b.Navigation("CartItems");
                 });
 
             modelBuilder.Entity("Eticaret.Domain.Category", b =>
@@ -845,6 +1169,8 @@ namespace Eticaret.Web.Mvc.Migrations
 
             modelBuilder.Entity("Eticaret.Domain.User", b =>
                 {
+                    b.Navigation("CartItems");
+
                     b.Navigation("Orders");
 
                     b.Navigation("ProductComments");
@@ -852,6 +1178,8 @@ namespace Eticaret.Web.Mvc.Migrations
 
             modelBuilder.Entity("Eticaret.Domain.Seller", b =>
                 {
+                    b.Navigation("OrderItems");
+
                     b.Navigation("ProductImages");
 
                     b.Navigation("Products");

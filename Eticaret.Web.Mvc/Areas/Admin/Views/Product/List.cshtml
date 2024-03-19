@@ -1,0 +1,111 @@
+﻿@model IEnumerable<Product>
+@{
+    ViewData["Title"] = "List of Products";
+}
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col">
+        @* <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" action="/Admin/Products/Index">
+        <input id="ara" name="search" type="search" class="form-control form-control-dark" placeholder="Ara..."
+        aria-label="Search">
+        </form> *@
+    </div>
+</div>
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Details)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StockAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Enabled)
+            </th>
+            <th>
+                Satıcı
+                @Html.DisplayNameFor(model => model.SellerFk!.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CategoryFk!.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductComments)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderItems)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CartItems)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Details)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StockAmount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedAt)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Enabled)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SellerFk!.Email)
+                </td>
+                <td>
+                    <div class="badge badge-primary" style="background-color:@(item.CategoryFk!.Color);">
+                        @Html.DisplayFor(modelItem => item.CategoryFk!.Name)
+                    </div>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductComments.Count)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OrderItems.Count)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CartItems.Count)
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-@(item.IsConfirmed?"danger":"primary") btn-m" asp-action="Approve"
+                        asp-route-id="@item.Id" style="min-width: 95px !important;">@(item.IsConfirmed
+                    ? "Onayı Kladır" : "Onayla")</a>
+
+                    <a class="btn btn-sm btn-outline-danger btn-m" asp-action="Delete" asp-route-id="@item.Id"
+                        style="min-width: 95px !important;">Sil</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Application.Repositories
 {
@@ -15,6 +17,19 @@ namespace Eticaret.Application.Repositories
 
         IQueryable<T> GetAllInclude(string table);
         IQueryable<T> GetAllInclude(Expression<Func<T, bool>> expression);
+
+
+        Task<IEnumerable<T>> GetAllAsync();
+        Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> expression);
+
+        DbSet<T> GetDb();
+
+        //Task<T> FindAsync(int id);
+        Task AddAsync(T entity);
+        //Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> expression);
+        Task<int> SaveChangesAsync();
+
+
 
     }
 }

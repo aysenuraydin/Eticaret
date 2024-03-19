@@ -5,8 +5,6 @@ VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eticaret.Web.Mvc", "Eticaret.Web.Mvc\Eticaret.Web.Mvc.csproj", "{F9558434-BEBF-489A-8321-1F007DE8C213}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Admin.Web.Mvc", "Admin.Web.Mvc\Admin.Web.Mvc.csproj", "{5816E617-A8DF-45AD-8389-B8A706963B22}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eticaret.Domain", "Eticaret.Domain\Eticaret.Domain.csproj", "{6686EA52-D00B-49DD-ACA6-19F763F9C9A0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eticaret.Persistence.Ef", "Eticaret.Persistence.Ef\Eticaret.Persistence.Ef.csproj", "{A1A71B77-5585-45CB-A785-FFE750FD54A8}"
@@ -23,10 +21,6 @@ Global
 		{F9558434-BEBF-489A-8321-1F007DE8C213}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9558434-BEBF-489A-8321-1F007DE8C213}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9558434-BEBF-489A-8321-1F007DE8C213}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5816E617-A8DF-45AD-8389-B8A706963B22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5816E617-A8DF-45AD-8389-B8A706963B22}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5816E617-A8DF-45AD-8389-B8A706963B22}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5816E617-A8DF-45AD-8389-B8A706963B22}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6686EA52-D00B-49DD-ACA6-19F763F9C9A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6686EA52-D00B-49DD-ACA6-19F763F9C9A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6686EA52-D00B-49DD-ACA6-19F763F9C9A0}.Release|Any CPU.ActiveCfg = Release|Any CPU

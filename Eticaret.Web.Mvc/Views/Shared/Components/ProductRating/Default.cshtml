@@ -1,0 +1,8 @@
+﻿@model int
+
+<span class="wrap-rating fs-25 cl11 pointer py-4 px-2 ml-3">
+  @for (int i = 1; i <= 5; i++)
+  {
+    <i class="item-rating pointer fa-star @(i <= Model ? "fa-solid" : "fa-regular")"></i>
+  }
+</span>

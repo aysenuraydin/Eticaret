@@ -4313,3 +4313,31 @@ ol {
 		padding-right: 15px;
 	}
 }
+.searchBtn{
+	color : #000 !important;
+	border-color : #000 !important;
+	padding: 4px 10px 4px 10px !important;
+}
+.searchBtn i{
+	font-size: 25px;
+}
+.searchBtn:hover{
+	background-color : #6c7ae0 !important;
+	border-color : #6c7ae0 !important;
+	color : #fff !important;
+}
+.btn-m.btn{
+	margin: 3px !important;
+	min-width: 100px !important;
+	max-height: 30px !important;
+}
+  
+
+html {	
+	font-size: 85% !important;
+}
+
+td {	
+	font-size: 85% !important;
+    padding: 5px !important;
+}

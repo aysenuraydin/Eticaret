@@ -742,7 +742,7 @@
 .zmdi-screen-rotation:before {
   content: '\f1be';
 }
-.zmdi-search-for:before {
+/* .zmdi-search-for:before {
   content: '\f1bf';
 }
 .zmdi-search-in-file:before {
@@ -756,7 +756,7 @@
 }
 .zmdi-search:before {
   content: '\f1c3';
-}
+} */
 .zmdi-seat:before {
   content: '\f1c4';
 }

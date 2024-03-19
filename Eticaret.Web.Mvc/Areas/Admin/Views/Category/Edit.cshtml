@@ -1,0 +1,43 @@
+﻿@model Category;
+@{
+    ViewData["Title"] = "Edit Category";
+    Layout = "_AdminLayout";
+}
+<h1>@ViewData["Title"]</h1>
+
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" asp-Controller="Category" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="CreatedAt" />
+
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Color" class="control-label"></label>
+                <input asp-for="Color" class="form-control" />
+                <span asp-validation-for="Color" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IconCssClass" class="control-label"></label>
+                <input asp-for="IconCssClass" class="form-control" />
+                <span asp-validation-for="IconCssClass" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-group my-3">
+                <input type="submit" value="Kaydet" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" asp-Controller="Home">Listeye Dön</a>
+</div>
