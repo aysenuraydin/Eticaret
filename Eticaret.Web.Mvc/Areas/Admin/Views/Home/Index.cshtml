@@ -51,7 +51,9 @@
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Color)
+                    <div class="badge badge-primary bg" style="background-color:@(item.Color);">
+                        @Html.DisplayFor(modelItem => item.Color)
+                    </div>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.IconCssClass)
@@ -72,3 +74,13 @@
         }
     </tbody>
 </table>
+
+
+@section Styles {
+    <style>
+        .badge.badge-primary.bg {
+            font-size: 12px !important;
+            min-width: 53px !important;
+        }
+    </style>
+}

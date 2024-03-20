@@ -29,8 +29,9 @@ namespace Eticaret.Web.Mvc.Controllers
         {
             var produsts = _productService.GetDb()
                                             .Where(p => p.IsConfirmed && p.Enabled)
+                                            .Include(p => p.ProductImages)
                                             .OrderByDescending(p => p.CreatedAt)
-                                            .Take(12);
+                                            .ToList();
             return View(produsts);
         }
         public IActionResult AboutUs()
@@ -45,6 +46,7 @@ namespace Eticaret.Web.Mvc.Controllers
         {
             var productList = _productService.GetDb()
                                                 .Where(p => p.IsConfirmed && p.Enabled)
+                                                .Include(p => p.ProductImages)
                                                 .OrderByDescending(p => p.CreatedAt)
                                                 .ToList();
 
@@ -69,6 +71,7 @@ namespace Eticaret.Web.Mvc.Controllers
             var product = _productService.GetDb()
                                 .Include(i => i.ProductComments)
                                 .ThenInclude(i => i.UserFk)
+                                .Include(p => p.ProductImages)
                                 .FirstOrDefault(p => p.Id == id);
             return View(product);
         }

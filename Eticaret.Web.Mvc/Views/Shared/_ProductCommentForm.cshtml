@@ -4,7 +4,7 @@
     var canComment = User.Identity?.IsAuthenticated ?? false ? "" : "disabled";
 }
 <form asp-action="Comment" asp-controller="Product" enctype="multipart/form-data" method="post" id="commentForm">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div asp-validation-summary="All" class="text-danger"></div>
     <input type="hidden" id="ProductId" name="ProductId" value="@Model" />
     <div class="flex-w flex-m p-t-50 p-b-23" id="ProductId" name="ProductId">
         <span class="stext-102 cl3 m-r-16">

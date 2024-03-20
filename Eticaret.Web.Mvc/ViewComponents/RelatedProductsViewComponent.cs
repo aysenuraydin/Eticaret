@@ -20,10 +20,10 @@ namespace ticaret.Web.Mvc.ViewComponents
         public async Task<IViewComponentResult> InvokeAsync()
         {
             var p = await _repository.GetAllAsync();
-            var product = p.Where(p => p.IsConfirmed && p.Enabled).OrderByDescending(p => p.CreatedAt).ToList();
-            int c = product.Count() / 4;
+            var product = p.Where(p => p.IsConfirmed && p.Enabled)
+                                .OrderByDescending(p => p.CreatedAt);
             //search den al
-            return View(product.Take(4 * c).ToList());
+            return View(product);
         }
     }
 

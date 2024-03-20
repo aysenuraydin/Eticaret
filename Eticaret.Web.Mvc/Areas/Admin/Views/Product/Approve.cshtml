@@ -2,137 +2,169 @@
 @{
     ViewData["Title"] = "Products Approve";
 }
-<h1>@ViewData["Title"]</h1>
-<hr>
 
+<div class="row">
+    <div class="col-4">
+        @if (!Model.ProductImages.Any())
+        {
+            <img src="https://via.placeholder.com/300x300" alt="Ürun resmi">
+        }
+        else
+        {
+            <div class="p-l-25 p-r-30 p-lr-0-lg">
+                <div class="wrap-slick3 flex-sb flex-w">
+                    <div class="wrap-slick3-dots"></div>
+                    <div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
 
-<h3>Kullanıcı Onaylasın Mı?</h3>
-<div>
-    <h4>Onaylanacak Kullacı Bilgileri</h4>
-    <hr />
+                    <div class="slick3 gallery-lb">
+                        @if (Model.ProductImages != null && Model.ProductImages.Any())
+                        {
+                            @foreach (var img in Model.ProductImages)
+                            {
+                                <div class="item-slick3" data-thumb="/assets/img/@img.Url">
+                                    <div class="wrap-pic-w pos-relative">
+                                        <img src="/assets/img/@img.Url">
 
-    <dl class="row">
-        <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dt class="col-sm-9">
-            @Html.DisplayFor(model => model.Id)
-        </dt>
-    </dl>
-    <dl class="row">
-        <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dt class="col-sm-9">
-            @Html.DisplayFor(model => model.Name)
-        </dt>
-    </dl>
-    <dl class="row">
-        <dd class="col-sm-3">
-            @Html.DisplayNameFor(model => model.Price)
-        </dd>
-        <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.Details)
-        </dt>
-        <dt class="col-sm-9">
-            @Html.DisplayFor(model => model.Details)
-        </dt>
-    </dl>
-    <dl class="row">
-        <dd class="col-sm-3">
-            @Html.DisplayNameFor(model => model.StockAmount)
-        </dd>
-        <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.StockAmount)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dd class="col-sm-3">
-            @Html.DisplayNameFor(model => model.CreatedAt)
-        </dd>
-        <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.CreatedAt)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.Enabled)
-        </dt>
-        <dt class="col-sm-9">
-            @Html.DisplayFor(model => model.Enabled)
-        </dt>
-    </dl>
-    <dl class="row">
-        <dt class="col-sm-3">
-            Satıcı
-            @Html.DisplayNameFor(model => model.SellerFk!.Email)
-        </dt>
-        <dt class="col-sm-9">
-            @Html.DisplayFor(model => model.SellerFk!.Email)
-        </dt>
-    </dl>
-    <dl class="row">
-        <dd class="col-sm-3">
-            @Html.DisplayNameFor(model => model.CategoryFk!.Name)
-        </dd>
-        <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.CategoryFk!.Name)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dd class="col-sm-3">
-            @Html.DisplayNameFor(model => model.ProductComments)
-        </dd>
-        <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.ProductComments.Count)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dd class="col-sm-3">
-            @Html.DisplayNameFor(model => model.OrderItems)
-        </dd>
-        <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.OrderItems.Count)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dd class="col-sm-3">
-            @Html.DisplayNameFor(model => model.CartItems)
-        </dd>
-        <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.CartItems.Count)
-        </dd>
-    </dl>
-
-
-    <form asp-action="Approve">
-        @Html.AntiForgeryToken()
-        <input type="hidden" asp-for="Id" />
-        <input type="hidden" asp-for="Name" />
-        <input type="hidden" asp-for="Price" />
-        <input type="hidden" asp-for="Details" />
-        <input type="hidden" asp-for="StockAmount" />
-        <input type="hidden" asp-for="Enabled" />
-        <input type="hidden" asp-for="CreatedAt" />
-        <input type="hidden" asp-for="SellerId" />
-        <input type="hidden" asp-for="CategoryId" />
-        <div class="form-group">
-            <div class="row">
-                <div class="col-sm-3">
-                    <label asp-for="IsConfirmed" class="control-label"></label>
+                                        <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
+                                            href="/assets/img/@img.Url">
+                                            <i class="fa fa-expand"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
                 </div>
-                <div class="col-sm-9">
-                    <input asp-for=" IsConfirmed" class="form-control" style="Width:20px !important;" />
-                </div>
-                <span asp-validation-for="IsConfirmed" class="text-danger"></span>
             </div>
-        </div>
-        <input type="submit" value="Kaydet" class="btn btn-primary" />
-    </form>
-    <a asp-action="Index">Listeye Dön</a>
+        }
+    </div>
+    <div class="col-8">
+        <h4>Onaylanacak Kullacı Bilgileri</h4>
+        <hr />
+
+        <dl class="row">
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Id)
+            </dt>
+            <dt class="col-sm-9">
+                @Html.DisplayFor(model => model.Id)
+            </dt>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dt class="col-sm-9">
+                @Html.DisplayFor(model => model.Name)
+            </dt>
+        </dl>
+        <dl class="row">
+            <dd class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Price)
+            </dd>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Price)
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Details)
+            </dt>
+            <dt class="col-sm-9">
+                @Html.DisplayFor(model => model.Details)
+            </dt>
+        </dl>
+        <dl class="row">
+            <dd class="col-sm-3">
+                @Html.DisplayNameFor(model => model.StockAmount)
+            </dd>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.StockAmount)
+            </dd>
+        </dl>
+        <dl class="row">
+            <dd class="col-sm-3">
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </dd>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.CreatedAt)
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Enabled)
+            </dt>
+            <dt class="col-sm-9">
+                @Html.DisplayFor(model => model.Enabled)
+            </dt>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-3">
+                Satıcı
+                @Html.DisplayNameFor(model => model.SellerFk!.Email)
+            </dt>
+            <dt class="col-sm-9">
+                @Html.DisplayFor(model => model.SellerFk!.Email)
+            </dt>
+        </dl>
+        <dl class="row">
+            <dd class="col-sm-3">
+                @Html.DisplayNameFor(model => model.CategoryFk!.Name)
+            </dd>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.CategoryFk!.Name)
+            </dd>
+        </dl>
+        <dl class="row">
+            <dd class="col-sm-3">
+                @Html.DisplayNameFor(model => model.ProductComments)
+            </dd>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.ProductComments.Count)
+            </dd>
+        </dl>
+        <dl class="row">
+            <dd class="col-sm-3">
+                @Html.DisplayNameFor(model => model.OrderItems)
+            </dd>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.OrderItems.Count)
+            </dd>
+        </dl>
+        <dl class="row">
+            <dd class="col-sm-3">
+                @Html.DisplayNameFor(model => model.CartItems)
+            </dd>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.CartItems.Count)
+            </dd>
+        </dl>
+
+
+        <form asp-action="Approve">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Name" />
+            <input type="hidden" asp-for="Price" />
+            <input type="hidden" asp-for="Details" />
+            <input type="hidden" asp-for="StockAmount" />
+            <input type="hidden" asp-for="Enabled" />
+            <input type="hidden" asp-for="CreatedAt" />
+            <input type="hidden" asp-for="SellerId" />
+            <input type="hidden" asp-for="CategoryId" />
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <label asp-for="IsConfirmed" class="control-label"></label>
+                    </div>
+                    <div class="col-sm-9">
+                        <input asp-for=" IsConfirmed" class="form-control" style="Width:20px !important;" />
+                    </div>
+                    <span asp-validation-for="IsConfirmed" class="text-danger"></span>
+                </div>
+            </div>
+            <input type="submit" value="Kaydet" class="btn btn-primary" />
+        </form>
+        <a asp-action="List">Listeye Dön</a>
+    </div>
 </div>

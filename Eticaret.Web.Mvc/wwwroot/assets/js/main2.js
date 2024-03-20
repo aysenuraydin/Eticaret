@@ -240,4 +240,34 @@
 		$button.parent().find('input').val(newVal);
 	});
 
+
+
+
+
+
+// const ProductImages = document.getElementById('ProductImages');
+// const imagePreview2 = document.getElementById('imagePreview2');
+
+// ProductImages.addEventListener('change', function (event) {
+//     const files = event.target.files;
+//     if (files) {
+//         Array.from(files).forEach(file => {
+//             const reader = new FileReader();
+//             reader.onload = function (e) {
+//                 const parentDiv = document.createElement('div');
+//                 parentDiv.classList.add('item-slick3');
+//                 parentDiv.setAttribute('data-thumb', e.target.result);
+
+//                 const img = document.createElement('img');
+//                 img.src = e.target.result;
+//                 img.alt = 'Product Image';
+
+//                 parentDiv.appendChild(img);
+//                 imagePreview2.appendChild(parentDiv);
+//             }
+//             reader.readAsDataURL(file);
+//         });
+//     }
+// });
+
 })(jQuery);

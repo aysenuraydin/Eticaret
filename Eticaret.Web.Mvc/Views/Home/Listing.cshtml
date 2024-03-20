@@ -4,8 +4,8 @@
 }
 
 <!-- Product -->
-<div class="container mt-5 pt-3">
-	<div class="row">
+<div class="container mt-5 pt-5">
+	<div class="row pt-3">
 		<div class="col-3">
 			<!-- Sidebar -->
 			<div class="sidebar">
@@ -95,7 +95,7 @@
 					{
 						@foreach (var item in Model.ProductList!)
 						{
-							<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+							<div class="col-sm-6 col-lg-4 p-b-35 isotope-item women">
 								<!-- Block2 -->
 								@await Html.PartialAsync("_ProductListItem", item)
 
@@ -142,4 +142,3 @@
 	</div>
 </div>
 @await Component.InvokeAsync("RelatedProducts")
-@* @await Html.PartialAsync("_QuickViewModal") *@

@@ -72,10 +72,6 @@ namespace Eticaret.Persistence.Ef.SeedDatas
            new Product { Id=19, Name="Product 19", Price=10, Details="ürün açıklama", StockAmount=10, SellerId=12, Enabled=false, IsConfirmed= true, CategoryId=10}
         }
      );
-      modelBuilder.Entity<ProductImage>().HasData(
-     new ProductImage { Id = 1, Url = "https://example.com/image1.jpg", ProductId = 1, SellerId = 11 },
-     new ProductImage { Id = 2, Url = "https://example.com/image2.jpg", ProductId = 2, SellerId = 11 }
- );
 
       modelBuilder.Entity<ProductComment>().HasData(
           new ProductComment { Id = 1, Text = "Great product!", StarCount = 5, UserId = 1, ProductId = 1, IsConfirmed = true },
@@ -95,6 +91,84 @@ namespace Eticaret.Persistence.Ef.SeedDatas
           new ProductComment { Id = 15, Text = "Nice product!", StarCount = 4, UserId = 2, ProductId = 15, IsConfirmed = true }
       );
 
+      modelBuilder.Entity<ProductImage>().HasData(
+          new ProductImage { Id = 1, Url = "/product-01.jpg", ProductId = 1, SellerId = 11 },
+          new ProductImage { Id = 2, Url = "/product-01.jpg", ProductId = 1, SellerId = 11 },
+          new ProductImage { Id = 3, Url = "/product-01.jpg", ProductId = 1, SellerId = 11 },
+
+          new ProductImage { Id = 4, Url = "/product-02.jpg", ProductId = 2, SellerId = 11 },
+          new ProductImage { Id = 5, Url = "/product-02.jpg", ProductId = 2, SellerId = 11 },
+          new ProductImage { Id = 6, Url = "/product-02.jpg", ProductId = 2, SellerId = 11 },
+
+          new ProductImage { Id = 7, Url = "/product-03.jpg", ProductId = 3, SellerId = 11 },
+          new ProductImage { Id = 8, Url = "/product-03.jpg", ProductId = 3, SellerId = 11 },
+          new ProductImage { Id = 9, Url = "/product-03.jpg", ProductId = 3, SellerId = 11 },
+
+          new ProductImage { Id = 10, Url = "product-04.jpg", ProductId = 4, SellerId = 11 },
+          new ProductImage { Id = 11, Url = "product-04.jpg", ProductId = 4, SellerId = 11 },
+          new ProductImage { Id = 12, Url = "product-04.jpg", ProductId = 4, SellerId = 11 },
+
+          new ProductImage { Id = 13, Url = "product-05.jpg", ProductId = 5, SellerId = 11 },
+          new ProductImage { Id = 14, Url = "product-05.jpg", ProductId = 5, SellerId = 11 },
+          new ProductImage { Id = 15, Url = "product-05.jpg", ProductId = 5, SellerId = 11 },
+
+          new ProductImage { Id = 16, Url = "product-06.jpg", ProductId = 6, SellerId = 11 },
+          new ProductImage { Id = 17, Url = "product-06.jpg", ProductId = 6, SellerId = 11 },
+          new ProductImage { Id = 18, Url = "product-06.jpg", ProductId = 6, SellerId = 11 },
+
+          new ProductImage { Id = 19, Url = "product-07.jpg", ProductId = 7, SellerId = 12 },
+          new ProductImage { Id = 20, Url = "product-07.jpg", ProductId = 7, SellerId = 12 },
+          new ProductImage { Id = 21, Url = "product-07.jpg", ProductId = 7, SellerId = 12 },
+
+          new ProductImage { Id = 22, Url = "product-08.jpg", ProductId = 8, SellerId = 12 },
+          new ProductImage { Id = 23, Url = "product-08.jpg", ProductId = 8, SellerId = 12 },
+          new ProductImage { Id = 24, Url = "product-08.jpg", ProductId = 8, SellerId = 12 },
+
+          new ProductImage { Id = 25, Url = "product-09.jpg", ProductId = 9, SellerId = 12 },
+          new ProductImage { Id = 26, Url = "product-09.jpg", ProductId = 9, SellerId = 12 },
+          new ProductImage { Id = 27, Url = "product-09.jpg", ProductId = 9, SellerId = 12 },
+
+          new ProductImage { Id = 28, Url = "product-10.jpg", ProductId = 10, SellerId = 12 },
+          new ProductImage { Id = 29, Url = "product-10.jpg", ProductId = 10, SellerId = 12 },
+          new ProductImage { Id = 30, Url = "product-10.jpg", ProductId = 10, SellerId = 12 },
+
+          new ProductImage { Id = 31, Url = "product-11.jpg", ProductId = 11, SellerId = 12 },
+          new ProductImage { Id = 32, Url = "product-11.jpg", ProductId = 11, SellerId = 12 },
+          new ProductImage { Id = 33, Url = "product-11.jpg", ProductId = 11, SellerId = 12 },
+
+          new ProductImage { Id = 34, Url = "product-12.jpg", ProductId = 12, SellerId = 12 },
+          new ProductImage { Id = 35, Url = "product-12.jpg", ProductId = 12, SellerId = 12 },
+          new ProductImage { Id = 36, Url = "product-12.jpg", ProductId = 12, SellerId = 12 },
+
+          new ProductImage { Id = 37, Url = "product-13.jpg", ProductId = 13, SellerId = 13 },
+          new ProductImage { Id = 38, Url = "product-13.jpg", ProductId = 13, SellerId = 13 },
+          new ProductImage { Id = 39, Url = "product-13.jpg", ProductId = 13, SellerId = 13 },
+
+          new ProductImage { Id = 40, Url = "product-14.jpg", ProductId = 14, SellerId = 13 },
+          new ProductImage { Id = 41, Url = "product-14.jpg", ProductId = 14, SellerId = 13 },
+          new ProductImage { Id = 42, Url = "product-14.jpg", ProductId = 14, SellerId = 13 },
+
+          new ProductImage { Id = 43, Url = "product-15.jpg", ProductId = 15, SellerId = 13 },
+          new ProductImage { Id = 44, Url = "product-15.jpg", ProductId = 15, SellerId = 13 },
+          new ProductImage { Id = 45, Url = "product-15.jpg", ProductId = 15, SellerId = 13 },
+
+          new ProductImage { Id = 46, Url = "product-16.jpg", ProductId = 16, SellerId = 13 },
+          new ProductImage { Id = 47, Url = "product-16.jpg", ProductId = 16, SellerId = 13 },
+          new ProductImage { Id = 48, Url = "product-16.jpg", ProductId = 16, SellerId = 13 },
+
+          new ProductImage { Id = 49, Url = "product-17.jpg", ProductId = 17, SellerId = 13 },
+          new ProductImage { Id = 50, Url = "product-17.jpg", ProductId = 17, SellerId = 13 },
+          new ProductImage { Id = 51, Url = "product-17.jpg", ProductId = 17, SellerId = 13 },
+
+          new ProductImage { Id = 52, Url = "product-18.jpg", ProductId = 18, SellerId = 13 },
+          new ProductImage { Id = 53, Url = "product-18.jpg", ProductId = 18, SellerId = 13 },
+          new ProductImage { Id = 54, Url = "product-18.jpg", ProductId = 18, SellerId = 13 },
+
+          new ProductImage { Id = 55, Url = "product-19.jpg", ProductId = 19, SellerId = 13 },
+          new ProductImage { Id = 56, Url = "product-19.jpg", ProductId = 19, SellerId = 13 },
+          new ProductImage { Id = 57, Url = "product-19.jpg", ProductId = 19, SellerId = 13 }
+
+      );
       modelBuilder.Entity<Order>().HasData(
           new Order { Id = 1, OrderCode = "ORD001", Address = "456 Elm St", UserId = 9 },
           new Order { Id = 2, OrderCode = "ORD002", Address = "789 Oak St", UserId = 10 }

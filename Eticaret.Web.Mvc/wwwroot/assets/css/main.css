@@ -3262,6 +3262,19 @@ a:hover{
   color:rgb(0, 0, 0) !important;
 }
 
+.image-container img{
+  width:20rem !important; 
+  height: 25rem !important; 
+  object-fit: cover !important;
+}
+.image-size{
+  width:8rem !important; 
+  height: 10rem !important; 
+  object-fit: cover !important;
+  margin: 2rem cover !important;
+  padding: 2rem cover !important;
+}
+
 
 
 

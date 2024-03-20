@@ -18,6 +18,7 @@ namespace Eticaret.Application
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IOrderItemRepository, OrderItemRepository>();
             services.AddScoped<IProductCommentRepository, ProductCommentRepository>();
+            services.AddScoped<IProductImageRepository, ProductImageRepository>();
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
 
             return services;

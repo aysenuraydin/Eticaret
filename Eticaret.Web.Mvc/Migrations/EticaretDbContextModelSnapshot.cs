@@ -47,7 +47,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4260),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1950),
                             ProductId = 1,
                             Quantity = (byte)1,
                             UserId = 1
@@ -55,7 +55,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4270),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1950),
                             ProductId = 3,
                             Quantity = (byte)1,
                             UserId = 2
@@ -63,7 +63,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4270),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1950),
                             ProductId = 2,
                             Quantity = (byte)3,
                             UserId = 3
@@ -71,7 +71,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4270),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1960),
                             ProductId = 4,
                             Quantity = (byte)1,
                             UserId = 4
@@ -79,7 +79,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4270),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1960),
                             ProductId = 5,
                             Quantity = (byte)1,
                             UserId = 5
@@ -87,7 +87,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 6,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4270),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1960),
                             ProductId = 6,
                             Quantity = (byte)3,
                             UserId = 6
@@ -95,7 +95,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 7,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4280),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1960),
                             ProductId = 7,
                             Quantity = (byte)1,
                             UserId = 7
@@ -103,7 +103,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 8,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4280),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1960),
                             ProductId = 8,
                             Quantity = (byte)1,
                             UserId = 8
@@ -111,7 +111,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 9,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4280),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1960),
                             ProductId = 9,
                             Quantity = (byte)3,
                             UserId = 9
@@ -119,7 +119,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 10,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4280),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1960),
                             ProductId = 3,
                             Quantity = (byte)1,
                             UserId = 10
@@ -127,7 +127,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 11,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4280),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1970),
                             ProductId = 4,
                             Quantity = (byte)1,
                             UserId = 7
@@ -135,7 +135,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 12,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4280),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1970),
                             ProductId = 8,
                             Quantity = (byte)3,
                             UserId = 2
@@ -143,7 +143,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 13,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4280),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1970),
                             ProductId = 2,
                             Quantity = (byte)1,
                             UserId = 1
@@ -151,7 +151,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 14,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4290),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1970),
                             ProductId = 1,
                             Quantity = (byte)1,
                             UserId = 3
@@ -159,7 +159,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 15,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4290),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1970),
                             ProductId = 3,
                             Quantity = (byte)3,
                             UserId = 4
@@ -167,7 +167,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 16,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4290),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1970),
                             ProductId = 2,
                             Quantity = (byte)3,
                             UserId = 7
@@ -206,70 +206,70 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 1,
                             Color = "pink",
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3950),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1340),
                             Name = "dress"
                         },
                         new
                         {
                             Id = 2,
                             Color = "red",
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3960),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1340),
                             Name = "jean"
                         },
                         new
                         {
                             Id = 3,
                             Color = "blue",
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3960),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1350),
                             Name = "Sweatshirt"
                         },
                         new
                         {
                             Id = 4,
                             Color = "yellow",
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3960),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1350),
                             Name = "Sweatpants"
                         },
                         new
                         {
                             Id = 5,
                             Color = "black",
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3960),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1350),
                             Name = "Jumper"
                         },
                         new
                         {
                             Id = 6,
                             Color = "white",
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3960),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1350),
                             Name = "Cardigan"
                         },
                         new
                         {
                             Id = 7,
                             Color = "gray",
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3960),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1350),
                             Name = "Outerwear"
                         },
                         new
                         {
                             Id = 8,
                             Color = "darkred",
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3960),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1350),
                             Name = "Trousers"
                         },
                         new
                         {
                             Id = 9,
                             Color = "blue",
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3970),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1360),
                             Name = "Shirt"
                         },
                         new
                         {
                             Id = 10,
                             Color = "white",
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3970),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1360),
                             Name = "T-shirt"
                         });
                 });
@@ -306,7 +306,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 1,
                             Address = "456 Elm St",
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4220),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1900),
                             OrderCode = "ORD001",
                             UserId = 9
                         },
@@ -314,7 +314,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 2,
                             Address = "789 Oak St",
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4230),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1910),
                             OrderCode = "ORD002",
                             UserId = 10
                         });
@@ -358,7 +358,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4240),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1930),
                             OrderId = 1,
                             ProductId = 1,
                             Quantity = (byte)2,
@@ -368,7 +368,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4250),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1930),
                             OrderId = 2,
                             ProductId = 2,
                             Quantity = (byte)1,
@@ -427,7 +427,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 1,
                             CategoryId = 1,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3990),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1420),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -440,7 +440,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 2,
                             CategoryId = 2,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4000),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1430),
                             Details = "ürün açıklama",
                             Enabled = false,
                             IsConfirmed = true,
@@ -453,7 +453,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 3,
                             CategoryId = 3,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4000),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1430),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -466,7 +466,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 4,
                             CategoryId = 4,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4000),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1440),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -479,7 +479,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 5,
                             CategoryId = 5,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4030),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1440),
                             Details = "ürün açıklama",
                             Enabled = false,
                             IsConfirmed = true,
@@ -492,7 +492,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 6,
                             CategoryId = 6,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4030),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1440),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -505,7 +505,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 7,
                             CategoryId = 7,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4040),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1440),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -518,7 +518,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 8,
                             CategoryId = 8,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4040),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1450),
                             Details = "ürün açıklama",
                             Enabled = false,
                             IsConfirmed = true,
@@ -531,7 +531,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 9,
                             CategoryId = 9,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4040),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1450),
                             Details = "ürün açıklama",
                             Enabled = false,
                             IsConfirmed = true,
@@ -544,7 +544,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 10,
                             CategoryId = 10,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4040),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1450),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -557,7 +557,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 11,
                             CategoryId = 2,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4040),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1450),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -570,7 +570,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 12,
                             CategoryId = 4,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4050),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1460),
                             Details = "ürün açıklama",
                             Enabled = false,
                             IsConfirmed = true,
@@ -583,7 +583,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 13,
                             CategoryId = 6,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4050),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1460),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -596,7 +596,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 14,
                             CategoryId = 8,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4050),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1460),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -609,7 +609,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 15,
                             CategoryId = 10,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4050),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1460),
                             Details = "ürün açıklama",
                             Enabled = false,
                             IsConfirmed = true,
@@ -622,7 +622,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 16,
                             CategoryId = 4,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4060),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1470),
                             Details = "ürün açıklama",
                             Enabled = false,
                             IsConfirmed = true,
@@ -635,7 +635,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 17,
                             CategoryId = 6,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4060),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1470),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -648,7 +648,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 18,
                             CategoryId = 8,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4060),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1470),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -661,7 +661,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         {
                             Id = 19,
                             CategoryId = 10,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4060),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1480),
                             Details = "ürün açıklama",
                             Enabled = false,
                             IsConfirmed = true,
@@ -710,7 +710,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4120),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1500),
                             IsConfirmed = true,
                             ProductId = 1,
                             StarCount = (byte)5,
@@ -720,7 +720,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4130),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1500),
                             IsConfirmed = true,
                             ProductId = 2,
                             StarCount = (byte)5,
@@ -730,7 +730,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4130),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1510),
                             IsConfirmed = true,
                             ProductId = 3,
                             StarCount = (byte)3,
@@ -740,7 +740,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4130),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1510),
                             IsConfirmed = true,
                             ProductId = 4,
                             StarCount = (byte)5,
@@ -750,7 +750,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4130),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1510),
                             IsConfirmed = true,
                             ProductId = 5,
                             StarCount = (byte)5,
@@ -760,7 +760,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 6,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4130),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1510),
                             IsConfirmed = true,
                             ProductId = 6,
                             StarCount = (byte)1,
@@ -770,7 +770,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 7,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4140),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1510),
                             IsConfirmed = true,
                             ProductId = 7,
                             StarCount = (byte)5,
@@ -780,7 +780,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 8,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4140),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1510),
                             IsConfirmed = true,
                             ProductId = 8,
                             StarCount = (byte)5,
@@ -790,7 +790,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 9,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4140),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1520),
                             IsConfirmed = true,
                             ProductId = 9,
                             StarCount = (byte)5,
@@ -800,7 +800,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 10,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4140),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1520),
                             IsConfirmed = true,
                             ProductId = 10,
                             StarCount = (byte)4,
@@ -810,7 +810,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 11,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4140),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1520),
                             IsConfirmed = true,
                             ProductId = 11,
                             StarCount = (byte)5,
@@ -820,7 +820,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 12,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4140),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1520),
                             IsConfirmed = true,
                             ProductId = 12,
                             StarCount = (byte)5,
@@ -830,7 +830,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 13,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4150),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1520),
                             IsConfirmed = true,
                             ProductId = 13,
                             StarCount = (byte)5,
@@ -840,7 +840,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 14,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4150),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1520),
                             IsConfirmed = true,
                             ProductId = 14,
                             StarCount = (byte)5,
@@ -850,7 +850,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 15,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4150),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1530),
                             IsConfirmed = true,
                             ProductId = 15,
                             StarCount = (byte)4,
@@ -891,18 +891,458 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4100),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1600),
                             ProductId = 1,
                             SellerId = 11,
-                            Url = "https://example.com/image1.jpg"
+                            Url = "/product-01.jpg"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(4110),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1610),
+                            ProductId = 1,
+                            SellerId = 11,
+                            Url = "/product-01.jpg"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1610),
+                            ProductId = 1,
+                            SellerId = 11,
+                            Url = "/product-01.jpg"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1620),
                             ProductId = 2,
                             SellerId = 11,
-                            Url = "https://example.com/image2.jpg"
+                            Url = "/product-02.jpg"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1620),
+                            ProductId = 2,
+                            SellerId = 11,
+                            Url = "/product-02.jpg"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1620),
+                            ProductId = 2,
+                            SellerId = 11,
+                            Url = "/product-02.jpg"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1630),
+                            ProductId = 3,
+                            SellerId = 11,
+                            Url = "/product-03.jpg"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1630),
+                            ProductId = 3,
+                            SellerId = 11,
+                            Url = "/product-03.jpg"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1640),
+                            ProductId = 3,
+                            SellerId = 11,
+                            Url = "/product-03.jpg"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1640),
+                            ProductId = 4,
+                            SellerId = 11,
+                            Url = "product-04.jpg"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1640),
+                            ProductId = 4,
+                            SellerId = 11,
+                            Url = "product-04.jpg"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1650),
+                            ProductId = 4,
+                            SellerId = 11,
+                            Url = "product-04.jpg"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1650),
+                            ProductId = 5,
+                            SellerId = 11,
+                            Url = "product-05.jpg"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1650),
+                            ProductId = 5,
+                            SellerId = 11,
+                            Url = "product-05.jpg"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1660),
+                            ProductId = 5,
+                            SellerId = 11,
+                            Url = "product-05.jpg"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1660),
+                            ProductId = 6,
+                            SellerId = 11,
+                            Url = "product-06.jpg"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1670),
+                            ProductId = 6,
+                            SellerId = 11,
+                            Url = "product-06.jpg"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1670),
+                            ProductId = 6,
+                            SellerId = 11,
+                            Url = "product-06.jpg"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1680),
+                            ProductId = 7,
+                            SellerId = 12,
+                            Url = "product-07.jpg"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1680),
+                            ProductId = 7,
+                            SellerId = 12,
+                            Url = "product-07.jpg"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1680),
+                            ProductId = 7,
+                            SellerId = 12,
+                            Url = "product-07.jpg"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1690),
+                            ProductId = 8,
+                            SellerId = 12,
+                            Url = "product-08.jpg"
+                        },
+                        new
+                        {
+                            Id = 23,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1690),
+                            ProductId = 8,
+                            SellerId = 12,
+                            Url = "product-08.jpg"
+                        },
+                        new
+                        {
+                            Id = 24,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1690),
+                            ProductId = 8,
+                            SellerId = 12,
+                            Url = "product-08.jpg"
+                        },
+                        new
+                        {
+                            Id = 25,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1700),
+                            ProductId = 9,
+                            SellerId = 12,
+                            Url = "product-09.jpg"
+                        },
+                        new
+                        {
+                            Id = 26,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1700),
+                            ProductId = 9,
+                            SellerId = 12,
+                            Url = "product-09.jpg"
+                        },
+                        new
+                        {
+                            Id = 27,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1710),
+                            ProductId = 9,
+                            SellerId = 12,
+                            Url = "product-09.jpg"
+                        },
+                        new
+                        {
+                            Id = 28,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1710),
+                            ProductId = 10,
+                            SellerId = 12,
+                            Url = "product-10.jpg"
+                        },
+                        new
+                        {
+                            Id = 29,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1710),
+                            ProductId = 10,
+                            SellerId = 12,
+                            Url = "product-10.jpg"
+                        },
+                        new
+                        {
+                            Id = 30,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1720),
+                            ProductId = 10,
+                            SellerId = 12,
+                            Url = "product-10.jpg"
+                        },
+                        new
+                        {
+                            Id = 31,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1740),
+                            ProductId = 11,
+                            SellerId = 12,
+                            Url = "product-11.jpg"
+                        },
+                        new
+                        {
+                            Id = 32,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1740),
+                            ProductId = 11,
+                            SellerId = 12,
+                            Url = "product-11.jpg"
+                        },
+                        new
+                        {
+                            Id = 33,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1750),
+                            ProductId = 11,
+                            SellerId = 12,
+                            Url = "product-11.jpg"
+                        },
+                        new
+                        {
+                            Id = 34,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1750),
+                            ProductId = 12,
+                            SellerId = 12,
+                            Url = "product-12.jpg"
+                        },
+                        new
+                        {
+                            Id = 35,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1750),
+                            ProductId = 12,
+                            SellerId = 12,
+                            Url = "product-12.jpg"
+                        },
+                        new
+                        {
+                            Id = 36,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1760),
+                            ProductId = 12,
+                            SellerId = 12,
+                            Url = "product-12.jpg"
+                        },
+                        new
+                        {
+                            Id = 37,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1760),
+                            ProductId = 13,
+                            SellerId = 13,
+                            Url = "product-13.jpg"
+                        },
+                        new
+                        {
+                            Id = 38,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1770),
+                            ProductId = 13,
+                            SellerId = 13,
+                            Url = "product-13.jpg"
+                        },
+                        new
+                        {
+                            Id = 39,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1770),
+                            ProductId = 13,
+                            SellerId = 13,
+                            Url = "product-13.jpg"
+                        },
+                        new
+                        {
+                            Id = 40,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1770),
+                            ProductId = 14,
+                            SellerId = 13,
+                            Url = "product-14.jpg"
+                        },
+                        new
+                        {
+                            Id = 41,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1780),
+                            ProductId = 14,
+                            SellerId = 13,
+                            Url = "product-14.jpg"
+                        },
+                        new
+                        {
+                            Id = 42,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1780),
+                            ProductId = 14,
+                            SellerId = 13,
+                            Url = "product-14.jpg"
+                        },
+                        new
+                        {
+                            Id = 43,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1790),
+                            ProductId = 15,
+                            SellerId = 13,
+                            Url = "product-15.jpg"
+                        },
+                        new
+                        {
+                            Id = 44,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1790),
+                            ProductId = 15,
+                            SellerId = 13,
+                            Url = "product-15.jpg"
+                        },
+                        new
+                        {
+                            Id = 45,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1790),
+                            ProductId = 15,
+                            SellerId = 13,
+                            Url = "product-15.jpg"
+                        },
+                        new
+                        {
+                            Id = 46,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1800),
+                            ProductId = 16,
+                            SellerId = 13,
+                            Url = "product-16.jpg"
+                        },
+                        new
+                        {
+                            Id = 47,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1800),
+                            ProductId = 16,
+                            SellerId = 13,
+                            Url = "product-16.jpg"
+                        },
+                        new
+                        {
+                            Id = 48,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1800),
+                            ProductId = 16,
+                            SellerId = 13,
+                            Url = "product-16.jpg"
+                        },
+                        new
+                        {
+                            Id = 49,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1810),
+                            ProductId = 17,
+                            SellerId = 13,
+                            Url = "product-17.jpg"
+                        },
+                        new
+                        {
+                            Id = 50,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1810),
+                            ProductId = 17,
+                            SellerId = 13,
+                            Url = "product-17.jpg"
+                        },
+                        new
+                        {
+                            Id = 51,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1820),
+                            ProductId = 17,
+                            SellerId = 13,
+                            Url = "product-17.jpg"
+                        },
+                        new
+                        {
+                            Id = 52,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1820),
+                            ProductId = 18,
+                            SellerId = 13,
+                            Url = "product-18.jpg"
+                        },
+                        new
+                        {
+                            Id = 53,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1820),
+                            ProductId = 18,
+                            SellerId = 13,
+                            Url = "product-18.jpg"
+                        },
+                        new
+                        {
+                            Id = 54,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1830),
+                            ProductId = 18,
+                            SellerId = 13,
+                            Url = "product-18.jpg"
+                        },
+                        new
+                        {
+                            Id = 55,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1830),
+                            ProductId = 19,
+                            SellerId = 13,
+                            Url = "product-19.jpg"
+                        },
+                        new
+                        {
+                            Id = 56,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1840),
+                            ProductId = 19,
+                            SellerId = 13,
+                            Url = "product-19.jpg"
+                        },
+                        new
+                        {
+                            Id = 57,
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1840),
+                            ProductId = 19,
+                            SellerId = 13,
+                            Url = "product-19.jpg"
                         });
                 });
 
@@ -928,19 +1368,19 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3680),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1120),
                             Name = "seller"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3760),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1150),
                             Name = "buyer"
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3770),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1150),
                             Name = "admin"
                         });
                 });
@@ -997,7 +1437,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3800),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1200),
                             Email = "aysenur@aydin.com",
                             Enabled = true,
                             FirstName = "Admin",
@@ -1008,7 +1448,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3810),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1200),
                             Email = "ays2@ayd.com",
                             Enabled = true,
                             FirstName = "Ayşenur4",
@@ -1019,7 +1459,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3820),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1210),
                             Email = "ays3@ayd.com",
                             Enabled = true,
                             FirstName = "Ayşenur5",
@@ -1030,7 +1470,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3820),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1210),
                             Email = "ays4@ayd.com",
                             Enabled = true,
                             FirstName = "Ayşenur6",
@@ -1041,7 +1481,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3820),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1210),
                             Email = "ays5@ayd.com",
                             Enabled = true,
                             FirstName = "Ayşenur7",
@@ -1052,7 +1492,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 6,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3820),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1210),
                             Email = "ays6@ayd.com",
                             Enabled = true,
                             FirstName = "Ayşenur4",
@@ -1063,7 +1503,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 7,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3830),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1210),
                             Email = "ays7@ayd.com",
                             Enabled = true,
                             FirstName = "Ayşenur5",
@@ -1074,7 +1514,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 8,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3830),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1220),
                             Email = "ays8@ayd.com",
                             Enabled = true,
                             FirstName = "Ayşenur6",
@@ -1085,7 +1525,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 9,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3830),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1220),
                             Email = "ays9@ayd.com",
                             Enabled = true,
                             FirstName = "Ayşenur7",
@@ -1096,7 +1536,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 10,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3830),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1220),
                             Email = "ays10@ayd.com",
                             Enabled = true,
                             FirstName = "Ayşenur2",
@@ -1116,7 +1556,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 11,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3880),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1270),
                             Email = "ays11@ayd.com",
                             Enabled = true,
                             FirstName = "Ayşenur5",
@@ -1127,7 +1567,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 12,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3890),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1280),
                             Email = "ays12@ayd.com",
                             Enabled = true,
                             FirstName = "Ayşenur6",
@@ -1138,7 +1578,7 @@ namespace Eticaret.Web.Mvc.Migrations
                         new
                         {
                             Id = 13,
-                            CreatedAt = new DateTime(2024, 3, 19, 11, 21, 41, 518, DateTimeKind.Local).AddTicks(3890),
+                            CreatedAt = new DateTime(2024, 3, 20, 11, 30, 59, 282, DateTimeKind.Local).AddTicks(1280),
                             Email = "ays13@ayd.com",
                             Enabled = true,
                             FirstName = "Ayşenur7",
@@ -1246,7 +1686,7 @@ namespace Eticaret.Web.Mvc.Migrations
             modelBuilder.Entity("Eticaret.Domain.ProductImage", b =>
                 {
                     b.HasOne("Eticaret.Domain.Product", "ProductFk")
-                        .WithMany()
+                        .WithMany("ProductImages")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1290,6 +1730,8 @@ namespace Eticaret.Web.Mvc.Migrations
                     b.Navigation("OrderItems");
 
                     b.Navigation("ProductComments");
+
+                    b.Navigation("ProductImages");
                 });
 
             modelBuilder.Entity("Eticaret.Domain.Role", b =>
