@@ -52,7 +52,16 @@
                                     @foreach (var order in item.OrderItems)
                                     {
                                         <tr>
-                                            <td>image</td>
+                                            <td>
+                                                @if (!order.ProductFk.ProductImages.Any())
+                                                {
+                                                    <img src="https://via.placeholder.com/100x100" alt="Ürun resmi">
+                                                }
+                                                else
+                                                {
+                                                    <img src="/assets/img/@order.ProductFk.ProductImages[0].Url" width="80px;">
+                                                }
+                                            </td>
                                             <td>
                                                 <a asp-controller="Home" asp-action="ProductDetail" asp-route-id="@order.ProductId">
                                                     @order.ProductFk.Name

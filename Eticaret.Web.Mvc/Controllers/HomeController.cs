@@ -30,6 +30,7 @@ namespace Eticaret.Web.Mvc.Controllers
             var produsts = _productService.GetDb()
                                             .Where(p => p.IsConfirmed && p.Enabled)
                                             .Include(p => p.ProductImages)
+                                            .Where(p => p.StockAmount > 0)
                                             .OrderByDescending(p => p.CreatedAt)
                                             .ToList();
             return View(produsts);
@@ -47,6 +48,7 @@ namespace Eticaret.Web.Mvc.Controllers
             var productList = _productService.GetDb()
                                                 .Where(p => p.IsConfirmed && p.Enabled)
                                                 .Include(p => p.ProductImages)
+                                                .Where(p => p.StockAmount > 0)
                                                 .OrderByDescending(p => p.CreatedAt)
                                                 .ToList();
 
@@ -55,13 +57,18 @@ namespace Eticaret.Web.Mvc.Controllers
 
             if (!string.IsNullOrWhiteSpace(q))
             {
+                TempData["search"] = q;
 
                 productList = productList.Where(s => s.Name!.ToLower().Contains(q.ToLower()))
                                                             .ToList();
             }
+            else
+            {
+                TempData["search"] = "";
+            }
             ProductListViewModel productAndSearch = new();
-            productAndSearch.ProductList = productList.ToList();
-            productAndSearch.Search = q;
+            productAndSearch.ProductList = productList;
+            productAndSearch.Categories = _categoryService.GetAll();
 
             return View(productAndSearch);
         }
@@ -72,6 +79,7 @@ namespace Eticaret.Web.Mvc.Controllers
                                 .Include(i => i.ProductComments)
                                 .ThenInclude(i => i.UserFk)
                                 .Include(p => p.ProductImages)
+                                .Include(p => p.CategoryFk)
                                 .FirstOrDefault(p => p.Id == id);
             return View(product);
         }

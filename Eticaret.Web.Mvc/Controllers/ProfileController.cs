@@ -108,8 +108,10 @@ namespace Eticaret.Web.Mvc.Controllers
                     var order = _orderService.GetDb()
                             .Include(o => o.OrderItems)
                             .ThenInclude(o => o.ProductFk)
+                            .ThenInclude(o => o.ProductImages)
                             .ThenInclude(o => o.SellerFk)
                             .Where(o => o.UserId == Id)
+                            .OrderByDescending(o => o.CreatedAt)
                             .ToList();
 
                     return View(order);

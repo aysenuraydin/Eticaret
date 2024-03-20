@@ -20,12 +20,12 @@
                 <th scope="col">Ürün Sayısı</th>
             </tr>
         </thead>
-        <tbody class="table-group-divider tableCss">
+        <tbody class="table-group-divider">
             <tr>
-                <td>@Model.OrderCode</td>
-                <td>@Model.Address</td>
-                <td>@Model.CreatedAt</td>
-                <td>@Model.OrderItems.Sum(o => o.Quantity)</td>
+                <td class="pdg-3">@Model.OrderCode</td>
+                <td class="pdg-3">@Model.Address</td>
+                <td class="pdg-3">@Model.CreatedAt</td>
+                <td class="pdg-3">@Model.OrderItems.Sum(o => o.Quantity)</td>
             </tr>
         </tbody>
     </table>
@@ -44,7 +44,16 @@
             @foreach (var order in Model.OrderItems)
             {
                 <tr>
-                    <td>image</td>
+                    <td>
+                        @if (!order.ProductFk.ProductImages.Any())
+                        {
+                            <img src="https://via.placeholder.com/100x100" alt="Ürun resmi">
+                        }
+                        else
+                        {
+                            <img src="/assets/img/@order.ProductFk.ProductImages[0].Url" width="80px;">
+                        }
+                    </td>
                     <td>
                         <a asp-controller="Home" asp-action="ProductDetail" asp-route-id="@order.ProductId">
                             @order.ProductFk.Name
@@ -68,17 +77,12 @@
 
 @section Styles {
     <style>
-        .tableCss tr td {
+        .pdg-3 {
             padding: 25px !important;
         }
 
         .table {
             margin-top: 60px !important;
-        }
-
-        .tableCss tr th {
-            padding: 25px !important;
-            ;
         }
 
         .container {

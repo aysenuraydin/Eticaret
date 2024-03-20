@@ -26,13 +26,6 @@
           </div>
 
           <div class="right-top-bar flex-w h-full">
-            <a class="flex-c-m trans-04 p-lr-25" asp-controller="Home" asp-action="AboutUs">
-              Hakkımızda
-            </a>
-            <a class="flex-c-m trans-04 p-lr-25" asp-controller="Home" asp-action="Contact">
-              İletişim
-            </a>
-
             <a class="flex-c-m trans-04 p-lr-25" asp-controller="Profile" asp-action="Details">
               @(User.Identity?.IsAuthenticated ?? false ? @User.Identity?.Name : "Hesabım")
             </a>
@@ -60,7 +53,6 @@
           <div class="menu-desktop" style="">
             <ul class="main-menu">
               @await Component.InvokeAsync("Categories")
-
             </ul>
           </div>
 

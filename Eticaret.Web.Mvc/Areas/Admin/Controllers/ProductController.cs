@@ -83,7 +83,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
             try
             {
                 _productService.Delete(product);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(List));
             }
             catch
             {

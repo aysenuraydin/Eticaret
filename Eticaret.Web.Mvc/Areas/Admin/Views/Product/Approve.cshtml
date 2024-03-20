@@ -112,7 +112,9 @@
                 @Html.DisplayNameFor(model => model.CategoryFk!.Name)
             </dd>
             <dd class="col-sm-9">
-                @Html.DisplayFor(model => model.CategoryFk!.Name)
+                <div class="badge badge-primary" style="background-color:@(Model.CategoryFk!.Color);">
+                    @Html.DisplayFor(model => model.CategoryFk!.Name)
+                </div>
             </dd>
         </dl>
         <dl class="row">

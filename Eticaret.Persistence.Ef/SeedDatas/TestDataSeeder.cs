@@ -37,39 +37,67 @@ namespace Eticaret.Persistence.Ef.SeedDatas
       );
       modelBuilder.Entity<Category>().HasData(
           new List<Category>() {
-           new() { Id=1, Name="dress", Color="pink"},
-           new() { Id=2, Name="jean", Color="red"},
-           new() { Id=3, Name="Sweatshirt", Color="blue"},
-           new() { Id=4, Name="Sweatpants", Color="yellow"},
-           new() { Id=5, Name="Jumper", Color="black"},
-           new() { Id=6, Name="Cardigan", Color="white"},
-           new() { Id=7, Name="Outerwear", Color="gray"},
-           new() { Id=8, Name="Trousers", Color="darkred"},
-           new() { Id=9, Name="Shirt", Color="blue"},
-           new() { Id=10, Name="T-shirt", Color="white"}
+           new() { Id=1, Name="Yelek", Color="	#a4b2b0"},
+           new() { Id=2, Name="Triko", Color="	#896863	"},
+           new() { Id=3, Name="Sweatshirt", Color="#C27D42	"},
+           new() { Id=4, Name="Şort", Color="	#BF8882	"},
+           new() { Id=5, Name="Kazak", Color="	#A4B2B0	"},
+           new() { Id=6, Name="Elbise", Color="#828DE5"},
+           new() { Id=7, Name="Ceket", Color="#595B56	"},
+           new() { Id=8, Name="Pantolon", Color="	#CDC6C3	"},
+           new() { Id=9, Name="Etek", Color="#DEBDB0"},
+           new() { Id=10, Name="Bluz", Color="	#BE969B	"}
           }
       );
       modelBuilder.Entity<Product>().HasData(
         new List<Product>() {
-           new Product { Id=1, Name="Product 1", Price=10, Details="ürün açıklama", StockAmount=10,   SellerId=11, Enabled=true, IsConfirmed= true, CategoryId=1},
-           new Product { Id=2, Name="Product 2", Price=10, Details="ürün açıklama", StockAmount=10,   SellerId=11, Enabled=false, IsConfirmed= true, CategoryId=2},
-           new Product { Id=3, Name="Product 3", Price=10, Details="ürün açıklama", StockAmount=10,   SellerId=11, Enabled=true, IsConfirmed= true, CategoryId=3},
-           new Product { Id=4, Name="Product 4", Price=10, Details="ürün açıklama", StockAmount=10,   SellerId=11, Enabled=true, IsConfirmed= true, CategoryId=4},
-           new Product { Id=5, Name="Product 5", Price=10, Details="ürün açıklama", StockAmount=10,   SellerId=11, Enabled=false, IsConfirmed= true, CategoryId=5},
-           new Product { Id=6, Name="Product 6", Price=10, Details="ürün açıklama", StockAmount=10,   SellerId=11, Enabled=true, IsConfirmed= true, CategoryId=6},
-           new Product { Id=7, Name="Product 7", Price=10, Details="ürün açıklama", StockAmount=10,   SellerId=11, Enabled=true, IsConfirmed= true, CategoryId=7},
-           new Product { Id=8, Name="Product 8", Price=10, Details="ürün açıklama", StockAmount=10,   SellerId=11, Enabled=false, IsConfirmed= true, CategoryId=8},
-           new Product { Id=9, Name="Product 9", Price=10, Details="ürün açıklama", StockAmount=10,   SellerId=12, Enabled=false, IsConfirmed= true, CategoryId=9},
-           new Product { Id=10, Name="Product 10", Price=10, Details="ürün açıklama", StockAmount=10, SellerId=12, Enabled=true, IsConfirmed= true, CategoryId=10},
-           new Product { Id=11, Name="Product 11", Price=10, Details="ürün açıklama", StockAmount=10, SellerId=12, Enabled=true, IsConfirmed= true, CategoryId=2},
-           new Product { Id=12, Name="Product 12", Price=10, Details="ürün açıklama", StockAmount=10, SellerId=12, Enabled=false, IsConfirmed= true, CategoryId=4},
-           new Product { Id=13, Name="Product 13", Price=10, Details="ürün açıklama", StockAmount=10, SellerId=12, Enabled=true, IsConfirmed= true, CategoryId=6},
-           new Product { Id=14, Name="Product 14", Price=10, Details="ürün açıklama", StockAmount=10, SellerId=12, Enabled=true, IsConfirmed= true, CategoryId=8},
-           new Product { Id=15, Name="Product 15", Price=10, Details="ürün açıklama", StockAmount=10, SellerId=13, Enabled=false, IsConfirmed= true, CategoryId=10},
-           new Product { Id=16, Name="Product 16", Price=10, Details="ürün açıklama", StockAmount=10, SellerId=13, Enabled=false, IsConfirmed= true, CategoryId=4},
-           new Product { Id=17, Name="Product 17", Price=10, Details="ürün açıklama", StockAmount=10, SellerId=13, Enabled=true, IsConfirmed= true, CategoryId=6},
-           new Product { Id=18, Name="Product 18", Price=10, Details="ürün açıklama", StockAmount=10, SellerId=12, Enabled=true, IsConfirmed= true, CategoryId=8},
-           new Product { Id=19, Name="Product 19", Price=10, Details="ürün açıklama", StockAmount=10, SellerId=12, Enabled=false, IsConfirmed= true, CategoryId=10}
+           new Product { Id=1, Name="Yelek 1", Price=619, Details="ürün açıklama", StockAmount=10,   SellerId=12, Enabled=true, IsConfirmed= true, CategoryId=1},
+           new Product { Id=2, Name="Yelek 2", Price=619, Details="ürün açıklama", StockAmount=10,   SellerId=12, Enabled=false, IsConfirmed= true, CategoryId=1},
+           new Product { Id=3, Name="Yelek 3", Price=510, Details="ürün açıklama", StockAmount=10,   SellerId=12, Enabled=true, IsConfirmed= true, CategoryId=1},
+
+           new Product { Id=4, Name="Triko 1", Price=700, Details="ürün açıklama", StockAmount=10,   SellerId=13, Enabled=true, IsConfirmed= true, CategoryId=2},
+           new Product { Id=5, Name="Triko 2", Price=700, Details="ürün açıklama", StockAmount=10,   SellerId=13, Enabled=false, IsConfirmed= true, CategoryId=2},
+           new Product { Id=6, Name="Triko 3", Price=700, Details="ürün açıklama", StockAmount=10,   SellerId=13, Enabled=false, IsConfirmed= true, CategoryId=2},
+
+           new Product { Id=7, Name="Sweatshirt 1", Price=320, Details="ürün açıklama", StockAmount=10,   SellerId=12, Enabled=true, IsConfirmed= true, CategoryId=3},
+           new Product { Id=8, Name="Sweatshirt 2", Price=450, Details="ürün açıklama", StockAmount=10,   SellerId=12, Enabled=false, IsConfirmed= true, CategoryId=3},
+           new Product { Id=9, Name="Sweatshirt 3", Price=600, Details="ürün açıklama", StockAmount=10,   SellerId=12, Enabled=true, IsConfirmed= true, CategoryId=3},
+
+           new Product { Id=10, Name="Şort 1", Price=900, Details="ürün açıklama", StockAmount=10, SellerId=13, Enabled=true, IsConfirmed= true, CategoryId=4},
+           new Product { Id=11, Name="Şort 2", Price=900, Details="ürün açıklama", StockAmount=10, SellerId=13, Enabled=true, IsConfirmed= true, CategoryId=4},
+           new Product { Id=12, Name="Şort 3", Price=900, Details="ürün açıklama", StockAmount=10, SellerId=13, Enabled=false, IsConfirmed= true, CategoryId=4},
+           new Product { Id=13, Name="Şort 4", Price=900, Details="ürün açıklama", StockAmount=10, SellerId=13, Enabled=false, IsConfirmed= false, CategoryId=4},
+           new Product { Id=14, Name="Şort 5", Price=900, Details="ürün açıklama", StockAmount=10, SellerId=13, Enabled=false, IsConfirmed= true, CategoryId=4},
+
+           new Product { Id=15, Name="Kazak 1", Price=300, Details="ürün açıklama", StockAmount=10, SellerId=12, Enabled=true, IsConfirmed= true, CategoryId=5},
+           new Product { Id=16, Name="Kazak 2", Price=300, Details="ürün açıklama", StockAmount=10, SellerId=12, Enabled=true, IsConfirmed= true, CategoryId=5},
+           new Product { Id=17, Name="Kazak 3", Price=300, Details="ürün açıklama", StockAmount=10, SellerId=12, Enabled=false, IsConfirmed= false, CategoryId=5},
+
+           new Product { Id=18, Name="Elbise 1", Price=500, Details="ürün açıklama", StockAmount=10, SellerId=12, Enabled=true, IsConfirmed= false, CategoryId=6},
+           new Product { Id=19, Name="Elbise 2", Price=500, Details="ürün açıklama", StockAmount=10, SellerId=12, Enabled=true, IsConfirmed= true, CategoryId=6},
+           new Product { Id=20, Name="Elbise 3", Price=500, Details="ürün açıklama", StockAmount=10, SellerId=12, Enabled=false, IsConfirmed= true, CategoryId=6},
+           new Product { Id=21, Name="Elbise 4", Price=500, Details="ürün açıklama", StockAmount=10, SellerId=12, Enabled=false, IsConfirmed= true, CategoryId=6},
+
+           new Product { Id=22, Name="Ceket 1", Price=360, Details="ürün açıklama", StockAmount=10, SellerId=13, Enabled=true, IsConfirmed= true, CategoryId=7},
+           new Product { Id=23, Name="Ceket 2", Price=360, Details="ürün açıklama", StockAmount=10, SellerId=13, Enabled=true, IsConfirmed= false, CategoryId=7},
+           new Product { Id=24, Name="Ceket 3", Price=360, Details="ürün açıklama", StockAmount=10, SellerId=13, Enabled=false, IsConfirmed= true, CategoryId=7},
+           new Product { Id=25, Name="Ceket 4", Price=360, Details="ürün açıklama", StockAmount=10, SellerId=13, Enabled=false, IsConfirmed= true, CategoryId=7},
+
+           new Product { Id=26, Name="Pantolon 1", Price=400, Details="ürün açıklama", StockAmount=10, SellerId=12, Enabled=true, IsConfirmed= true, CategoryId=8},
+           new Product { Id=27, Name="Pantolon 2", Price=400, Details="ürün açıklama", StockAmount=10, SellerId=12, Enabled=false, IsConfirmed= true, CategoryId=8},
+           new Product { Id=28, Name="Pantolon 3", Price=400, Details="ürün açıklama", StockAmount=10, SellerId=12, Enabled=true, IsConfirmed= false, CategoryId=8},
+           new Product { Id=29, Name="Pantolon 4", Price=400, Details="ürün açıklama", StockAmount=10, SellerId=12, Enabled=false, IsConfirmed= true, CategoryId=8},
+
+           new Product { Id=30, Name="Etek 1", Price=550, Details="ürün açıklama", StockAmount=10, SellerId=13, Enabled=true, IsConfirmed= true, CategoryId=9},
+           new Product { Id=31, Name="Etek 2", Price=550, Details="ürün açıklama", StockAmount=10, SellerId=13, Enabled=true, IsConfirmed= true,  CategoryId=9},
+           new Product { Id=32, Name="Etek 3", Price=550, Details="ürün açıklama", StockAmount=10, SellerId=13, Enabled=true, IsConfirmed= false, CategoryId=9},
+           new Product { Id=33, Name="Etek 4", Price=550, Details="ürün açıklama", StockAmount=10, SellerId=13, Enabled=true, IsConfirmed= true, CategoryId=9},
+
+           new Product { Id=34, Name="Bluz 1", Price=450, Details="ürün açıklama", StockAmount=10, SellerId=12, Enabled=false, IsConfirmed= true, CategoryId=10},
+           new Product { Id=35, Name="Bluz 2", Price=450, Details="ürün açıklama", StockAmount=10, SellerId=12, Enabled=true, IsConfirmed= false, CategoryId=10},
+           new Product { Id=36, Name="Bluz 3", Price=450, Details="ürün açıklama", StockAmount=10, SellerId=12, Enabled=true, IsConfirmed= true, CategoryId=10},
+           new Product { Id=37, Name="Bluz 4", Price=450, Details="ürün açıklama", StockAmount=10, SellerId=12, Enabled=true, IsConfirmed= true, CategoryId=10},
+           new Product { Id=38, Name="Bluz 5", Price=450, Details="ürün açıklama", StockAmount=10, SellerId=12, Enabled=false, IsConfirmed= true, CategoryId=10}
         }
      );
 
@@ -92,111 +120,57 @@ namespace Eticaret.Persistence.Ef.SeedDatas
       );
 
       modelBuilder.Entity<ProductImage>().HasData(
-          new ProductImage { Id = 1, Url = "/product-01.jpg", ProductId = 1, SellerId = 11 },
-          new ProductImage { Id = 2, Url = "/product-01.jpg", ProductId = 1, SellerId = 11 },
-          new ProductImage { Id = 3, Url = "/product-01.jpg", ProductId = 1, SellerId = 11 },
+          new ProductImage { Id = 1, Url = "yelek-01.jpg", ProductId = 1, SellerId = 12 },
+          new ProductImage { Id = 2, Url = "yelek-02.jpg", ProductId = 2, SellerId = 12 },
+          new ProductImage { Id = 3, Url = "yelek-03.jpg", ProductId = 3, SellerId = 12 },
 
-          new ProductImage { Id = 4, Url = "/product-02.jpg", ProductId = 2, SellerId = 11 },
-          new ProductImage { Id = 5, Url = "/product-02.jpg", ProductId = 2, SellerId = 11 },
-          new ProductImage { Id = 6, Url = "/product-02.jpg", ProductId = 2, SellerId = 11 },
+          new ProductImage { Id = 4, Url = "triko-01.jpg", ProductId = 4, SellerId = 13 },
+          new ProductImage { Id = 5, Url = "triko-02.jpg", ProductId = 5, SellerId = 13 },
+          new ProductImage { Id = 6, Url = "triko-03.jpg", ProductId = 6, SellerId = 13 },
 
-          new ProductImage { Id = 7, Url = "/product-03.jpg", ProductId = 3, SellerId = 11 },
-          new ProductImage { Id = 8, Url = "/product-03.jpg", ProductId = 3, SellerId = 11 },
-          new ProductImage { Id = 9, Url = "/product-03.jpg", ProductId = 3, SellerId = 11 },
+          new ProductImage { Id = 7, Url = "sweatshirt-01.jpg", ProductId = 7, SellerId = 12 },
+          new ProductImage { Id = 8, Url = "sweatshirt-02.jpg", ProductId = 8, SellerId = 12 },
+          new ProductImage { Id = 9, Url = "sweatshirt-03.jpg", ProductId = 9, SellerId = 12 },
 
-          new ProductImage { Id = 10, Url = "product-04.jpg", ProductId = 4, SellerId = 11 },
-          new ProductImage { Id = 11, Url = "product-04.jpg", ProductId = 4, SellerId = 11 },
-          new ProductImage { Id = 12, Url = "product-04.jpg", ProductId = 4, SellerId = 11 },
+          new ProductImage { Id = 10, Url = "sort-01.jpg", ProductId = 10, SellerId = 13 },
+          new ProductImage { Id = 11, Url = "sort-02.jpg", ProductId = 11, SellerId = 13 },
+          new ProductImage { Id = 12, Url = "sort-03.jpg", ProductId = 12, SellerId = 13 },
+          new ProductImage { Id = 13, Url = "sort-04.jpg", ProductId = 13, SellerId = 13 },
+          new ProductImage { Id = 14, Url = "sort-05.jpg", ProductId = 14, SellerId = 13 },
 
-          new ProductImage { Id = 13, Url = "product-05.jpg", ProductId = 5, SellerId = 11 },
-          new ProductImage { Id = 14, Url = "product-05.jpg", ProductId = 5, SellerId = 11 },
-          new ProductImage { Id = 15, Url = "product-05.jpg", ProductId = 5, SellerId = 11 },
+          new ProductImage { Id = 15, Url = "kazak-01.jpg", ProductId = 15, SellerId = 12 },
+          new ProductImage { Id = 16, Url = "kazak-02.jpg", ProductId = 16, SellerId = 12 },
+          new ProductImage { Id = 17, Url = "kazak-03.jpg", ProductId = 17, SellerId = 12 },
 
-          new ProductImage { Id = 16, Url = "product-06.jpg", ProductId = 6, SellerId = 11 },
-          new ProductImage { Id = 17, Url = "product-06.jpg", ProductId = 6, SellerId = 11 },
-          new ProductImage { Id = 18, Url = "product-06.jpg", ProductId = 6, SellerId = 11 },
+          new ProductImage { Id = 18, Url = "elbise-01.jpg", ProductId = 18, SellerId = 12 },
+          new ProductImage { Id = 19, Url = "elbise-02.jpg", ProductId = 19, SellerId = 12 },
+          new ProductImage { Id = 20, Url = "elbise-03.jpg", ProductId = 20, SellerId = 12 },
+          new ProductImage { Id = 21, Url = "elbise-04.jpg", ProductId = 21, SellerId = 12 },
 
-          new ProductImage { Id = 19, Url = "product-07.jpg", ProductId = 7, SellerId = 12 },
-          new ProductImage { Id = 20, Url = "product-07.jpg", ProductId = 7, SellerId = 12 },
-          new ProductImage { Id = 21, Url = "product-07.jpg", ProductId = 7, SellerId = 12 },
+          new ProductImage { Id = 22, Url = "ceket-01.jpg", ProductId = 22, SellerId = 13 },
+          new ProductImage { Id = 23, Url = "ceket-02.jpg", ProductId = 23, SellerId = 13 },
+          new ProductImage { Id = 24, Url = "ceket-03.jpg", ProductId = 24, SellerId = 13 },
+          new ProductImage { Id = 25, Url = "ceket-04.jpg", ProductId = 25, SellerId = 13 },
 
-          new ProductImage { Id = 22, Url = "product-08.jpg", ProductId = 8, SellerId = 12 },
-          new ProductImage { Id = 23, Url = "product-08.jpg", ProductId = 8, SellerId = 12 },
-          new ProductImage { Id = 24, Url = "product-08.jpg", ProductId = 8, SellerId = 12 },
+          new ProductImage { Id = 26, Url = "pantolon-01.jpg", ProductId = 26, SellerId = 12 },
+          new ProductImage { Id = 27, Url = "pantolon-02.jpg", ProductId = 27, SellerId = 12 },
+          new ProductImage { Id = 28, Url = "pantolon-03.jpg", ProductId = 28, SellerId = 12 },
+          new ProductImage { Id = 29, Url = "pantolon-01.jpg", ProductId = 29, SellerId = 12 },
 
-          new ProductImage { Id = 25, Url = "product-09.jpg", ProductId = 9, SellerId = 12 },
-          new ProductImage { Id = 26, Url = "product-09.jpg", ProductId = 9, SellerId = 12 },
-          new ProductImage { Id = 27, Url = "product-09.jpg", ProductId = 9, SellerId = 12 },
+          new ProductImage { Id = 30, Url = "etek-01.jpg", ProductId = 30, SellerId = 13 },
+          new ProductImage { Id = 31, Url = "etek-02.jpg", ProductId = 31, SellerId = 13 },
+          new ProductImage { Id = 32, Url = "etek-03.jpg", ProductId = 32, SellerId = 13 },
+          new ProductImage { Id = 33, Url = "etek-04.jpg", ProductId = 33, SellerId = 13 },
 
-          new ProductImage { Id = 28, Url = "product-10.jpg", ProductId = 10, SellerId = 12 },
-          new ProductImage { Id = 29, Url = "product-10.jpg", ProductId = 10, SellerId = 12 },
-          new ProductImage { Id = 30, Url = "product-10.jpg", ProductId = 10, SellerId = 12 },
-
-          new ProductImage { Id = 31, Url = "product-11.jpg", ProductId = 11, SellerId = 12 },
-          new ProductImage { Id = 32, Url = "product-11.jpg", ProductId = 11, SellerId = 12 },
-          new ProductImage { Id = 33, Url = "product-11.jpg", ProductId = 11, SellerId = 12 },
-
-          new ProductImage { Id = 34, Url = "product-12.jpg", ProductId = 12, SellerId = 12 },
-          new ProductImage { Id = 35, Url = "product-12.jpg", ProductId = 12, SellerId = 12 },
-          new ProductImage { Id = 36, Url = "product-12.jpg", ProductId = 12, SellerId = 12 },
-
-          new ProductImage { Id = 37, Url = "product-13.jpg", ProductId = 13, SellerId = 13 },
-          new ProductImage { Id = 38, Url = "product-13.jpg", ProductId = 13, SellerId = 13 },
-          new ProductImage { Id = 39, Url = "product-13.jpg", ProductId = 13, SellerId = 13 },
-
-          new ProductImage { Id = 40, Url = "product-14.jpg", ProductId = 14, SellerId = 13 },
-          new ProductImage { Id = 41, Url = "product-14.jpg", ProductId = 14, SellerId = 13 },
-          new ProductImage { Id = 42, Url = "product-14.jpg", ProductId = 14, SellerId = 13 },
-
-          new ProductImage { Id = 43, Url = "product-15.jpg", ProductId = 15, SellerId = 13 },
-          new ProductImage { Id = 44, Url = "product-15.jpg", ProductId = 15, SellerId = 13 },
-          new ProductImage { Id = 45, Url = "product-15.jpg", ProductId = 15, SellerId = 13 },
-
-          new ProductImage { Id = 46, Url = "product-16.jpg", ProductId = 16, SellerId = 13 },
-          new ProductImage { Id = 47, Url = "product-16.jpg", ProductId = 16, SellerId = 13 },
-          new ProductImage { Id = 48, Url = "product-16.jpg", ProductId = 16, SellerId = 13 },
-
-          new ProductImage { Id = 49, Url = "product-17.jpg", ProductId = 17, SellerId = 13 },
-          new ProductImage { Id = 50, Url = "product-17.jpg", ProductId = 17, SellerId = 13 },
-          new ProductImage { Id = 51, Url = "product-17.jpg", ProductId = 17, SellerId = 13 },
-
-          new ProductImage { Id = 52, Url = "product-18.jpg", ProductId = 18, SellerId = 13 },
-          new ProductImage { Id = 53, Url = "product-18.jpg", ProductId = 18, SellerId = 13 },
-          new ProductImage { Id = 54, Url = "product-18.jpg", ProductId = 18, SellerId = 13 },
-
-          new ProductImage { Id = 55, Url = "product-19.jpg", ProductId = 19, SellerId = 13 },
-          new ProductImage { Id = 56, Url = "product-19.jpg", ProductId = 19, SellerId = 13 },
-          new ProductImage { Id = 57, Url = "product-19.jpg", ProductId = 19, SellerId = 13 }
+          new ProductImage { Id = 34, Url = "bluz-01.jpg", ProductId = 34, SellerId = 12 },
+          new ProductImage { Id = 35, Url = "bluz-02.jpg", ProductId = 35, SellerId = 12 },
+          new ProductImage { Id = 36, Url = "bluz-03.jpg", ProductId = 36, SellerId = 12 },
+          new ProductImage { Id = 37, Url = "bluz-04.jpg", ProductId = 37, SellerId = 12 },
+          new ProductImage { Id = 38, Url = "bluz-05.jpg", ProductId = 38, SellerId = 12 }
 
       );
-      modelBuilder.Entity<Order>().HasData(
-          new Order { Id = 1, OrderCode = "ORD001", Address = "456 Elm St", UserId = 9 },
-          new Order { Id = 2, OrderCode = "ORD002", Address = "789 Oak St", UserId = 10 }
-      );
 
-      modelBuilder.Entity<OrderItem>().HasData(
-          new OrderItem { Id = 1, Quantity = 2, UnitPrice = 10.99m, ProductId = 1, OrderId = 1, SellerId = 11 },
-          new OrderItem { Id = 2, Quantity = 1, UnitPrice = 19.99m, ProductId = 2, OrderId = 2, SellerId = 12 }
-      );
 
-      modelBuilder.Entity<CartItem>().HasData(
-          new CartItem { Id = 1, Quantity = 1, ProductId = 1, UserId = 1 },
-          new CartItem { Id = 2, Quantity = 1, ProductId = 3, UserId = 2 },
-          new CartItem { Id = 3, Quantity = 3, ProductId = 2, UserId = 3 },
-          new CartItem { Id = 4, Quantity = 1, ProductId = 4, UserId = 4 },
-          new CartItem { Id = 5, Quantity = 1, ProductId = 5, UserId = 5 },
-          new CartItem { Id = 6, Quantity = 3, ProductId = 6, UserId = 6 },
-          new CartItem { Id = 7, Quantity = 1, ProductId = 7, UserId = 7 },
-          new CartItem { Id = 8, Quantity = 1, ProductId = 8, UserId = 8 },
-          new CartItem { Id = 9, Quantity = 3, ProductId = 9, UserId = 9 },
-          new CartItem { Id = 10, Quantity = 1, ProductId = 3, UserId = 10 },
-          new CartItem { Id = 11, Quantity = 1, ProductId = 4, UserId = 7 },
-          new CartItem { Id = 12, Quantity = 3, ProductId = 8, UserId = 2 },
-          new CartItem { Id = 13, Quantity = 1, ProductId = 2, UserId = 1 },
-          new CartItem { Id = 14, Quantity = 1, ProductId = 1, UserId = 3 },
-          new CartItem { Id = 15, Quantity = 3, ProductId = 3, UserId = 4 },
-          new CartItem { Id = 16, Quantity = 3, ProductId = 2, UserId = 7 }
-      );
     }
   }
 }

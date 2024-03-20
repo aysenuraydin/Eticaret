@@ -79,6 +79,7 @@ namespace Eticaret.Web.Mvc.Controllers
             var order = _orderService.GetDb()
                             .Include(o => o.OrderItems)
                             .ThenInclude(o => o.ProductFk)
+                            .ThenInclude(o => o.ProductImages)
                             .ThenInclude(o => o.SellerFk)
                             .FirstOrDefault(o => o.OrderCode == orderCode);
 

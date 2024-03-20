@@ -50,14 +50,14 @@ namespace Eticaret.Web.Mvc.Controllers
                 }
                 return RedirectToAction(nameof(Edit));
 
-
             }
             return RedirectToAction(nameof(Index), "home");
         }
         public IActionResult Edit()
         {
             var cartItems = _cartItemRepository.GetDb()
-                                            .Include(c => c.ProductFk)
+                                            .Include(c => c.ProductFk!)
+                                            .ThenInclude(c => c.ProductImages)
                                             .ToList();
             var cartOrder = new OrderViewModel()
             {
