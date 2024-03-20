@@ -1,16 +1,56 @@
 ﻿@model Product;
 @{
-    ViewData["Title"] = "Edit Product";
+    ViewData["Title"] = "Ürünü Düzenle";
 }
-<div class="container">
-    <h1>@ViewData["Title"]</h1>
+<div class="container mt-5 pt-5">
+    <h2>@ViewData["Title"]</h2>
 
 
     <hr />
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-4">
+            @if (!Model.ProductImages.Any())
+            {
+                <img src="https://via.placeholder.com/300x300" alt="Ürun resmi">
+            }
+            else
+            {
+
+                <div class="p-l-25 p-r-30 p-lr-0-lg">
+                    <div class="wrap-slick3 flex-sb flex-w">
+                        <div class="wrap-slick3-dots"></div>
+                        <div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
+
+
+                        <div class="slick3 gallery-lb">
+                            @if (Model.ProductImages != null && Model.ProductImages.Any())
+                            {
+                                @foreach (var img in Model.ProductImages)
+                                {
+                                    <div class="item-slick3" data-thumb="/assets/img/@img.Url">
+                                        <div class="wrap-pic-w pos-relative">
+                                            <img src="/assets/img/@img.Url" alt="IMG-PRODUCT">
+
+                                            <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
+                                                href="/assets/img/@img.Url">
+                                                <i class="fa fa-expand"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="py-5">
+                    <div id="imagePreview"></div>
+                </div>
+            }
+        </div>
+        <div class="col-6">
             <form asp-action="Edit" enctype="multipart/form-data">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="All" class="text-danger"></div>
                 <input type="hidden" asp-for="Id" />
                 <input type="hidden" asp-for="CreatedAt" />
                 <input type="hidden" asp-for="IsConfirmed" />
@@ -33,7 +73,9 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="Details" class="control-label"></label>
-                    <textarea asp-for="Details" class="form-control"></textarea>
+                    <div>
+                        <textarea asp-for="Details" class="form-control" id="editor"></textarea>
+                    </div>
                     <span asp-validation-for="Details" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -47,24 +89,60 @@
                     <input asp-for="Enabled" class="form-control" />
                     <span asp-validation-for="Enabled" class="text-danger"></span>
                 </div>
-                @* <div class="form-group">
-                <label asp-for="Image" class="control-label"></label>
-                <input asp-for="Image" class="form-control" type="file" />
-                <span asp-validation-for="Image" class="text-danger"></span>
-                </div> *@
-                <div class="form-group">
+
+                <div class="input-group my-3">
+                    <div class="custom-file">
+                        <input asp-for="ProductImages" class="custom-file-input" type="file"
+                            aria-describedby="inputGroupFileAddon01" multiple />
+                        <label class="custom-file-label" for="inputGroupFile01">Ürün Resimlerini Seç</label>
+                        <span asp-validation-for="ProductImages" class="text-danger"></span>
+                    </div>
+                </div>
+
+
+                <div class="form-group my-5">
                     <label asp-for="CategoryId" class="control-label"></label>
-                    <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Category"></select>
+                    <div lass="dropdown border">
+                        <select asp-for="CategoryId" class="dropdown-item border p-2"
+                            asp-items="ViewBag.Category"></select>
+                    </div>
                     <span asp-validation-for="CategoryId" class="text-danger"></span>
                 </div>
+
                 <div class="form-group my-3">
                     <input type="submit" value="Kaydet" class="btn btn-primary" />
                 </div>
+                <div>
+                    <a asp-action="Index">Listeye Dön</a>
+                </div>
             </form>
         </div>
-    </div>
 
-    <div>
-        <a asp-action="Index">Listeye Dön</a>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        const ProductImages = document.getElementById('ProductImages');
+        const imagePreview = document.getElementById('imagePreview');
+
+        ProductImages.addEventListener('change', function (event) {
+            const files = event.target.files;
+            if (files) {
+                Array.from(files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const img = document.createElement('img');
+                        img.classList.add('col-6');
+                        img.classList.add('my-3');
+                        img.classList.add('image-size');
+                        img.src = e.target.result;
+                        imagePreview.appendChild(img);
+
+                    }
+                    reader.readAsDataURL(file);
+                });
+            }
+        });
+    </script>
+}

@@ -4,23 +4,25 @@
 }
 
 <!-- Product -->
-<div class="container mt-5 pt-3">
-	<div class="row">
+<div class="container mt-5 pt-5">
+	<div class="row pt-3">
 		<div class="col-3">
 			<!-- Sidebar -->
 			<div class="sidebar">
 				<div class="sidebar_section">
-					<div class="sidebar_title">
-						<h5>Product Category</h5>
-					</div>
 					<ul class="sidebar_categories">
-						<li><a href="#">Men</a></li>
-						<li class="active"><a href="#"><span><i class="fa fa-angle-double-right"
-										aria-hidden="true"></i></span>Women</a></li>
-						<li><a href="#">Accessories</a></li>
-						<li><a href="#">New Arrivals</a></li>
-						<li><a href="#">Collection</a></li>
-						<li><a href="#">Shop</a></li>
+						<li>
+							<a asp-action="Listing" asp-Controller="Home" asp-route-id="">Tüm Ürünler</a>
+						</li>
+						@if (Model.Categories != null && Model.Categories.Any())
+						{
+							@foreach (var kategori in Model.Categories)
+							{
+								<li>
+									<a asp-action="Listing" asp-Controller="Home" asp-route-id="@kategori.Id">@kategori.Name</a>
+								</li>
+							}
+						}
 					</ul>
 				</div>
 				<!-- Price Range Filtering -->
@@ -76,26 +78,16 @@
 				<div class="row isotope-grid">
 					@if (Model.ProductList!.Count() == 0)
 					{
-						@if (Model.Search?.Length >= 0)
-						{
-							<div class="alert alert-secondary  p-4 alert-dismissible fade show" role="alert">
-								<i class="fa-solid fa-exclamation"></i>
-								Aradığınız <strong>@Model.Search</strong> bulunamadı!
-							</div>
-						}
-						else
-						{
-							<div class="alert alert-secondary  p-4">
-								<i class="fa-solid fa-exclamation"></i>
-								Bu kategoride ürün bulunamadı!
-							</div>
-						}
+						<div class="alert alert-secondary  p-4">
+							<i class="fa-solid fa-exclamation"></i>
+							Ürün bulunamadı!
+						</div>
 					}
 					else
 					{
 						@foreach (var item in Model.ProductList!)
 						{
-							<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+							<div class="col-sm-6 col-lg-4 p-b-35 isotope-item women">
 								<!-- Block2 -->
 								@await Html.PartialAsync("_ProductListItem", item)
 
@@ -142,4 +134,3 @@
 	</div>
 </div>
 @await Component.InvokeAsync("RelatedProducts")
-@* @await Html.PartialAsync("_QuickViewModal") *@

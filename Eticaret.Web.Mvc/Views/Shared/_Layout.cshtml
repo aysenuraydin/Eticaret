@@ -26,13 +26,6 @@
           </div>
 
           <div class="right-top-bar flex-w h-full">
-            <a class="flex-c-m trans-04 p-lr-25" asp-controller="Home" asp-action="AboutUs">
-              Hakkımızda
-            </a>
-            <a class="flex-c-m trans-04 p-lr-25" asp-controller="Home" asp-action="Contact">
-              İletişim
-            </a>
-
             <a class="flex-c-m trans-04 p-lr-25" asp-controller="Profile" asp-action="Details">
               @(User.Identity?.IsAuthenticated ?? false ? @User.Identity?.Name : "Hesabım")
             </a>
@@ -60,7 +53,6 @@
           <div class="menu-desktop" style="">
             <ul class="main-menu">
               @await Component.InvokeAsync("Categories")
-
             </ul>
           </div>
 
@@ -215,17 +207,17 @@
             class="footer_nav_container d-flex flex-sm-row flex-column align-items-center justify-content-lg-start justify-content-center text-center">
             <ul class="footer_nav">
               <li>
-                <a class="dropdown-item" asp-controller="Home" asp-action="MyOrders">
+                <a class="dropdown-item" asp-controller="Home" asp-action="Index">
                   <span>Anasayfa</span>
                 </a>
               </li>
               <li>
-                <a class="dropdown-item" asp-controller="AboutUs" asp-action="MyOrders">
+                <a class="dropdown-item" asp-controller="Home" asp-action="AboutUs">
                   <span>Hakkımızda</span>
                 </a>
               </li>
               <li>
-                <a class="dropdown-item" asp-controller="Contact" asp-action="MyOrders">
+                <a class="dropdown-item" asp-controller="Home" asp-action="Contact">
                   <span>İletişim</span>
                 </a>
               </li>
@@ -290,9 +282,6 @@
   @await Html.PartialAsync("_FootPartial")
   @RenderSection("Styles", false);
   @RenderSection("Scripts", false);
-
-
-
 
 
 </body>

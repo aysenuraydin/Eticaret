@@ -17,7 +17,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Eticaret.Web.Mvc.Controllers
 {
-    // [Authorize]
+    [Authorize]
     public class AuthController : Controller
     {
         private readonly IUserRepository _userService;
@@ -32,6 +32,8 @@ namespace Eticaret.Web.Mvc.Controllers
             return View(new RegisterViewModel());
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [AllowAnonymous]
         public IActionResult Register(RegisterViewModel user)
         {
             if (ModelState.IsValid)
@@ -66,6 +68,8 @@ namespace Eticaret.Web.Mvc.Controllers
             return View(new LoginViewModel());
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel user)
         {
             if (ModelState.IsValid)

@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Eticaret.Web.Mvc.Controllers
 {
-    // [Authorize]
+    [Authorize]
     public class CartController : Controller
     {
         private readonly ICartItemRepository _cartItemRepository;
@@ -50,14 +50,14 @@ namespace Eticaret.Web.Mvc.Controllers
                 }
                 return RedirectToAction(nameof(Edit));
 
-
             }
             return RedirectToAction(nameof(Index), "home");
         }
         public IActionResult Edit()
         {
             var cartItems = _cartItemRepository.GetDb()
-                                            .Include(c => c.ProductFk)
+                                            .Include(c => c.ProductFk!)
+                                            .ThenInclude(c => c.ProductImages)
                                             .ToList();
             var cartOrder = new OrderViewModel()
             {
@@ -66,6 +66,7 @@ namespace Eticaret.Web.Mvc.Controllers
             return View(cartOrder);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Edit(CartItem item)
         {
             var cartItem = _cartItemRepository.Find(item.Id);
@@ -85,6 +86,7 @@ namespace Eticaret.Web.Mvc.Controllers
             return View(cartOrder);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(CartItem item)
         {
             var cartItem = _cartItemRepository.GetAll()

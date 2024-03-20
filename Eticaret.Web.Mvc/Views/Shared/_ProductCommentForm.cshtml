@@ -1,6 +1,10 @@
 ﻿@model int
+@{
+
+    var canComment = User.Identity?.IsAuthenticated ?? false ? "" : "disabled";
+}
 <form asp-action="Comment" asp-controller="Product" enctype="multipart/form-data" method="post" id="commentForm">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div asp-validation-summary="All" class="text-danger"></div>
     <input type="hidden" id="ProductId" name="ProductId" value="@Model" />
     <div class="flex-w flex-m p-t-50 p-b-23" id="ProductId" name="ProductId">
         <span class="stext-102 cl3 m-r-16">
@@ -18,11 +22,12 @@
     </div>
     <div class="form-group">
         <label for="Text" class="control-label"></label>
-        <input type="Text" class="form-control" name="Text" id="Text" style="min-height: 100px !important;"></input>
+        <textarea type="Text" class="form-control" name="Text" id="Text" style="min-height: 100px !important;"
+            @canComment></textarea>
     </div>
 
     <div class="form-group my-3">
-        <input type="submit" value="Yorum Yap" id="SubmitButton1"
+        <input type="submit" value="Yorum Yap" id="SubmitButton1" @canComment
             class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04 m-b-75" />
     </div>
 </form>

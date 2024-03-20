@@ -9,7 +9,7 @@ namespace Eticaret.Web.Mvc.Models
     public class ProductListViewModel
     {
         public List<Product>? ProductList { get; set; } = new();
-        public string? Search { get; set; }
+        public List<Category>? Categories { get; set; } = new();
     }
 }
 

@@ -1,4 +1,126 @@
-﻿@{
+﻿@model IEnumerable<Order>
+@{
     Layout = "_ProfileLayout";
 }
-MyOrders
+
+<div class="p-5">
+    <h3 class="pb-5">Sipariş Listem</h3>
+    <div class="accordion" id="accordionExample">
+        @if (Model.Count() == 0)
+        {
+            <div class="alert alert-secondary">
+                Henüz hiç sipariş vermedin !
+            </div>
+        }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                <div>
+                    <div class="card-header border" id="heading@(item.OrderCode)">
+                        <h2 class="m-0 p-3">
+
+                            <div class="row">
+                                <div style=" min-width: 750px !important;">
+                                    <p>Sipariş Kodu : @item.OrderCode ( @item.CreatedAt )</p>
+                                </div>
+                                <div>
+                                    <a class="btn btn-primary btn-link text-lef text-white" type="button" data-toggle="collapse"
+                                        data-target="#collapse@(item.OrderCode)" aria-expanded="false" value="Detay"
+                                        aria-controls="collapse@(item.OrderCode)">
+                                        <span>İncele</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </h2>
+                    </div>
+
+                    <div id="collapse@(item.OrderCode)" class="collapse" aria-labelledby="heading@(item.OrderCode)"
+                        data-parent="#accordionExample">
+                        <div class="card-body">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col"></th>
+                                        <th scope="col">Ürün Adı</th>
+                                        <th scope="col">Satıcı Adı Soyadı</th>
+                                        <th scope="col">Adet</th>
+                                        <th scope="col">Fiyat</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-group-divider tableCss">
+                                    @foreach (var order in item.OrderItems)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @if (!order.ProductFk.ProductImages.Any())
+                                                {
+                                                    <img src="https://via.placeholder.com/100x100" alt="Ürun resmi">
+                                                }
+                                                else
+                                                {
+                                                    <img src="/assets/img/@order.ProductFk.ProductImages[0].Url" width="80px;">
+                                                }
+                                            </td>
+                                            <td>
+                                                <a asp-controller="Home" asp-action="ProductDetail" asp-route-id="@order.ProductId">
+                                                    @order.ProductFk.Name
+                                                </a>
+                                            </td>
+                                            <td>@order.ProductFk.SellerFk!.FirstName @order.ProductFk.SellerFk!.LastName</td>
+                                            <td>@order.Quantity</td>
+                                            <td>@order.UnitPrice ₺</td>
+                                        </tr>
+                                    }
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td> <b>Toplam : </b> </td>
+                                        <td>@item.OrderItems.Sum(o => o.Quantity * o.UnitPrice) ₺</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+
+
+@section Styles {
+    <style>
+        @*.tableCsstrtd{padding:25px!important;}.tableCsstrth{padding:25px!important;;}*@.container {
+            max-width: 1200px !important;
+            margin: auto;
+        }
+
+        .text-center {
+            margin: auto;
+            padding: 50px;
+        }
+
+        .tbody.border-none {
+            border: none !important;
+        }
+
+        .tableCss tr td {
+            padding: 25px !important;
+        }
+
+        .tableCss tr th {
+            padding: 25px !important;
+            ;
+        }
+
+
+        .text-center {
+            margin: auto;
+            padding: 50px;
+            margin-top: 100px;
+        }
+    </style>
+}

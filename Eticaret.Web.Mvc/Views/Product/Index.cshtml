@@ -1,12 +1,10 @@
 ﻿@model IEnumerable<Product>
-@{
-    ViewData["Title"] = "List of Products";
-}
-<div class="container" style="min-height: 70vh !important;">
-    <h1>@ViewData["Title"]</h1>
+
+<div class="container mt-5 pt-5" style="min-height: 70vh !important;">
+    <h2>Ürün Listesi</h2>
 
     <div class="row">
-        <div class="col">
+        <div class="col my-3">
             <a asp-action="Create" class="btn btn-outline-primary">Yeni Ekle</a>
         </div>
         <div class="col">
@@ -19,6 +17,9 @@
     <table class="table table-striped table-hover">
         <thead>
             <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProductImages)
+                </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Id)
                 </th>
@@ -74,6 +75,17 @@
                 {
                     <tr>
                         <td>
+                            @if (!item.ProductImages.Any())
+                            {
+                                <img src="https://via.placeholder.com/300x300" alt="Ürun resmi">
+                            }
+                            else
+                            {
+                                <img src="/assets/img/@item.ProductImages[0].Url" width="300px;">
+                            }
+                        </td>
+
+                        <td>
                             @Html.DisplayFor(modelItem => item.Id)
                         </td>
                         <td>
@@ -83,7 +95,9 @@
                             @Html.DisplayFor(modelItem => item.Price)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Details)
+                            <div class="overflow-scroll" style="width: 200px; max-height: 90px !important;">
+                                @Html.Raw(item.Details)
+                            </div>
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.StockAmount)

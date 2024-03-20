@@ -29,6 +29,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
                             .Include(i => i.SellerFk)
                             .Include(i => i.CartItems)
                             .Include(i => i.ProductComments)
+                            .Include(i => i.ProductImages)
                             .Include(i => i.OrderItems)
                             .OrderBy(p => p.IsConfirmed)
                             .ToList();
@@ -42,12 +43,14 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
                                 .Include(i => i.SellerFk)
                                 .Include(i => i.CartItems)
                                 .Include(i => i.ProductComments)
+                                .Include(i => i.ProductImages)
                                 .Include(i => i.OrderItems)
                                 .FirstOrDefault(p => p.Id == id);
 
             return View(product);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Approve(Product product)
         {
             try
@@ -67,18 +70,20 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
                                 .Include(i => i.SellerFk)
                                 .Include(i => i.CartItems)
                                 .Include(i => i.ProductComments)
+                                .Include(i => i.ProductImages)
                                 .Include(i => i.OrderItems)
                                 .FirstOrDefault(p => p.Id == id);
 
             return View(product);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(int id, Product product)
         {
             try
             {
                 _productService.Delete(product);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(List));
             }
             catch
             {

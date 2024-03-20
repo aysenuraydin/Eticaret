@@ -1,8 +1,20 @@
 ﻿@model Product
-
+@{
+    var imgSrc = "";
+    if (!Model.ProductImages.Any())
+    {
+        imgSrc = "https://via.placeholder.com/300x400";
+    }
+    else
+    {
+        imgSrc = "/assets/img/" + Model.ProductImages[0].Url;
+    }
+}
 <div class="block2">
     <div class="block2-pic hov-img0">
-        <img src="/assets/img/product-01.jpg" alt="IMG-PRODUCT">
+        <div class="image-container">
+            <img src="@imgSrc" alt="IMG-PRODUCT">
+        </div>
         <a asp-action="ProductModal" asp-Controller="Home" asp-route-id="@Model.Id"
             class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
             İncele

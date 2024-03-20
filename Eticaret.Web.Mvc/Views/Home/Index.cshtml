@@ -431,7 +431,7 @@
 		<div class="row isotope-grid">
 			@foreach (var item in Model)
 			{
-				<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+				<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 d-flex align-items-stretch isotope-item">
 					<!-- Block2 -->
 					@await Html.PartialAsync("_ProductListItem", item)
 
@@ -443,7 +443,7 @@
 		<div class="flex-c-m flex-w w-full p-t-45">
 			<a class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04" asp-controller="Home"
 				asp-action="Listing">
-				<span>Load More</span>
+				<span>Tüm Ürünler</span>
 			</a>
 		</div>
 	</div>
@@ -494,5 +494,3 @@
 
 <!-- Man Banner Section Begin -->
 @await Component.InvokeAsync("ManBanner")
-<!-- Man Banner Section End -->
-@* @await Html.PartialAsync("_QuickViewModal") *@

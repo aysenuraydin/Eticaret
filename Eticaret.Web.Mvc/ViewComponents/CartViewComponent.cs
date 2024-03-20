@@ -30,7 +30,8 @@ namespace ticaret.Web.Mvc.ViewComponents
             {
                 var cartItems = await _cartItemRepository.GetDb()
                                           .Where(c => c.UserId == user)
-                                          .Include(u => u.ProductFk)
+                                          .Include(u => u.ProductFk!)
+                                          .ThenInclude(u => u.ProductImages)
                                           .ToListAsync();
 
 

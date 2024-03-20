@@ -11,7 +11,7 @@ namespace Eticaret.Domain
         [MinLength(10, ErrorMessage = "Ürün URL en az 10 karakterden oluşmalıdır.")]
         [MaxLength(250, ErrorMessage = "Ürün URL en fazla 250 karakter uzunluğunda olmalıdır.")]
         [DataType(DataType.Url, ErrorMessage = "Geçersiz URL formatı.")]
-        public string? Url { get; set; }
+        public string? Url { get; set; } = Guid.NewGuid().ToString();
 
         [Display(Name = "Oluşturma Tarihi")]
         [Required(ErrorMessage = "Oluşturma tarihi alanı gereklidir.")]

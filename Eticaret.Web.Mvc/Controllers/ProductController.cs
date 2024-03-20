@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Eticaret.Application.Abstract;
 using Eticaret.Domain;
 using Eticaret.Web.Mvc.Models;
+using Eticaret.Web.Mvc.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,23 +15,27 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Web.Mvc.Controllers
 {
-    // [Authorize(Roles = "seller")]
+    [Authorize(Roles = "seller")]
     public class ProductController : Controller
     {
         private readonly IProductRepository _productService;
         private readonly IProductCommentRepository _productCommentService;
         private readonly ICategoryRepository _categoryService;
+        private readonly IProductImageRepository _productImageService;
 
-        public ProductController(IProductRepository productService, IProductCommentRepository productCommentService, ICategoryRepository categoryService)
+        public ProductController(IProductRepository productService,
+        IProductCommentRepository productCommentService,
+        IProductImageRepository productImageService,
+        ICategoryRepository categoryService)
         {
             _productService = productService;
             _productCommentService = productCommentService;
+            _productImageService = productImageService;
             _categoryService = categoryService;
         }
 
         public IActionResult Index()
         {
-
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId != null && int.TryParse(userId, out int Id))
             {
@@ -39,6 +44,7 @@ namespace Eticaret.Web.Mvc.Controllers
                                .Include(i => i.SellerFk)
                                .Include(i => i.CartItems)
                                .Include(i => i.ProductComments)
+                               .Include(i => i.ProductImages)
                                .Include(i => i.OrderItems)
                                .Where(u => u.SellerId == Id)
                                .OrderBy(p => p.IsConfirmed)
@@ -57,15 +63,31 @@ namespace Eticaret.Web.Mvc.Controllers
             return View(product);
         }
         [HttpPost]
-        public async Task<IActionResult> Create(Product product)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Product product, List<IFormFile> ProductImages)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _productService.Add(product);
-                    return RedirectToAction(nameof(Index));
+                    if (ProductImages != null && ProductImages.Any())
+                    {
+                        _productService.Add(product);
 
+                        List<ProductImage> img = new List<ProductImage>();
+                        foreach (var item in ProductImages)
+                        {
+                            img.Add(new()
+                            {
+                                Url = await FileHelper.FileLoaderAsync(item),
+                                ProductId = product.Id,
+                                SellerId = product.SellerId
+                            });
+                        }
+                        img.ForEach(item => _productImageService.Add(item));
+                    }
+
+                    return RedirectToAction(nameof(Index));
                 }
                 catch
                 {
@@ -82,21 +104,41 @@ namespace Eticaret.Web.Mvc.Controllers
                                 .Include(i => i.SellerFk)
                                 .Include(i => i.CartItems)
                                 .Include(i => i.ProductComments)
+                                .Include(i => i.ProductImages)
                                 .Include(i => i.OrderItems)
                                 .FirstOrDefault(p => p.Id == id);
 
             ViewBag.Category = new SelectList(await _categoryService.GetAllAsync(), "Id", "Name");
             return View(product);
         }
-        [HttpPost]
 
-        public async Task<IActionResult> Edit(Product product)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Product product, List<IFormFile> ProductImages)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
                     _productService.Update(product);
+                    if (ProductImages != null && ProductImages.Any())
+                    {
+                        List<ProductImage> img = new List<ProductImage>();
+                        foreach (var item in ProductImages)
+                        {
+                            img.Add(new()
+                            {
+                                Url = await FileHelper.FileLoaderAsync(item),
+                                ProductId = product.Id,
+                                SellerId = product.SellerId
+                            });
+                        }
+                        _productImageService.GetAll()
+                                    .Where(i => i.ProductId == product.Id).ToList()
+                                    .ForEach(item => _productImageService.Delete(item));
+
+                        img.ForEach(item => _productImageService.Add(item));
+                    }
                     return RedirectToAction(nameof(Index));
                 }
                 catch
@@ -104,6 +146,7 @@ namespace Eticaret.Web.Mvc.Controllers
                     ModelState.AddModelError("", "Hata Oluştu!");
                 }
             }
+
             ViewBag.Category = new SelectList(await _categoryService.GetAllAsync(), "Id", "Name");
             return View(product);
         }
@@ -113,6 +156,7 @@ namespace Eticaret.Web.Mvc.Controllers
                                .Include(i => i.CategoryFk)
                                .Include(i => i.SellerFk)
                                .Include(i => i.CartItems)
+                               .Include(i => i.ProductImages)
                                .Include(i => i.ProductComments)
                                .Include(i => i.OrderItems)
                                .FirstOrDefault(p => p.Id == id);
@@ -120,10 +164,12 @@ namespace Eticaret.Web.Mvc.Controllers
             return View(product);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(Product product)
         {
             try
             {
+                //wroot içinden de  silmmeiz lazım .Net Core delete image araştır =>
                 _productService.Delete(product);
                 return RedirectToAction(nameof(Index));
             }
@@ -135,6 +181,7 @@ namespace Eticaret.Web.Mvc.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [AllowAnonymous]
         public IActionResult Comment(int ProductId, byte StarCount, string Text)
         {

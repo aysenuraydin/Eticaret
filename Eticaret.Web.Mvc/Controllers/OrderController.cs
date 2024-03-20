@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Eticaret.Web.Mvc.Controllers
 {
-    // [Authorize]
+    [Authorize]
     public class OrderController : Controller
     {
         private readonly IOrderRepository _orderService;
@@ -31,6 +31,7 @@ namespace Eticaret.Web.Mvc.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(OrderViewModel item)
         {
             if (!string.IsNullOrEmpty(item.Address))
@@ -78,6 +79,7 @@ namespace Eticaret.Web.Mvc.Controllers
             var order = _orderService.GetDb()
                             .Include(o => o.OrderItems)
                             .ThenInclude(o => o.ProductFk)
+                            .ThenInclude(o => o.ProductImages)
                             .ThenInclude(o => o.SellerFk)
                             .FirstOrDefault(o => o.OrderCode == orderCode);
 

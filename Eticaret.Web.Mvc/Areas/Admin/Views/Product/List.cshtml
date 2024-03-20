@@ -16,6 +16,9 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.ProductImages)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Id)
             </th>
             <th>
@@ -56,56 +59,78 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @if (!Model.Any())
         {
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Price)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Details)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StockAmount)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CreatedAt)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Enabled)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SellerFk!.Email)
-                </td>
-                <td>
-                    <div class="badge badge-primary" style="background-color:@(item.CategoryFk!.Color);">
-                        @Html.DisplayFor(modelItem => item.CategoryFk!.Name)
-                    </div>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProductComments.Count)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.OrderItems.Count)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CartItems.Count)
-                </td>
-                <td>
-                    <a class="btn btn-sm btn-@(item.IsConfirmed?"danger":"primary") btn-m" asp-action="Approve"
-                        asp-route-id="@item.Id" style="min-width: 95px !important;">@(item.IsConfirmed
-                    ? "Onayı Kladır" : "Onayla")</a>
-
-                    <a class="btn btn-sm btn-outline-danger btn-m" asp-action="Delete" asp-route-id="@item.Id"
-                        style="min-width: 95px !important;">Sil</a>
+                <td class="alert alert-secondary p-4" colspan="12" role="alert">
+                    <i class="fa-solid fa-exclamation"></i>
+                    Görsterilecek ürününüz yok!
                 </td>
             </tr>
+        }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @if (!item.ProductImages.Any())
+                        {
+                            <img src="https://via.placeholder.com/300x300" alt="Ürun resmi">
+                        }
+                        else
+                        {
+                            <img src="/assets/img/@item.ProductImages[0].Url" height="100px;">
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Details)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StockAmount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreatedAt)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Enabled)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SellerFk!.Email)
+                    </td>
+                    <td>
+                        <div class="badge badge-primary" style="background-color:@(item.CategoryFk!.Color);">
+                            @Html.DisplayFor(modelItem => item.CategoryFk!.Name)
+                        </div>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProductComments.Count)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OrderItems.Count)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CartItems.Count)
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-@(item.IsConfirmed?"danger":"primary") btn-m" asp-action="Approve"
+                            asp-route-id="@item.Id" style="min-width: 95px !important;">@(item.IsConfirmed
+                    ? "Onayı Kladır" : "Onayla")</a>
+
+                        <a class="btn btn-sm btn-outline-danger btn-m" asp-action="Delete" asp-route-id="@item.Id"
+                            style="min-width: 95px !important;">Sil</a>
+                    </td>
+                </tr>
+            }
         }
     </tbody>
 </table>

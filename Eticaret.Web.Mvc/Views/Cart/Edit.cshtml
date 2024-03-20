@@ -6,8 +6,8 @@
 <!-- breadcrumb -->
 <div class="container m-t-70">
     <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
-        <a href="index.html" class="stext-109 cl8 hov-cl1 trans-04">
-            Anasayfa
+        <a asp-action="Index" asp-Controller="Home">
+            Home
             <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
         </a>
 
@@ -42,7 +42,14 @@
                                     <tr class="table_row">
                                         <td class="column-1">
                                             <div class="how-itemcart1 mx-4">
-                                                <img src="/assets/img/item-cart-04.jpg" alt="IMG">
+                                                @if (!item.ProductFk!.ProductImages.Any())
+                                                {
+                                                    <img src="https://via.placeholder.com/100x100" alt="Ürun resmi">
+                                                }
+                                                else
+                                                {
+                                                    <img src="/assets/img/@item.ProductFk.ProductImages[0].Url" width="80px;">
+                                                }
                                             </div>
                                         </td>
                                         @if (item.ProductFk != null)
@@ -57,6 +64,7 @@
                                         }
                                         <td class="column-4">
                                             <form asp-action="Edit" asp-Controller="Cart" method="post" class="quantityForms">
+                                                @Html.AntiForgeryToken()
                                                 <input type="hidden" asp-for="@item.Id" />
                                                 <input type="hidden" asp-for="@item.ProductId" />
                                                 <input type="hidden" asp-for="@item.UserId" />
@@ -84,6 +92,7 @@
                                         }
                                         <td>
                                             <form asp-action="Delete" asp-Controller="Cart" method="post">
+                                                @Html.AntiForgeryToken()
                                                 <input type="hidden" asp-for="@item.Id" />
                                                 <input type="submit" value="X" class="btn btn-outline-danger p-3  mx-4" />
                                             </form>
@@ -128,6 +137,7 @@
                         </div>
                     </div>
                     <form id="orderForm" asp-action="Create" asp-Controller="Order" method="post">
+                        @Html.AntiForgeryToken()
                         <div class="flex-w flex-t bor12 p-t-15 p-b-30">
                             <div class="form-group" style="width: 100% !important;">
                                 <label asp-for="Address" class="control-label"></label>

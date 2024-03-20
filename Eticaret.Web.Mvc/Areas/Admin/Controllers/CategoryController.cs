@@ -27,6 +27,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
             return View(new Category());
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(Category category)
         {
             if (ModelState.IsValid)
@@ -53,6 +54,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
             return View(category);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Edit(Category category)
         {
             if (ModelState.IsValid)
@@ -78,6 +80,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
             return View(category);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(int id, Category category)
         {
             try
