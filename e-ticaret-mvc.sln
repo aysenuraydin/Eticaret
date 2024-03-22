@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eticaret.Persistence.Ef", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eticaret.Application", "Eticaret.Application\Eticaret.Application.csproj", "{514CC3A5-9151-4DFE-A2B0-EB614BB24786}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eticaret.API", "Eticaret.API\Eticaret.API.csproj", "{15CECD25-6854-4879-B0DE-0A0240100F19}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,10 +33,6 @@ Global
 		{514CC3A5-9151-4DFE-A2B0-EB614BB24786}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{514CC3A5-9151-4DFE-A2B0-EB614BB24786}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{514CC3A5-9151-4DFE-A2B0-EB614BB24786}.Release|Any CPU.Build.0 = Release|Any CPU
-		{15CECD25-6854-4879-B0DE-0A0240100F19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{15CECD25-6854-4879-B0DE-0A0240100F19}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{15CECD25-6854-4879-B0DE-0A0240100F19}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{15CECD25-6854-4879-B0DE-0A0240100F19}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
