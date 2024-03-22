@@ -39,16 +39,20 @@ namespace Eticaret.Application.Repositories
         {
             return _dbSet.FirstOrDefault(expression)!;
         }
+        public async Task<T> GetAsync(Expression<Func<T, bool>> expression)
+        {
+            return await _dbSet.FirstOrDefaultAsync(expression) ?? new T();
+        }
 
         public T Find(int id)
         {
             return _dbSet.Find(id)!;
         }
+        public async Task<T> FindAsync(int id)
+        {
+            return await _dbSet.FindAsync(id) ?? new T();
+        }
 
-        // public async Task<T> FindAsync(int id)
-        // {
-        //     return await _dbSet.FindAsync(id);
-        // }
         public int Add(T entity)
         {
             _dbSet.Add(entity);
@@ -58,10 +62,16 @@ namespace Eticaret.Application.Repositories
         {
             await _dbSet.AddAsync(entity);
         }
+
         public int Update(T entity)
         {
             _databaseContext.Update(entity);
             return SaveChanges();
+        }
+        public async Task<int> UpdateAsync(T entity)
+        {
+            _databaseContext.Update(entity);
+            return await SaveChangesAsync();
         }
 
         public int Delete(T entity)
@@ -69,46 +79,71 @@ namespace Eticaret.Application.Repositories
             _dbSet.Remove(entity);
             return SaveChanges();
         }
+        public async Task<int> DeleteAsync(T entity)
+        {
+            _dbSet.Remove(entity);
+            return await SaveChangesAsync();
+        }
 
         public int SaveChanges()
         {
             return _databaseContext.SaveChanges();
         }
-
         public async Task<int> SaveChangesAsync()
         {
             return await _databaseContext.SaveChangesAsync();
         }
 
-        public IQueryable<T> GetAllInclude(string table)
+
+        public List<T> GetAllInclude(params Expression<Func<T, object>>[] tables)
         {
-            return _dbSet.Include(table);
+            IQueryable<T> db = _dbSet;
+            foreach (var table in tables)
+            {
+                db = db.Include(table);
+            }
+
+            return db.ToList(); ;
+        }
+        public async Task<List<T>> GetAllIncludeAsync(params Expression<Func<T, object>>[] tables)
+        {
+            IQueryable<T> db = _dbSet;
+            foreach (var table in tables)
+            {
+                db = db.Include(table);
+            }
+
+            return await db.ToListAsync();
         }
 
-        public IQueryable<T> GetAllInclude(Expression<Func<T, bool>> expression)
+
+        public async Task<List<T>> GetIdAllIncludeAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] tables)
         {
-            return _dbSet.Include(expression);
+            IQueryable<T> db = _dbSet;
+            foreach (var table in tables)
+            {
+                db = db.Include(table);
+            }
+
+            return await db.Where(expression).ToListAsync();
         }
-        // public List<T> GetAllInclude(params Expression<Func<T, object>>[] tables)
-        // {
-        //     IQueryable<T> db = _dbSet;
-        //     foreach (var table in tables)
-        //     {
-        //         db=db.Include(table);
-        //     }
 
-        //     return db.ToList();;
-        // }
-        // public IQueryable<T> GetAllIncludeQueryable(params Expression<Func<T, object>>[] tables)
-        // {
-        //     IQueryable<T> db = _dbSet;
-        //     foreach (var table in tables)
-        //     {
-        //         db=db.Include(table);
-        //     }
 
-        //     return db;
-        // }
+
+
+
+
+
+        public IQueryable<T> GetAllIncludeQueryable(params Expression<Func<T, object>>[] tables)
+        {
+            IQueryable<T> db = _dbSet;
+            foreach (var table in tables)
+            {
+                db = db.Include(table);
+            }
+
+            return db;
+        }
 
         public DbSet<T> GetDb()
         {
