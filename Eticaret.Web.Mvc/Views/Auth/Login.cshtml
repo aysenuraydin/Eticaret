@@ -21,7 +21,7 @@
                             </div>
                             <form asp-action="Login" class="user">
                                 @Html.AntiForgeryToken()
-                                <div asp-validation-summary="All" class="text-danger"></div>
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                                 <div class="form-group">
                                     <input asp-for="Email" class="form-control form-control-user"
