@@ -43,14 +43,14 @@ namespace Eticaret.Web.Mvc.Controllers
         {
             return View();
         }
-        public IActionResult Listing(int? id, string? q)
+        public async Task<IActionResult> Listing(int? id, string? q)
         {
-            var productList = _productService.GetDb()
-                                                .Where(p => p.IsConfirmed && p.Enabled)
-                                                .Include(p => p.ProductImages)
-                                                .Where(p => p.StockAmount > 0)
-                                                .OrderByDescending(p => p.CreatedAt)
-                                                .ToList();
+            var productList = await _productService.GetIdAllIncludeFilterAsync(
+                                        p => p.IsConfirmed && p.Enabled && p.StockAmount > 0,
+                                        p => p.ProductImages
+                                       );
+
+
 
             if (id != null) productList = productList.Where(c => c.CategoryId == id)
                                                         .ToList();
@@ -67,7 +67,7 @@ namespace Eticaret.Web.Mvc.Controllers
                 TempData["search"] = "";
             }
             ProductListViewModel productAndSearch = new();
-            productAndSearch.ProductList = productList;
+            productAndSearch.ProductList = productList.OrderByDescending(p => p.CreatedAt).ToList();
             productAndSearch.Categories = _categoryService.GetAll();
 
             return View(productAndSearch);
