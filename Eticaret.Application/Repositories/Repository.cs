@@ -117,7 +117,7 @@ namespace Eticaret.Application.Repositories
         }
 
 
-        public async Task<List<T>> GetIdAllIncludeAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] tables)
+        public async Task<List<T>> GetIdAllIncludeFilterAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] tables)
         {
             IQueryable<T> db = _dbSet;
             foreach (var table in tables)

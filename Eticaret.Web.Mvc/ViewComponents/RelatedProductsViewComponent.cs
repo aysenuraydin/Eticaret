@@ -19,11 +19,12 @@ namespace ticaret.Web.Mvc.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var p = await _repository.GetAllAsync();
-            var product = p.Where(p => p.IsConfirmed && p.Enabled)
-                                .OrderByDescending(p => p.CreatedAt);
+            var p = await _repository.GetIdAllIncludeFilterAsync(
+                p => p.IsConfirmed && p.Enabled,
+                p => p.ProductImages
+            );
             //search den al
-            return View(product);
+            return View(p);
         }
     }
 

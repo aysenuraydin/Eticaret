@@ -34,6 +34,6 @@ namespace Eticaret.Application.Repositories
         DbSet<T> GetDb();
 
 
-        Task<List<T>> GetIdAllIncludeAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] tables);
+        Task<List<T>> GetIdAllIncludeFilterAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] tables);
     }
 }
