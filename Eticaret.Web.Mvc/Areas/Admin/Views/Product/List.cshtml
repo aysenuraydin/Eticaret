@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Product>
+﻿@model IEnumerable<AdminProductListDTO>
 @{
     ViewData["Title"] = "List of Products";
 }
@@ -16,44 +16,43 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ProductImages)
+                Ürün Resmi
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
+                Id
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Ürün Adı
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                Ürün Fiyatı
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Details)
+                Ürün Açıklaması
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.StockAmount)
+                Ürün Stok
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
+                Ürün Tarihi
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Enabled)
+                Onaylı mı?
             </th>
             <th>
-                Satıcı
-                @Html.DisplayNameFor(model => model.SellerFk!.Email)
+                Satıcı Adı
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CategoryFk!.Name)
+                Kategori Adı
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ProductComments)
+                Yorum Sayısı
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.OrderItems)
+                Sipariş Sayısı
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CartItems)
+                Sepet Sayısı
             </th>
             <th></th>
         </tr>
@@ -74,13 +73,13 @@
             {
                 <tr>
                     <td>
-                        @if (!item.ProductImages.Any())
+                        @if (!item.ImageUrlList.Any())
                         {
                             <img src="https://via.placeholder.com/300x300" alt="Ürun resmi">
                         }
                         else
                         {
-                            <img src="/assets/img/@item.ProductImages[0].Url" height="100px;">
+                            <img src="/assets/img/@item.ImageUrlList[0]" height="100px;">
                         }
                     </td>
                     <td>
@@ -105,21 +104,21 @@
                         @Html.DisplayFor(modelItem => item.Enabled)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.SellerFk!.Email)
+                        @Html.DisplayFor(modelItem => item.SellerName)
                     </td>
                     <td>
-                        <div class="badge badge-primary" style="background-color:@(item.CategoryFk!.Color);">
-                            @Html.DisplayFor(modelItem => item.CategoryFk!.Name)
+                        <div class="badge badge-primary" style="background-color:@(item.CategoryColor);">
+                            @Html.DisplayFor(modelItem => item.CategoryName)
                         </div>
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.ProductComments.Count)
+                        @Html.DisplayFor(modelItem => item.CommentCount)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.OrderItems.Count)
+                        @Html.DisplayFor(modelItem => item.OrderCount)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.CartItems.Count)
+                        @Html.DisplayFor(modelItem => item.CartCount)
                     </td>
                     <td>
                         <a class="btn btn-sm btn-@(item.IsConfirmed?"danger":"primary") btn-m" asp-action="Approve"

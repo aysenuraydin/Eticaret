@@ -1,4 +1,4 @@
-﻿@model IEnumerable<User>
+﻿@model IEnumerable<AdminUserListDTO>
 @{
     ViewData["Title"] = "List of User";
 }
@@ -25,27 +25,24 @@
                 @Html.DisplayNameFor(model => model.Email)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
+                @Html.DisplayNameFor(model => model.FullName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.CreatedAt)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RoleFk.Name)
+                @Html.DisplayNameFor(model => model.RoleName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CartItems)
+                @Html.DisplayNameFor(model => model.CartItemCount)
                 Count
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ProductComments)
+                @Html.DisplayNameFor(model => model.ProductCommentCount)
                 Count
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Orders)
+                @Html.DisplayNameFor(model => model.OrderCount)
                 Count
             </th>
             <th></th>
@@ -62,25 +59,22 @@
                     @Html.DisplayFor(modelItem => item.Email)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FirstName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LastName)
+                    @Html.DisplayFor(modelItem => item.FullName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.CreatedAt)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.RoleFk.Name)
+                    @Html.DisplayFor(modelItem => item.RoleName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CartItems.Count)
+                    @Html.DisplayFor(modelItem => item.CartItemCount)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ProductComments.Count)
+                    @Html.DisplayFor(modelItem => item.ProductCommentCount)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Orders.Count)
+                    @Html.DisplayFor(modelItem => item.OrderCount)
                 </td>
                 <td>
                     <a class="btn btn-sm btn-@(item.Enabled?"primary":"danger") btn-m" asp-action="Approve"

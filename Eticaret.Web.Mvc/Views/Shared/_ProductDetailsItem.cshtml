@@ -1,4 +1,4 @@
-@model Product
+@model ProductDetailDTO
 
 <div class="row">
     <div class="col-md-6 col-lg-7 p-b-30">
@@ -8,9 +8,9 @@
                 <div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
 
                 <div class="slick3 gallery-lb">
-                    @if (Model.ProductImages != null && Model.ProductImages.Any())
+                    @if (Model.ProductImagesUrl != null && Model.ProductImagesUrl.Any())
                     {
-                        @foreach (var img in Model.ProductImages)
+                        @foreach (var img in Model.ProductImagesUrl)
                         {
                             <div class="item-slick3" data-thumb="/assets/img/@img.Url">
                                 <div class="wrap-pic-w pos-relative">
@@ -32,7 +32,10 @@
     <div class="col-md-6 col-lg-5 p-b-30">
         <div class="p-r-50 p-t-5 p-lr-0-lg">
             <div style="max-height: 50%;">
+
                 @await Component.InvokeAsync("ProductRating", new { id = Model.Id })
+
+
                 <span class="h4">
                     ( @(Model.ProductComments?.Count ?? 0) )
 

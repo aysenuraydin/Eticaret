@@ -1,13 +1,13 @@
-﻿@model Product
+﻿@model ProductListDTO
 @{
     var imgSrc = "";
-    if (!Model.ProductImages.Any())
+    if (Model.ImageUrl == null)
     {
         imgSrc = "https://via.placeholder.com/300x400";
     }
     else
     {
-        imgSrc = "/assets/img/" + Model.ProductImages[0].Url;
+        imgSrc = "/assets/img/" + Model.ImageUrl;
     }
 }
 <div class="block2">

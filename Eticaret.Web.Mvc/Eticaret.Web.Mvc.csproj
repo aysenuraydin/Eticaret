@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <ItemGroup>
-    <ProjectReference Include="..\Eticaret.Application\Eticaret.Application.csproj"/>
+    <ProjectReference Include="..\Eticaret.Api\Eticaret.Api.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.1"/>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.1" />
   </ItemGroup>
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>

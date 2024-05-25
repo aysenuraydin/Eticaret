@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Category>
+﻿@model IEnumerable<AdminCategoryListDTO>
 @{
     ViewData["Title"] = "List of Category";
 }
@@ -28,7 +28,7 @@
                 @Html.DisplayNameFor(model => model.Color)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IconCssClass)
+                @Html.DisplayNameFor(model => model.Css)
             </th>
             </th>
             <th>
@@ -56,13 +56,13 @@
                     </div>
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IconCssClass)
+                    @Html.DisplayFor(modelItem => item.Css)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.CreatedAt)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Products.Count)
+                    @Html.DisplayFor(modelItem => item.ProductCount)
                 </td>
                 <td>
                     <a class="btn btn-sm btn-primary btn-m" asp-action="Edit" asp-Controller="Category"

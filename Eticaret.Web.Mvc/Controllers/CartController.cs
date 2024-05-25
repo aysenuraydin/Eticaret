@@ -19,9 +19,11 @@ namespace Eticaret.Web.Mvc.Controllers
     public class CartController : Controller
     {
         private readonly ICartItemRepository _cartItemRepository;
-
-        public CartController(ICartItemRepository cartItemRepository)
+        private readonly HttpClient _httpClient;
+        public CartController(IHttpClientFactory httpClientFactory, ICartItemRepository cartItemRepository)
         {
+            _httpClient = httpClientFactory.CreateClient();
+            _httpClient.BaseAddress = new Uri("http://localhost:5177/api/");
             _cartItemRepository = cartItemRepository;
         }
 

@@ -1,15 +1,14 @@
-﻿@model Product;
+﻿@model SellerProductUpdateDTO;
 @{
     ViewData["Title"] = "Ürünü Düzenle";
 }
 <div class="container mt-5 pt-5">
     <h2>@ViewData["Title"]</h2>
 
-
     <hr />
     <div class="row">
         <div class="col-4">
-            @if (!Model.ProductImages.Any())
+            @if (!Model.ImageList.Any())
             {
                 <img src="https://via.placeholder.com/300x300" alt="Ürun resmi">
             }
@@ -23,16 +22,16 @@
 
 
                         <div class="slick3 gallery-lb">
-                            @if (Model.ProductImages != null && Model.ProductImages.Any())
+                            @if (Model.ImageList != null && Model.ImageList.Any())
                             {
-                                @foreach (var img in Model.ProductImages)
+                                @foreach (var img in Model.ImageList)
                                 {
-                                    <div class="item-slick3" data-thumb="/assets/img/@img.Url">
+                                    <div class="item-slick3" data-thumb="/assets/img/@img">
                                         <div class="wrap-pic-w pos-relative">
-                                            <img src="/assets/img/@img.Url" alt="IMG-PRODUCT">
+                                            <img src="/assets/img/@img" alt="IMG-PRODUCT">
 
                                             <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
-                                                href="/assets/img/@img.Url">
+                                                href="/assets/img/@img">
                                                 <i class="fa fa-expand"></i>
                                             </a>
                                         </div>
@@ -47,19 +46,12 @@
                 </div>
             }
         </div>
+
         <div class="col-6">
             <form asp-action="Edit" enctype="multipart/form-data">
                 @Html.AntiForgeryToken()
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="Id" />
-                <input type="hidden" asp-for="CreatedAt" />
-                <input type="hidden" asp-for="IsConfirmed" />
-                <input type="hidden" asp-for="SellerId" />
-                <input type="hidden" asp-for="SellerFk" />
-                <input type="hidden" asp-for="CategoryFk" />
-                <input type="hidden" asp-for="ProductComments" />
-                <input type="hidden" asp-for="OrderItems" />
-                <input type="hidden" asp-for="CartItems" />
 
                 <div class="form-group">
                     <label asp-for="Name" class="control-label"></label>
@@ -92,10 +84,10 @@
 
                 <div class="input-group my-3">
                     <div class="custom-file">
-                        <input asp-for="ProductImages" class="custom-file-input" type="file"
+                        <input asp-for="ImageList" class="custom-file-input" type="file"
                             aria-describedby="inputGroupFileAddon01" multiple />
                         <label class="custom-file-label" for="inputGroupFile01">Ürün Resimlerini Seç</label>
-                        <span asp-validation-for="ProductImages" class="text-danger"></span>
+                        <span asp-validation-for="ImageList" class="text-danger"></span>
                     </div>
                 </div>
 
@@ -123,7 +115,8 @@
 
 @section Scripts {
     <script>
-        const ProductImages = document.getElementById('ProductImages');
+        //const ProductImages = document.getElementById('ProductImages');
+        const ProductImages = document.getElementById('ImageList');
         const imagePreview = document.getElementById('imagePreview');
 
         ProductImages.addEventListener('change', function (event) {

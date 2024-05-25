@@ -1,181 +1,208 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
+using System.Text;
+using System.Text.Json;
 using Eticaret.Application.Abstract;
 using Eticaret.Domain;
-using Eticaret.Web.Mvc.Models;
+using Eticaret.Dto;
 using Eticaret.Web.Mvc.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Web.Mvc.Controllers
 {
     [Authorize(Roles = "seller")]
     public class ProductController : Controller
     {
-        private readonly IProductRepository _productService;
         private readonly IProductCommentRepository _productCommentService;
-        private readonly ICategoryRepository _categoryService;
-        private readonly IProductImageRepository _productImageService;
+        private HttpClient _httpClient;
 
-        public ProductController(IProductRepository productService,
+        public ProductController(
         IProductCommentRepository productCommentService,
-        IProductImageRepository productImageService,
-        ICategoryRepository categoryService)
+        IHttpClientFactory httpClientFactory)
         {
-            _productService = productService;
+            _httpClient = httpClientFactory.CreateClient();
+            _httpClient.BaseAddress = new Uri("http://localhost:5177/api/");
+
             _productCommentService = productCommentService;
-            _productImageService = productImageService;
-            _categoryService = categoryService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId != null && int.TryParse(userId, out int Id))
             {
-                var product = _productService.GetDb()
-                               .Include(i => i.CategoryFk)
-                               .Include(i => i.SellerFk)
-                               .Include(i => i.CartItems)
-                               .Include(i => i.ProductComments)
-                               .Include(i => i.ProductImages)
-                               .Include(i => i.OrderItems)
-                               .Where(u => u.SellerId == Id)
-                               .OrderBy(p => p.IsConfirmed)
-                               .ToList();
-                return View(product);
+                using (var response = await _httpClient.GetAsync($"SellerProduct/All/{userId}"))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var products = await response.Content.ReadFromJsonAsync<List<AdminProductListDTO>>() ?? new List<AdminProductListDTO>();
+                        return View(products);
+                    }
+                    else
+                    {
+                        ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                        return View("Error");
+                    }
+                }
             }
             else return BadRequest();
         }
+
         public async Task<IActionResult> Create()
         {
             bool Id = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int sellerId);
-            var product = new Product() { SellerId = sellerId };
+            var product = new SellerProductCreateDTO() { SellerId = sellerId };
 
 
-            ViewBag.Category = new SelectList(await _categoryService.GetAllAsync(), "Id", "Name");
+            ViewBag.Category = new SelectList(await GetCategories(), "Id", "Name");
             return View(product);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Product product, List<IFormFile> ProductImages)
+        public async Task<IActionResult> Create(SellerProductCreateDTO product, List<IFormFile> ImageList)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    if (ProductImages != null && ProductImages.Any())
+                    var json = JsonSerializer.Serialize(product);
+
+                    var response = await _httpClient.PostAsync("SellerProduct", new StringContent(json, Encoding.UTF8, "application/json"));
+
+                    if (response.IsSuccessStatusCode)
                     {
-                        _productService.Add(product);
+                        var newProduct = await response.Content.ReadFromJsonAsync<SellerProductCreateDTO>();
 
-                        List<ProductImage> img = new List<ProductImage>();
-                        foreach (var item in ProductImages)
-                        {
-                            img.Add(new()
-                            {
-                                Url = await FileHelper.FileLoaderAsync(item),
-                                ProductId = product.Id,
-                                SellerId = product.SellerId
-                            });
-                        }
-                        img.ForEach(item => _productImageService.Add(item));
+                        CreateImage(newProduct!, ImageList);
+                        return RedirectToAction(nameof(Index), "Product");
                     }
-
-                    return RedirectToAction(nameof(Index));
                 }
                 catch
                 {
                     ModelState.AddModelError("", "Hata Oluştu!");
                 }
             }
-            ViewBag.Category = new SelectList(await _categoryService.GetAllAsync(), "Id", "Name");
+            ViewBag.Category = new SelectList(await GetCategories(), "Id", "Name");
             return View(product);
-        }
-        public async Task<IActionResult> Edit(int id)
-        {
-            var product = _productService.GetDb()
-                                .Include(i => i.CategoryFk)
-                                .Include(i => i.SellerFk)
-                                .Include(i => i.CartItems)
-                                .Include(i => i.ProductComments)
-                                .Include(i => i.ProductImages)
-                                .Include(i => i.OrderItems)
-                                .FirstOrDefault(p => p.Id == id);
 
-            ViewBag.Category = new SelectList(await _categoryService.GetAllAsync(), "Id", "Name");
-            return View(product);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Product product, List<IFormFile> ProductImages)
+        public async void CreateImage(SellerProductCreateDTO product, List<IFormFile> ImageList)
         {
-            if (ModelState.IsValid)
+            if (ImageList != null && ImageList.Any())
             {
-                try
+                foreach (var item in ImageList)
                 {
-                    _productService.Update(product);
-                    if (ProductImages != null && ProductImages.Any())
+                    try
                     {
-                        List<ProductImage> img = new List<ProductImage>();
-                        foreach (var item in ProductImages)
-                        {
-                            img.Add(new()
-                            {
-                                Url = await FileHelper.FileLoaderAsync(item),
-                                ProductId = product.Id,
-                                SellerId = product.SellerId
-                            });
-                        }
-                        _productImageService.GetAll()
-                                    .Where(i => i.ProductId == product.Id).ToList()
-                                    .ForEach(item => _productImageService.Delete(item));
+                        var json = JsonSerializer.Serialize(
+                             new ProductImageCreateDTO()
+                             {
+                                 Url = await FileHelper.FileLoaderAsync(item),
+                                 ProductId = product.Id,
+                                 SellerId = product.SellerId
+                             }
+                        );
 
-                        img.ForEach(item => _productImageService.Add(item));
+                        var response = await _httpClient.PostAsync("ProductImage", new StringContent(json, Encoding.UTF8, "application/json"));
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var newCategory = await response.Content.ReadFromJsonAsync<ProductImage>();
+                        }
                     }
-                    return RedirectToAction(nameof(Index));
-                }
-                catch
-                {
-                    ModelState.AddModelError("", "Hata Oluştu!");
+                    catch (Exception ex)
+                    {
+                        ViewBag.Error = ex.Message;
+                    }
                 }
             }
-
-            ViewBag.Category = new SelectList(await _categoryService.GetAllAsync(), "Id", "Name");
-            return View(product);
         }
-        public IActionResult Delete(int id)
-        {
-            var product = _productService.GetDb()
-                               .Include(i => i.CategoryFk)
-                               .Include(i => i.SellerFk)
-                               .Include(i => i.CartItems)
-                               .Include(i => i.ProductImages)
-                               .Include(i => i.ProductComments)
-                               .Include(i => i.OrderItems)
-                               .FirstOrDefault(p => p.Id == id);
-
-            return View(product);
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Delete(Product product)
+        public async void DeleteImage(SellerProductCreateDTO product)
         {
             try
             {
-                //wroot içinden de  silmmeiz lazım .Net Core delete image araştır =>
-                _productService.Delete(product);
-                return RedirectToAction(nameof(Index));
+                var response = await _httpClient.DeleteAsync($"ProductImage/{product.Id}");
+
             }
-            catch
+            catch (Exception ex)
             {
+                ViewBag.Error = ex.Message;
+            }
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            using (var response = await _httpClient.GetAsync($"SellerProduct/{id}"))
+            {
+                SellerProductUpdateDTO product = await response.Content.ReadFromJsonAsync<SellerProductUpdateDTO>() ?? new();
+                ViewBag.Category = new SelectList(await GetCategories(), "Id", "Name");
                 return View(product);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(SellerProductUpdateDTO product, List<IFormFile> ImageList)
+        {
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var json = JsonSerializer.Serialize(product);
+
+                    var response = await _httpClient.PutAsync($"SellerProduct/{product.Id}", new StringContent(json, Encoding.UTF8, "application/json"));
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var newProduct = await response.Content.ReadFromJsonAsync<SellerProductCreateDTO>();
+
+                        DeleteImage(newProduct!);
+                        CreateImage(newProduct!, ImageList);
+
+                        return RedirectToAction(nameof(Index), "Product");
+                    }
+                }
+                catch
+                {
+                    ModelState.AddModelError("", "Hata Oluştu!");
+                }
+            }
+            ViewBag.Category = new SelectList(await GetCategories(), "Id", "Name");
+            return View(product);
+        }
+
+
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            using (var response = await _httpClient.GetAsync($"SellerProduct/{id}"))
+            {
+                var product = await response.Content.ReadFromJsonAsync<SellerProductListDTO>() ?? new();
+                return View(product);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id, SellerProductListDTO category)
+        {
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"SellerProduct/{id}");
+
+                if (response.IsSuccessStatusCode)
+                    return RedirectToAction(nameof(Index), "Product");
+                else
+                    return View("Error");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = ex.Message;
+                return View("Error");
             }
         }
 
@@ -214,6 +241,16 @@ namespace Eticaret.Web.Mvc.Controllers
                 action = nameof(HomeController.ProductDetail),
                 id = ProductId
             });
+        }
+
+        public async Task<List<CategoryListDTO>> GetCategories()
+        {
+            using (var response = await _httpClient.GetAsync("Categories"))
+            {
+                List<CategoryListDTO> products = await response.Content.ReadFromJsonAsync<List<CategoryListDTO>>() ?? new();
+
+                return products;
+            }
         }
     }
 }

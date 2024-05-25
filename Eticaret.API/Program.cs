@@ -1,18 +1,7 @@
-
-
-using Eticaret.Domain;
-using Eticaret.Application.Abstract;
-using Eticaret.Application.Concrete;
 using Eticaret.Application;
 using Eticaret.Persistence.Ef;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Eticaret.Application.Repositories;
-
 
 var builder = WebApplication.CreateBuilder(args);
-
-//builder.Services.AddControllers();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -22,9 +11,10 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddApplicationServices();
 
+// Add services to the container.
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 
 builder.Services.AddCors(options =>
 {
@@ -32,7 +22,7 @@ builder.Services.AddCors(options =>
         name: "_myAllowOrigins",
         builder =>
         {
-            builder
+            builder.WithOrigins("http://127.0.0.1:5177")
                 .AllowAnyOrigin()
                 .AllowAnyHeader()
                 .AllowAnyMethod();
@@ -50,6 +40,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseRouting();
 
 app.UseCors("_myAllowOrigins");
@@ -57,4 +48,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
+
+app.UseHttpsRedirection();
 

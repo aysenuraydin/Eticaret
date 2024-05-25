@@ -1,15 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Eticaret.Application.Abstract;
+﻿using Eticaret.Application.Abstract;
 using Eticaret.Domain;
-using Eticaret.Models.DTO;
-using Microsoft.AspNetCore.Authorization;
+using Eticaret.Dto;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Api.Controllers
@@ -19,98 +11,86 @@ namespace Eticaret.Api.Controllers
     public class ProductImageController : ControllerBase
     {
         private readonly IProductImageRepository _productImageService;
-
-        public ProductImageController(IProductImageRepository productImageService)
+        public ProductImageController(
+            IProductImageRepository productImageService
+            )
         {
             _productImageService = productImageService;
         }
-        [HttpGet]
-        public async Task<IActionResult> GetAllProduct()
-        {
-            var products = await _productImageService.GetAllAsync();
 
-            var ProductImagesDTO = new List<ProductImageDTO>();
-
-            foreach (var p in products)
-            {
-                ProductImagesDTO.Add(ProductImageToDTO(p));
-            }
-
-            return Ok(ProductImagesDTO);
-
-        }
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProduct(int id)
+        public async Task<IActionResult> GetImages(int? id)
         {
-            var product = await _productImageService.FindAsync(id);
+            if (id == null) return NotFound();
 
-            if (product == null)
-            {
-                return NotFound(); // 404
-            }
-            return Ok(ProductImageToDTO(product)); // 200
+            var images = await _productImageService.GetIdAllIncludeFilterAsync(
+                          p => p.ProductId == id,
+                          p => p.SellerFk!
+                         );
+
+            if (images == null) return NotFound();
+
+            var img = images
+                        .OrderByDescending(p => p.CreatedAt)
+                        .Select(p => ProductImageListToDTO(p))
+                        .ToList();
+            return Ok(img);
         }
-
         [HttpPost]
-        public async Task<IActionResult> CreateProduct(ProductImage productImage)
+        public async Task<IActionResult> CreateProduct(ProductImageCreateDTO image)
         {
-            await _productImageService.AddAsync(productImage);
-            return CreatedAtAction(nameof(GetProduct), new { id = productImage.Id }, ProductImageToDTO(productImage));
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> EditProduct(int id, ProductImage productImage)
-        {
-            if (id != productImage.Id)
+            try
             {
-                return BadRequest();
+                var img = ProductImageCreateToDTO(image);
+                await _productImageService.AddAsync(img);
+                return CreatedAtAction(nameof(GetImages), new { id = img.ProductId }, img);
             }
-
-            var img = await _productImageService.FindAsync(id);
-
-            if (img == null)
+            catch (Exception)
             {
                 return NotFound();
             }
-
-            await _productImageService.UpdateAsync(img);
-            return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id, ProductImage productImage)
+        public async Task<IActionResult> DeleteImages(int? id)
         {
-            if (id != productImage.Id)
+            if (id == null) return NotFound();
+
+            var prd = await _productImageService.GetAllAsync(i => i.ProductId == id);
+
+            if (prd == null) return NotFound();
+
+            try
             {
-                return BadRequest();
+                var deleteTasks = prd.Select(i => _productImageService.DeleteAsync(i));
+                await Task.WhenAll(deleteTasks);
             }
-
-            var img = await _productImageService.FindAsync(id);
-
-            if (img == null)
+            catch (Exception)
             {
                 return NotFound();
             }
-
-            await _productImageService.DeleteAsync(img);
             return NoContent();
         }
-        private static ProductImageDTO ProductImageToDTO(ProductImage p)
+
+        private static ProductImageListDTO ProductImageListToDTO(ProductImage p)
         {
-            return new ProductImageDTO
+            return new ProductImageListDTO
             {
-                Id = p.Id,
                 Url = p.Url,
-                CreatedAt = p.CreatedAt,
+                CreatedAt = p.CreatedAt.ToString("dd.MM.yyyy"),
                 ProductId = p.ProductId,
-                SellerId = p.SellerId,
+                SellerId = p.SellerId
+            };
+        }
+        private static ProductImage ProductImageCreateToDTO(ProductImageCreateDTO p)
+        {
+            return new ProductImage
+            {
+                Url = p.Url ?? Guid.NewGuid().ToString(),
+                ProductId = p.ProductId,
+                SellerId = p.SellerId
             };
         }
     }
 }
-
-
-
-
-
 

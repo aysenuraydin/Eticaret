@@ -1,4 +1,5 @@
 ﻿using Eticaret.Application.Abstract;
+using Eticaret.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,18 +7,21 @@ namespace ticaret.Web.Mvc.ViewComponents
 {
     public class WomenBannerViewComponent : ViewComponent
     {
-        private readonly IProductRepository _productService;
-
-        public WomenBannerViewComponent(IProductRepository productService)
+        private readonly HttpClient _httpClient;
+        public WomenBannerViewComponent(IHttpClientFactory httpClientFactory)
         {
-            _productService = productService;
+            _httpClient = httpClientFactory.CreateClient();
+            _httpClient.BaseAddress = new Uri("http://localhost:5177/api/");
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var p = await _productService.GetAllAsync();
-            var product = p.Where(p => p.IsConfirmed && p.Enabled).OrderByDescending(p => p.CreatedAt).Take(4);
-            return View(product);
+            using (var response = await _httpClient.GetAsync("Home"))
+            {
+                List<ProductListDTO> products = await response.Content.ReadFromJsonAsync<List<ProductListDTO>>() ?? new();
+
+                return View(products.Take(6).ToList());
+            }
         }
 
     }

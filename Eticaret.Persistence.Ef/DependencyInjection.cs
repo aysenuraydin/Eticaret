@@ -10,7 +10,7 @@ namespace Eticaret.Persistence.Ef
         {
             services.AddDbContext<EticaretDbContext>(opt =>
             {
-                opt.UseSqlite(configuration.GetConnectionString("DbConnection"), b => b.MigrationsAssembly("Eticaret.Web.Mvc"));
+                opt.UseSqlite(configuration.GetConnectionString("DbConnection"), b => b.MigrationsAssembly("Eticaret.Api"));
             });
 
             return services;

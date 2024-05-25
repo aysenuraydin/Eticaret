@@ -30,3 +30,7 @@ namespace Eticaret.Domain
         #endregion
     }
 }
+
+
+
+

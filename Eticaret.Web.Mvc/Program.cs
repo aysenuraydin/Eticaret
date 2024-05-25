@@ -2,11 +2,10 @@ using Eticaret.Persistence.Ef;
 using Eticaret.Application;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
-using Microsoft.EntityFrameworkCore;
-
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpClient();
 
 builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddApplicationServices();

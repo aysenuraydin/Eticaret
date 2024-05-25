@@ -1,11 +1,11 @@
-﻿@model Product
+﻿@model AdminProductListDTO
 @{
     ViewData["Title"] = "Delete Product";
 }
 
 <div class="row">
     <div class="col-4">
-        @if (!Model.ProductImages.Any())
+        @if (!Model.ImageUrlList.Any())
         {
             <img src="https://via.placeholder.com/300x300" alt="Ürun resmi">
         }
@@ -17,21 +17,18 @@
                     <div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
 
                     <div class="slick3 gallery-lb">
-                        @if (Model.ProductImages != null && Model.ProductImages.Any())
+                        @foreach (var img in Model.ImageUrlList)
                         {
-                            @foreach (var img in Model.ProductImages)
-                            {
-                                <div class="item-slick3" data-thumb="/assets/img/@img.Url">
-                                    <div class="wrap-pic-w pos-relative">
-                                        <img src="/assets/img/@img.Url">
+                            <div class="item-slick3" data-thumb="/assets/img/@img">
+                                <div class="wrap-pic-w pos-relative">
+                                    <img src="/assets/img/@img">
 
-                                        <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
-                                            href="/assets/img/@img.Url">
-                                            <i class="fa fa-expand"></i>
-                                        </a>
-                                    </div>
+                                    <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
+                                        href="/assets/img/@img">
+                                        <i class="fa fa-expand"></i>
+                                    </a>
                                 </div>
-                            }
+                            </div>
                         }
                     </div>
                 </div>
@@ -43,7 +40,7 @@
         <hr />
         <dl class="row">
             <dt class="col-sm-3">
-                @Html.DisplayNameFor(model => model.Id)
+                Id
             </dt>
             <dt class="col-sm-9">
                 @Html.DisplayFor(model => model.Id)
@@ -51,7 +48,7 @@
         </dl>
         <dl class="row">
             <dt class="col-sm-3">
-                @Html.DisplayNameFor(model => model.Name)
+                Ürün Adı
             </dt>
             <dt class="col-sm-9">
                 @Html.DisplayFor(model => model.Name)
@@ -59,7 +56,7 @@
         </dl>
         <dl class="row">
             <dd class="col-sm-3">
-                @Html.DisplayNameFor(model => model.Price)
+                Ürün Fiyatı
             </dd>
             <dd class="col-sm-9">
                 @Html.DisplayFor(model => model.Price)
@@ -67,7 +64,7 @@
         </dl>
         <dl class="row">
             <dt class="col-sm-3">
-                @Html.DisplayNameFor(model => model.Details)
+                Ürün Açıklaması
             </dt>
             <dt class="col-sm-9">
                 @Html.DisplayFor(model => model.Details)
@@ -75,7 +72,7 @@
         </dl>
         <dl class="row">
             <dd class="col-sm-3">
-                @Html.DisplayNameFor(model => model.StockAmount)
+                Ürün Stok
             </dd>
             <dd class="col-sm-9">
                 @Html.DisplayFor(model => model.StockAmount)
@@ -83,7 +80,7 @@
         </dl>
         <dl class="row">
             <dd class="col-sm-3">
-                @Html.DisplayNameFor(model => model.CreatedAt)
+                Ürün Tarihi
             </dd>
             <dd class="col-sm-9">
                 @Html.DisplayFor(model => model.CreatedAt)
@@ -91,7 +88,7 @@
         </dl>
         <dl class="row">
             <dd class="col-sm-3">
-                @Html.DisplayNameFor(model => model.Enabled)
+                Onaylı Mı?
             </dd>
             <dd class="col-sm-9">
                 @Html.DisplayFor(model => model.Enabled)
@@ -99,45 +96,44 @@
         </dl>
         <dl class="row">
             <dt class="col-sm-3">
-                Satıcı
-                @Html.DisplayNameFor(model => model.SellerFk!.Email)
+                Satıcı Adı
             </dt>
             <dt class="col-sm-9">
-                @Html.DisplayFor(model => model.SellerFk!.Email)
+                @Html.DisplayFor(model => model.SellerName)
             </dt>
         </dl>
         <dl class="row">
             <dd class="col-sm-3">
-                @Html.DisplayNameFor(model => model.CategoryFk!.Name)
+                Kategori Adı
             </dd>
             <dd class="col-sm-9">
-                <div class="badge badge-primary" style="background-color:@(Model.CategoryFk!.Color);">
-                    @Html.DisplayFor(model => model.CategoryFk!.Name)
+                <div class="badge badge-primary" style="background-color:@(Model.CategoryColor);">
+                    @Html.DisplayFor(model => model.CategoryName)
                 </div>
             </dd>
         </dl>
         <dl class="row">
             <dd class="col-sm-3">
-                @Html.DisplayNameFor(model => model.ProductComments)
+                Yorum Sayısı
             </dd>
             <dd class="col-sm-9">
-                @Html.DisplayFor(model => model.ProductComments.Count)
+                @Html.DisplayFor(model => model.CommentCount)
             </dd>
         </dl>
         <dl class="row">
             <dd class="col-sm-3">
-                @Html.DisplayNameFor(model => model.OrderItems)
+                Sipariş Sayısı
             </dd>
             <dd class="col-sm-9">
-                @Html.DisplayFor(model => model.OrderItems.Count)
+                @Html.DisplayFor(model => model.OrderCount)
             </dd>
         </dl>
         <dl class="row">
             <dd class="col-sm-3">
-                @Html.DisplayNameFor(model => model.CartItems)
+                Sepet Sayısı
             </dd>
             <dd class="col-sm-9">
-                @Html.DisplayFor(model => model.CartItems.Count)
+                @Html.DisplayFor(model => model.CartCount)
             </dd>
         </dl>
         </dl>

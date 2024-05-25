@@ -1,39 +1,39 @@
-using System;
-using System.Collections.Generic;
+
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text.Json;
 using Eticaret.Application.Abstract;
-using Eticaret.Domain;
+using Eticaret.Dto;
 using Eticaret.Web.Mvc.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Eticaret.Web.Mvc.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ICategoryRepository _categoryService;
-        private readonly IProductRepository _productService;
-        private readonly IProductCommentRepository _productCommentService;
-
-        public HomeController(ICategoryRepository categoryService, IProductRepository productService, IProductCommentRepository productCommentService)
+        private readonly HttpClient _httpClient;
+        public HomeController(IHttpClientFactory httpClientFactory)
         {
-            _categoryService = categoryService;
-            _productService = productService;
-            _productCommentService = productCommentService;
+            _httpClient = httpClientFactory.CreateClient();
+            _httpClient.BaseAddress = new Uri("http://localhost:5177/api/");
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var produsts = _productService.GetDb()
-                                            .Where(p => p.IsConfirmed && p.Enabled)
-                                            .Include(p => p.ProductImages)
-                                            .Where(p => p.StockAmount > 0)
-                                            .OrderByDescending(p => p.CreatedAt)
-                                            .ToList();
-            return View(produsts);
+            try
+            {
+                using (var response = await _httpClient.GetAsync("Home"))
+                {
+                    response.EnsureSuccessStatusCode();
+                    var products = await response.Content.ReadFromJsonAsync<List<ProductListDTO>>() ?? new List<ProductListDTO>();
+                    return View(products);
+                }
+            }
+            catch (HttpRequestException httpRequestException)
+            {
+                Console.WriteLine($"Request error: {httpRequestException.Message}");
+                return View(new List<ProductListDTO>());
+            }
         }
         public IActionResult AboutUs()
         {
@@ -45,15 +45,13 @@ namespace Eticaret.Web.Mvc.Controllers
         }
         public async Task<IActionResult> Listing(int? id, string? q)
         {
-            var productList = await _productService.GetIdAllIncludeFilterAsync(
-                                        p => p.IsConfirmed && p.Enabled && p.StockAmount > 0,
-                                        p => p.ProductImages
-                                       );
+            var productList = new List<ProductListDTO>();
+            var url = (id == null) ? $"Home" : $"Home/{id}";
 
-
-
-            if (id != null) productList = productList.Where(c => c.CategoryId == id)
-                                                        .ToList();
+            using (var response = await _httpClient.GetAsync(url))
+            {
+                productList = await response.Content.ReadFromJsonAsync<List<ProductListDTO>>() ?? new();
+            }
 
             if (!string.IsNullOrWhiteSpace(q))
             {
@@ -66,23 +64,29 @@ namespace Eticaret.Web.Mvc.Controllers
             {
                 TempData["search"] = "";
             }
+
+            var categoriesList = new List<CategoryListDTO>();
+            using (var response = await _httpClient.GetAsync("Categories"))
+            {
+                categoriesList = await response.Content.ReadFromJsonAsync<List<CategoryListDTO>>() ?? new();
+            }
+
             ProductListViewModel productAndSearch = new();
-            productAndSearch.ProductList = productList.OrderByDescending(p => p.CreatedAt).ToList();
-            productAndSearch.Categories = _categoryService.GetAll();
+            productAndSearch.ProductList = productList;
+            productAndSearch.Categories = categoriesList;
 
             return View(productAndSearch);
         }
 
-        public IActionResult ProductDetail(int id)
+        public async Task<IActionResult> ProductDetail(int id)
         {
-            var product = _productService.GetDb()
-                                .Include(i => i.ProductComments)
-                                .ThenInclude(i => i.UserFk)
-                                .Include(p => p.ProductImages)
-                                .Include(p => p.CategoryFk)
-                                .FirstOrDefault(p => p.Id == id);
-            return View(product);
+            using (var response = await _httpClient.GetAsync($"Product/{id}"))
+            {
+                var product = await response.Content.ReadFromJsonAsync<ProductDetailDTO>() ?? new ProductDetailDTO();
+                return View(product);
+            }
         }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

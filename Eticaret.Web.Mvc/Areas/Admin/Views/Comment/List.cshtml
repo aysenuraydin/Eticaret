@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ProductComment>
+﻿@model IEnumerable<AdminProductCommentListDTO>
 @{
     ViewData["Title"] = "List of Comment";
 }
@@ -32,10 +32,10 @@
             </th>
             <th>
                 Kullanıcı
-                @Html.DisplayNameFor(model => model.UserFk!.Email)
+                @Html.DisplayNameFor(model => model.UserName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ProductFk!.Name)
+                @Html.DisplayNameFor(model => model.ProductName)
             </th>
             <th></th>
         </tr>
@@ -57,10 +57,10 @@
                     @Html.DisplayFor(modelItem => item.CreatedAt)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.UserFk!.Email)
+                    @Html.DisplayFor(modelItem => item.UserName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ProductFk!.Name)
+                    @Html.DisplayFor(modelItem => item.ProductName)
                 </td>
                 <td>
                     <a class="btn btn-sm btn-@(item.IsConfirmed?"danger":"primary") btn-m" asp-action="Approve"

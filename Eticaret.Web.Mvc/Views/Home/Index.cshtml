@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Product>
+﻿@model IEnumerable<ProductListDTO>
 @{
 	ViewData["Title"] = "Home";
 }
@@ -434,7 +434,6 @@
 				<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 d-flex align-items-stretch isotope-item">
 					<!-- Block2 -->
 					@await Html.PartialAsync("_ProductListItem", item)
-
 				</div>
 			}
 		</div>

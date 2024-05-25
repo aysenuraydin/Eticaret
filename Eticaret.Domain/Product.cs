@@ -56,7 +56,6 @@ namespace Eticaret.Domain
         public List<CartItem> CartItems { get; set; } = new();
         [Display(Name = "Ürün Resimleri")]
         public List<ProductImage> ProductImages { get; set; } = new();
-
         #endregion
     }
 }
