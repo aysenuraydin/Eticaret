@@ -1,15 +1,11 @@
-using System.ComponentModel;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+
+using System.Text;
+using System.Text.Json;
 using Eticaret.Application.Abstract;
-using Eticaret.Domain;
+using Eticaret.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 {
@@ -18,78 +14,124 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
     {
         private readonly IRoleRepository _roleService;
         private readonly IUserRepository _userService;
-
-        public RoleController(IRoleRepository roleService, IUserRepository userService)
+        private readonly HttpClient _httpClient;
+        public RoleController(IRoleRepository roleService, IUserRepository userService, IHttpClientFactory httpClientFactory)
         {
             _roleService = roleService;
             _userService = userService;
+
+            _httpClient = httpClientFactory.CreateClient();
+            _httpClient.BaseAddress = new Uri("http://localhost:5177/api/");
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var role = _roleService.GetDb()
-                            .Include(r => r.Users)
-                            .ToList();
-
-            return View(role);
-        }
-
-        public IActionResult Admin(int id)
-        {
-            var user = _userService.GetAll().FirstOrDefault(u => u.Id == id);
-            if (user == null) BadRequest();
-            else
+            using (var response = await _httpClient.GetAsync("AdminRole/Users"))
             {
-                user.RoleId = 3;
-                _userService.Update(user);
-            }
+                if (response.IsSuccessStatusCode)
+                {
+                    var roles = await response.Content.ReadFromJsonAsync<List<RoleListWithUserDTO>>() ?? new List<RoleListWithUserDTO>();
 
-            return RedirectToAction(nameof(Index));
-        }
-        public IActionResult Buyer(int id)
-        {
-            var user = _userService.GetAll().FirstOrDefault(u => u.Id == id);
-            if (user == null) BadRequest();
-            else
-            {
-                user.RoleId = 2;
-                _userService.Update(user);
+                    var roleResponse = await _httpClient.GetAsync("AdminRole/Users");
+                    if (roleResponse.IsSuccessStatusCode)
+                    {
+                        var rolesList = await roleResponse.Content.ReadFromJsonAsync<List<RoleUpdateDTO>>() ?? new List<RoleUpdateDTO>();
+                        ViewBag.Roles = new SelectList(rolesList, "Id", "Name");
+                    }
+                    return View(roles);
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                    return View("Error");
+                }
             }
-
-            return RedirectToAction(nameof(Index));
         }
-        public IActionResult Seller(int id)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(string roleName)
         {
-            var user = _userService.GetAll().FirstOrDefault(u => u.Id == id);
+            if (string.IsNullOrWhiteSpace(roleName)) return View("Error");
             try
             {
-                if (user != null)
+                var role = new RoleUpdateDTO { Name = roleName };
+                var content = new StringContent(JsonSerializer.Serialize(role), Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync("AdminRole/Create", content);
+
+                if (response.IsSuccessStatusCode)
                 {
-                    Seller seller = new Seller()
-                    {
-                        Email = user.Email,
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        Password = user.Password,
-                        Enabled = true,
-                        CreatedAt = user.CreatedAt,
-                        RoleId = 1,
-                        RoleFk = user.RoleFk,
-                        CartItems = user.CartItems,
-                        ProductComments = user.ProductComments,
-                        Orders = user.Orders
-                    };
-                    _userService.Update(seller);
-                    _userService.Delete(user);
+                    return RedirectToAction(nameof(Index), "Role");
                 }
+                else
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+
+                    ViewBag.Error = error;
+                    return View("Error");
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = ex.Message;
+                return View("Error");
+            }
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateRoleName(int? id, string roleName)
+        {
+            if (id == null) return View("Error");
+
+            var roleUpdateDTO = new RoleUpdateDTO { Name = roleName };
+            var content = new StringContent(JsonSerializer.Serialize(roleUpdateDTO), Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PutAsync($"AdminRole/{id}", content);
+
+            if (response.IsSuccessStatusCode)
+            {
                 return RedirectToAction(nameof(Index));
             }
 
-            catch
+            return View("Error");
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeUserRole(int? userId, int roleId)
+        {
+            if (userId == null) return View("Error");
+
+            var roleUpdateDTO = new RoleUpdateDTO { Id = roleId };
+            var content = new StringContent(JsonSerializer.Serialize(roleUpdateDTO), Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PutAsync($"AdminRole/Users/{userId}", content);
+
+            if (response.IsSuccessStatusCode)
             {
-                return View(user);
+                return RedirectToAction(nameof(Index));
             }
 
+            return View("Error");
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteRole(int? id)
+        {
+            if (id == null) return View("Error");
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"AdminRole/{id}");
+
+                if (response.IsSuccessStatusCode)
+                    return RedirectToAction(nameof(Index), "Role");
+                else
+                    return View("Error");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = ex.Message;
+                return View("Error");
+            };
         }
     }
 }

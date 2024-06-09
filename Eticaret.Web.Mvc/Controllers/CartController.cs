@@ -1,103 +1,112 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+
+
 using System.Security.Claims;
-using System.Threading.Tasks;
+using System.Text;
+using System.Text.Json;
 using Eticaret.Application.Abstract;
 using Eticaret.Domain;
+using Eticaret.Dto;
 using Eticaret.Web.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.Differencing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+
 
 namespace Eticaret.Web.Mvc.Controllers
 {
     [Authorize]
     public class CartController : Controller
     {
-        private readonly ICartItemRepository _cartItemRepository;
         private readonly HttpClient _httpClient;
         public CartController(IHttpClientFactory httpClientFactory, ICartItemRepository cartItemRepository)
         {
             _httpClient = httpClientFactory.CreateClient();
             _httpClient.BaseAddress = new Uri("http://localhost:5177/api/");
-            _cartItemRepository = cartItemRepository;
         }
 
-        public IActionResult AddProduct(int id)
+        public async Task<IActionResult> AddProduct(int id)
         {
-            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userId != null && int.TryParse(userId.Value, out int user))
+            try
             {
-                var cartItem = _cartItemRepository.GetAll()
-                                .FirstOrDefault(c => c.ProductId == id && c.UserId == user);
+                var response = await _httpClient.PostAsync($"Cart/{id}", null);
 
-                if (cartItem == null)
+                if (response.IsSuccessStatusCode)
                 {
-                    CartItem İtem = new()
-                    {
-                        Quantity = 1,
-                        UserId = user,
-                        ProductId = id
-                    };
-                    _cartItemRepository.Add(İtem);
+                    return RedirectToAction(nameof(Edit), "Cart");
                 }
                 else
                 {
-                    cartItem.Quantity += 1;
-                    _cartItemRepository.Update(cartItem);
+                    ModelState.AddModelError("", "Ürün eklenirken bir hata oluştu.");
                 }
-                return RedirectToAction(nameof(Edit));
-
             }
-            return RedirectToAction(nameof(Index), "home");
-        }
-        public IActionResult Edit()
-        {
-            var cartItems = _cartItemRepository.GetDb()
-                                            .Include(c => c.ProductFk!)
-                                            .ThenInclude(c => c.ProductImages)
-                                            .ToList();
-            var cartOrder = new OrderViewModel()
+            catch
             {
-                CartItems = cartItems
-            };
-            return View(cartOrder);
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(CartItem item)
-        {
-            var cartItem = _cartItemRepository.Find(item.Id);
-            if (cartItem != null)
-            {
-                cartItem.Quantity = item.Quantity;
-                _cartItemRepository.Update(cartItem);
+                ModelState.AddModelError("", "Bir hata oluştu!");
             }
 
-            var cartItems = _cartItemRepository.GetDb()
-                                            .Include(c => c.ProductFk)
-                                            .ToList();
-            var cartOrder = new OrderViewModel()
-            {
-                CartItems = cartItems
-            };
-            return View(cartOrder);
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Delete(CartItem item)
-        {
-            var cartItem = _cartItemRepository.GetAll()
-                                 .FirstOrDefault(i => i.Id == item.Id);
-            if (cartItem != null)
-            {
-                _cartItemRepository.Delete(cartItem);
-            }
             return RedirectToAction(nameof(Edit), "Cart");
+        }
+
+        public async Task<IActionResult> Edit()
+        {
+            using (var response = await _httpClient.GetAsync($"Cart"))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var carts = await response.Content.ReadFromJsonAsync<List<CartItemListDTO>>() ?? new();
+                    return View(carts);
+                }
+                return View(new List<CartItemListDTO>());
+
+            }
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(CartItemListDTO item)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var json = JsonSerializer.Serialize(item);
+
+                    var response = await _httpClient.PutAsync($"Cart/{item.Id}", new StringContent(json, Encoding.UTF8, "application/json"));
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction(nameof(Edit), "Cart");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Güncelleme sırasında bir hata oluştu.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Hata Oluştu: {ex.Message}");
+                }
+            }
+            return View(item);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"Cart/{id}");
+
+                if (response.IsSuccessStatusCode)
+
+                    return RedirectToAction(nameof(Edit), "Cart"); //!
+                else
+                    return View("Error");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = ex.Message;
+                return View("Error");
+            }
         }
     }
 }

@@ -2,72 +2,74 @@
 using Eticaret.Application.Abstract;
 using Eticaret.Domain;
 using Eticaret.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Api.Controllers
 {
+    [Authorize(Roles = "admin")]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("~/api/[controller]")]
     public class AdminProductController : ControllerBase
     {
-        private readonly IProductRepository _productService;
+        private readonly IProductRepository _productRepo;
 
-        public AdminProductController(IProductRepository productService)
+        public AdminProductController(IProductRepository productRepo)
         {
-            _productService = productService;
+            _productRepo = productRepo;
         }
         [HttpGet]
         public async Task<IActionResult> GetProducts()
         {
-            var products = await _productService.GetAllIncludeAsync(
-                                        p => p.ProductImages,
-                                        p => p.ProductComments,
-                                        p => p.SellerFk!,
-                                        p => p.CategoryFk!,
-                                        p => p.OrderItems,
-                                        p => p.CartItems
-                                       );
+            var products = (await _productRepo.GetAllIncludeAsync(
+                                   p => p.ProductImages,
+                                   p => p.ProductComments,
+                                   p => p.UserFk!,
+                                   p => p.CategoryFk!,
+                                   p => p.OrderItems,
+                                   p => p.CartItems
+                                  ))
+                                  .OrderByDescending(p => p.CreatedAt)
+                                  .Select(p => ProductListToDTO(p))
+                                  .ToList();
 
-            var prd = products
-                     .OrderByDescending(p => p.CreatedAt)
-                     .Select(p => ProductListToDTO(p))
-                     .ToList();
-
-            return Ok(prd);
+            return Ok(products);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProduct(int? id)
         {
             if (id == null) return NotFound();
 
-            var product = await _productService.GetIdAllIncludeFilterAsync(
+            var product = (await _productRepo.GetIdAllIncludeFilterAsync(
                           p => p.Id == id,
                           p => p.ProductImages,
                           p => p.ProductComments,
-                          p => p.SellerFk!,
+                          p => p.UserFk!,
                           p => p.CategoryFk!,
                           p => p.OrderItems,
                           p => p.CartItems
-                         );
-
+                         )).FirstOrDefault();
 
             if (product == null) return NotFound();
 
-            var prd = product.Select(p => ProductListToDTO(p))
-                        .FirstOrDefault();
-            return Ok(prd);
+            return Ok(ProductListToDTO(product));
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(AdminProductUpdateDTO p)
         {
-            var prd = await _productService.GetAsync(i => i.Id == p.Id);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var prd = await _productRepo.GetAsync(i => i.Id == p.Id);
 
             if (prd == null) return NotFound();
 
             try
             {
-                await _productService.UpdateAsync(ProductApproveToDTO(p, prd));
+                await _productRepo.UpdateAsync(ProductApproveToDTO(p, prd));
             }
             catch (Exception)
             {
@@ -81,13 +83,13 @@ namespace Eticaret.Api.Controllers
         {
             if (id == null) return NotFound();
 
-            var prd = await _productService.GetAsync(i => i.Id == id);
+            var prd = await _productRepo.GetAsync(i => i.Id == id);
 
             if (prd == null) return NotFound();
 
             try
             {
-                await _productService.DeleteAsync(prd);
+                await _productRepo.DeleteAsync(prd);
             }
             catch (Exception)
             {
@@ -110,7 +112,7 @@ namespace Eticaret.Api.Controllers
                 IsConfirmed = p.IsConfirmed,
                 CategoryName = p.CategoryFk!.Name ?? "",
                 CategoryColor = p.CategoryFk!.Color ?? "",
-                SellerName = $"{p.SellerFk!.FirstName} {p.SellerFk.LastName}",
+                SellerName = $"{p.UserFk!.FirstName} {p.UserFk.LastName}",
                 CommentCount = p.ProductComments.Count,
                 OrderCount = p.OrderItems.Count,
                 CartCount = p.CartItems.Count,

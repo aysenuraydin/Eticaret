@@ -2,35 +2,36 @@
 using Eticaret.Application.Abstract;
 using Eticaret.Domain;
 using Eticaret.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Api.Controllers
 {
+    [Authorize(Roles = "admin")]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("~/api/[controller]")]
     public class AdminProductCommentController : ControllerBase
     {
-        private readonly IProductCommentRepository _productCommentService;
+        private readonly IProductCommentRepository _productCommentRepo;
 
-        public AdminProductCommentController(IProductCommentRepository productCommentService)
+        public AdminProductCommentController(IProductCommentRepository productCommentRepo)
         {
-            _productCommentService = productCommentService;
+            _productCommentRepo = productCommentRepo;
         }
         [HttpGet]
         public async Task<IActionResult> GetProductComments()
         {
-            var products = await _productCommentService.GetAllIncludeAsync(
-                                        p => p.UserFk!,
-                                        p => p.ProductFk!
-                                       );
+            var products = (await _productCommentRepo.GetAllIncludeAsync(
+                                   p => p.UserFk!,
+                                   p => p.ProductFk!
+                                  ))
+                                  .OrderByDescending(p => p.CreatedAt)
+                                  .Select(p => ProductCommentListToDTO(p))
+                                  .ToList();
 
-            var prd = products
-                     .OrderByDescending(p => p.CreatedAt)
-                     .Select(p => ProductCommentListToDTO(p))
-                     .ToList();
-
-            return Ok(prd);
+            if (products == null) return NotFound();
+            return Ok(products);
         }
 
         [HttpGet("{id}")]
@@ -38,30 +39,31 @@ namespace Eticaret.Api.Controllers
         {
             if (id == null) return NotFound();
 
-            var product = await _productCommentService.GetIdAllIncludeFilterAsync(
+            var product = (await _productCommentRepo.GetIdAllIncludeFilterAsync(
                           p => p.Id == id,
                           p => p.ProductFk!,
                           p => p.UserFk!
-                         );
+                         )).FirstOrDefault();
 
 
             if (product == null) return NotFound();
-
-            var prd = product.Select(p => ProductCommentListToDTO(p))
-                        .FirstOrDefault();
-            return Ok(prd);
+            return Ok(ProductCommentListToDTO(product));
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(AdminProductCommentUpdateDTO p)
         {
-            var prd = await _productCommentService.GetAsync(i => i.Id == p.Id);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var prd = await _productCommentRepo.GetAsync(i => i.Id == p.Id);
 
             if (prd == null) return NotFound();
 
             try
             {
-                await _productCommentService.UpdateAsync(ProductCommentApproveToDTO(p, prd));
+                await _productCommentRepo.UpdateAsync(ProductCommentApproveToDTO(p, prd));
             }
             catch (Exception)
             {
@@ -76,13 +78,13 @@ namespace Eticaret.Api.Controllers
         {
             if (id == null) return NotFound();
 
-            var prd = await _productCommentService.GetAsync(i => i.Id == id);
+            var prd = await _productCommentRepo.GetAsync(i => i.Id == id);
 
             if (prd == null) return NotFound();
 
             try
             {
-                await _productCommentService.DeleteAsync(prd);
+                await _productCommentRepo.DeleteAsync(prd);
             }
             catch (Exception)
             {

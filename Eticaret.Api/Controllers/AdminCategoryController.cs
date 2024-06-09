@@ -2,57 +2,59 @@
 using Eticaret.Application.Abstract;
 using Eticaret.Domain;
 using Eticaret.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Api.Controllers
 {
+    [Authorize(Roles = "admin")]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("~/api/[controller]")]
     public class AdminCategoryController : ControllerBase
     {
-        private readonly ICategoryRepository _categoryService;
-        public AdminCategoryController(ICategoryRepository categoryService)
+        private readonly ICategoryRepository _categoryRepo;
+        public AdminCategoryController(ICategoryRepository categoryRepo)
         {
-            _categoryService = categoryService;
+            _categoryRepo = categoryRepo;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetCategories()
         {
-            var products = await _categoryService.GetAllIncludeAsync(
+            var products = (await _categoryRepo.GetAllIncludeAsync(
                                         i => i.Products
-                                        );
+                                        ))
+                                        .Select(p => CategoriesListToDTO(p))
+                                        .ToList();
 
-            var prd = products
-                         .Select(p => CategoriesListToDTO(p));
-
-            return Ok(prd);
+            return Ok(products);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategory(int? id)
         {
             if (id == null) return NotFound();
 
-            var product = await _categoryService.GetIdAllIncludeFilterAsync(
+            var product = (await _categoryRepo.GetIdAllIncludeFilterAsync(
                                        i => i.Id == id,
                                        i => i.Products
-                                      );
+                                      )).FirstOrDefault();
 
 
             if (product == null) return NotFound();
-
-            var prd = product.Select(p => CategoriesListToDTO(p))
-                        .FirstOrDefault();
-            return Ok(prd);
+            return Ok(CategoriesListToDTO(product));
         }
         [HttpPost]
         public async Task<IActionResult> CreateCategory(AdminCategoryCreateDTO entity)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             try
             {
                 var p = CategoriesCreateToDTO(entity);
-                await _categoryService.AddAsync(p);
+                await _categoryRepo.AddAsync(p);
                 return CreatedAtAction(nameof(GetCategory), new { id = p.Id }, p);
             }
             catch (Exception)
@@ -62,15 +64,17 @@ namespace Eticaret.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCategory(AdminCategoryUpdateDTO p)
+        public async Task<IActionResult> UpdateCategory(int id, AdminCategoryUpdateDTO category)
         {
-            var ctgry = await _categoryService.GetAsync(i => i.Id == p.Id);
+            if (id != category.Id) return BadRequest();
+
+            var ctgry = await _categoryRepo.GetAsync(i => i.Id == id);
 
             if (ctgry == null) return NotFound();
 
             try
             {
-                await _categoryService.UpdateAsync(CategoriesUpdateToDTO(p, ctgry));
+                await _categoryRepo.UpdateAsync(CategoriesUpdateToDTO(category, ctgry));
             }
             catch (Exception)
             {
@@ -84,13 +88,13 @@ namespace Eticaret.Api.Controllers
         {
             if (id == null) return NotFound();
 
-            var prd = await _categoryService.GetAsync(i => i.Id == id);
+            var prd = await _categoryRepo.GetAsync(i => i.Id == id);
 
             if (prd == null) return NotFound();
 
             try
             {
-                await _categoryService.DeleteAsync(prd);
+                await _categoryRepo.DeleteAsync(prd);
             }
             catch (Exception)
             {

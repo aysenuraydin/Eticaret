@@ -9,6 +9,7 @@ namespace Eticaret.Application.Abstract
 {
     public interface IOrderRepository : IRepository<Order>
     {
-
+        Task<Order?> GetOrdersItemsAsync(string orderCode);
+        Task<List<Order>?> GetAllOrdersItemsAsync(int userId);
     }
 }

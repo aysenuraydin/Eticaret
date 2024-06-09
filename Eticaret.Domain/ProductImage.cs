@@ -23,10 +23,10 @@ namespace Eticaret.Domain
 
         [Display(Name = "Satıcı")]
         [Required(ErrorMessage = "Satıcı alanı gereklidir.")]
-        public int SellerId { get; set; }
+        public int UserId { get; set; }
         #region Navigation Properties
         public Product ProductFk { get; set; } = null!;
-        public Seller SellerFk { get; set; } = null!;
+        public User UserFk { get; set; } = null!;
         #endregion
     }
 }

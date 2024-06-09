@@ -1,4 +1,5 @@
-﻿@model IEnumerable<CartItem>
+﻿@model IEnumerable<CartItemListDTO>
+
 <div class="wrap-header-cart js-panel-cart">
     <div class="s-full js-hide-cart"></div>
 
@@ -21,24 +22,24 @@
                         <li class="header-cart-item flex-w flex-t m-b-12">
                             <div class="header-cart-item-img">
 
-                                @if (!cart.ProductFk!.ProductImages.Any())
+                                @if (cart.ProductImages == null || cart.ProductImages.Length == 0)
                                 {
                                     <img src="https://via.placeholder.com/100x100" alt="Ürun resmi">
                                 }
 
                                 else
                                 {
-                                    <img src="/assets/img/@cart.ProductFk.ProductImages[0].Url" width="80px;">
+                                    <img src="/UploadedFiles/@cart.ProductImages" width="80px;">
                                 }
                             </div>
 
                             <div class="header-cart-item-txt p-t-8">
                                 <a class="header-cart-item-name m-b-18 hov-cl1 trans-04" asp-action="ProductDetail"
                                     asp-Controller="Home" asp-route-id="@cart.ProductId">
-                                    @cart.ProductFk!.Name
+                                    @cart.ProductName
                                 </a>
                                 <span class="header-cart-item-info">
-                                    (@cart.Quantity x @cart.ProductFk!.Price)
+                                    (@cart.Quantity x @cart.ProductPrice)
 
                                 </span>
                             </div>
@@ -51,7 +52,7 @@
                         Toplam :
                         @if (Model != null)
                         {
-                            @Model.Sum(cart => cart.Quantity * cart.ProductFk!.Price)
+                            @Model.Sum(cart => cart.Quantity * cart.ProductPrice)
                         }
                         ₺
                     </div>
@@ -70,8 +71,8 @@
                         asp-action="edit" asp-Controller="Cart">
                         Sepete Git
                     </a>
-                    <a href="shoping-cart.html"
-                        class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
+                    <a class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-r-8 m-b-10"
+                        asp-action="edit" asp-Controller="Cart">
                         Sepeti Onayla
                     </a>
                 </div>

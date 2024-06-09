@@ -12,7 +12,6 @@ namespace Eticaret.Persistence.Ef
             {
                 opt.UseSqlite(configuration.GetConnectionString("DbConnection"), b => b.MigrationsAssembly("Eticaret.Api"));
             });
-
             return services;
         }
 

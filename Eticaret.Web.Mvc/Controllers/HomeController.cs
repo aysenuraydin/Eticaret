@@ -24,9 +24,17 @@ namespace Eticaret.Web.Mvc.Controllers
             {
                 using (var response = await _httpClient.GetAsync("Home"))
                 {
-                    response.EnsureSuccessStatusCode();
-                    var products = await response.Content.ReadFromJsonAsync<List<ProductListDTO>>() ?? new List<ProductListDTO>();
-                    return View(products);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var products = await response.Content.ReadFromJsonAsync<List<ProductListDTO>>();
+
+                        return View(products); ;
+                    }
+                    else
+                    {
+                        ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                        return View(new List<ProductListDTO>());
+                    }
                 }
             }
             catch (HttpRequestException httpRequestException)

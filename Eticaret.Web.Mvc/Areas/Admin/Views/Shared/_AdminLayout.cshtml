@@ -111,7 +111,7 @@
 
             <!-- Sidebar Message -->
             <div class="sidebar-card d-none d-lg-flex">
-                <img class="sidebar-card-illustration mb-2" src="~/assets/img/undraw_rocket.svg" alt="...">
+                <img class="sidebar-card-illustration mb-2" src="~undraw_rocket.svg" alt="...">
                 <p class="text-center mb-2"><strong>SB Admin Pro</strong> is packed with premium features,
                     components,
                     and more!</p>
@@ -244,7 +244,8 @@
                                 </h6>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="~/assets/img/undraw_profile_1.svg" alt="...">
+                                        <img class="rounded-circle" src="~/UploadedFiles/undraw_profile_1.svg"
+                                            alt="...">
                                         <div class="status-indicator bg-success"></div>
                                     </div>
                                     <div class="font-weight-bold">
@@ -255,7 +256,8 @@
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="~/assets/img/undraw_profile_2.svg" alt="...">
+                                        <img class="rounded-circle" src="~/UploadedFiles/undraw_profile_2.svg"
+                                            alt="...">
                                         <div class="status-indicator"></div>
                                     </div>
                                     <div>
@@ -266,7 +268,8 @@
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="~/assets/img/undraw_profile_3.svg" alt="...">
+                                        <img class="rounded-circle" src="~/UploadedFiles/undraw_profile_3.svg"
+                                            alt="...">
                                         <div class="status-indicator bg-warning"></div>
                                     </div>
                                     <div>
@@ -298,7 +301,8 @@
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small"> @User.Identity?.Name <span>
-                                        <img class="img-profile rounded-circle" src="~/assets/img/undraw_profile.svg">
+                                        <img class="img-profile rounded-circle"
+                                            src="~/UploadedFiles/undraw_profile.svg">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -377,6 +381,9 @@
             </div>
         </div>
     </div>
+    @RenderSection("Styles", required: false)
+    @RenderSection("Scripts", required: false)
+
 
     <!-- Bootstrap core JavaScript-->
     <script src="~/assets/vendor/jquery/jquery.min.js"></script>
@@ -404,37 +411,6 @@
                 console.error(error);
             });
     </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     <script src="~/assets/vendor/jquery/jquery-3.2.1.min.js"></script>
@@ -473,7 +449,28 @@
             });
         });
     </script>
-    @RenderSection("Styles", false);
+    <Script>
+        $(document).ready(function () {
+            $('.changeRole').each(function () {
+                var roleId = $(this).attr("data-role-id");
+                $(this).find('option[value="' + roleId + '"]').prop('selected', true);
+            });
+        });
+    </Script>
+    <script>
+        $(document).ready(function () {
+            $('.roleNameInput').on('input', function () {
+                var form = $(this).closest('form');
+                var editButton = form.find('.editButton');
+                var roleName = $(this).val().trim();
+                if (roleName.length > 0) {
+                    editButton.removeAttr('disabled');
+                } else {
+                    editButton.attr('disabled', true);
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

@@ -37,8 +37,6 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var newcategory = await response.Content.ReadFromJsonAsync<Category>();
-
                     return RedirectToAction(nameof(Index), "Home");
                 }
                 else
@@ -60,22 +58,27 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
             using (var response = await _httpClient.GetAsync($"AdminCategory/{id}"))
             {
                 var product = await response.Content.ReadFromJsonAsync<AdminCategoryListDTO>() ?? new();
-                return View(product);
+                var p = new AdminCategoryUpdateDTO()
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Css = product.Css,
+                    Color = product.Color
+                };
+                return View(p);
             }
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(AdminCategoryListDTO category)
+        public async Task<IActionResult> Edit(int id, AdminCategoryUpdateDTO category)
         {
             try
             {
                 var json = JsonSerializer.Serialize(category);
-
-                var response = await _httpClient.PutAsync($"AdminCategory/{category.Id}", new StringContent(json, Encoding.UTF8, "application/json"));
+                var response = await _httpClient.PutAsync($"AdminCategory/{id}", new StringContent(json, Encoding.UTF8, "application/json"));
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var updateCategory = await response.Content.ReadFromJsonAsync<AdminCategoryListDTO>();
                     return RedirectToAction(nameof(Index), "Home");
                 }
                 else

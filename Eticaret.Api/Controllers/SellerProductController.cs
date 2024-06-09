@@ -1,70 +1,91 @@
 ﻿using System.Drawing;
+using System.Security.Claims;
 using Eticaret.Application.Abstract;
 using Eticaret.Domain;
 using Eticaret.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Authorize(Roles = "seller")]
+    [Route("~/api/[controller]")]
     public class SellerProductController : ControllerBase
     {
-        private readonly IProductRepository _productService;
-        public SellerProductController(IProductRepository productService)
+        private readonly IProductRepository _productRepo;
+        private readonly IProductCommentRepository _commentRepo;
+        private readonly IProductImageRepository _productImageRepo;
+        public SellerProductController(
+            IProductRepository productRepo,
+            IProductCommentRepository commentRepo,
+            IProductImageRepository productImageRepo)
         {
-            _productService = productService;
+            _productRepo = productRepo;
+            _productImageRepo = productImageRepo;
+            _commentRepo = commentRepo;
         }
-        [HttpGet("All/{id}")]
-        public async Task<IActionResult> GetProducts(int? id)
+        [HttpGet]
+        public async Task<IActionResult> GetProducts()
         {
-            var products = await _productService.GetIdAllIncludeFilterAsync(
-                                        p => p.SellerId == id,
-                                        p => p.ProductImages,
-                                        p => p.ProductComments,
-                                        p => p.SellerFk!,
-                                        p => p.CategoryFk!,
-                                        p => p.OrderItems,
-                                        p => p.CartItems
-                                       );
+            bool Id = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int sellerId);
 
-            var prd = products
-                     .OrderByDescending(p => p.CreatedAt)
-                     .Select(p => ProductListToDTO(p))
-                     .ToList();
+            var products = (await _productRepo.GetIdAllIncludeFilterAsync(
+                               p => p.UserId == sellerId,
+                               p => p.ProductImages,
+                               p => p.ProductComments,
+                               p => p.UserFk!,
+                               p => p.CategoryFk!,
+                               p => p.OrderItems,
+                               p => p.CartItems
+                              ))
+                              .OrderByDescending(p => p.CreatedAt)
+                              .Select(p => ProductListToDTO(p))
+                             .ToList();
 
-            return Ok(prd);
+            return Ok(products);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProduct(int? id)
         {
+            bool Id = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int sellerId);
+
             if (id == null) return NotFound();
 
-            var product = await _productService.GetIdAllIncludeFilterAsync(
-                          p => p.Id == id,
+            var product = (await _productRepo.GetIdAllIncludeFilterAsync(
+                          p => p.Id == id && p.UserId == sellerId,
                           p => p.ProductImages,
                           p => p.ProductComments,
-                          p => p.SellerFk!,
+                          p => p.UserFk!,
                           p => p.CategoryFk!,
                           p => p.OrderItems,
                           p => p.CartItems
-                         );
+                         )).FirstOrDefault();
 
             if (product == null) return NotFound();
 
-            var prd = product.Select(p => ProductDetailToDTO(p))
-                        .FirstOrDefault();
-            return Ok(prd);
+            return Ok(ProductDetailToDTO(product, sellerId));
         }
         [HttpPost]
         public async Task<IActionResult> CreateProduct(SellerProductCreateDTO entity)
         {
+            if (entity == null) return NotFound(entity);
+
             try
             {
+                bool Id = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int sellerId);
+                entity.SellerId = sellerId;
+
                 var p = ProductCreateToDTO(entity);
-                await _productService.AddAsync(p);
-                return CreatedAtAction(nameof(GetProduct), new { id = p.Id }, p);
+                await _productRepo.AddAsync(p);
+
+                var img = ProductImagesCreateToDTO(entity, p);
+                foreach (var item in img)
+                {
+                    await _productImageRepo.AddAsync(item);
+                }
+
+                return CreatedAtAction(nameof(GetProduct), new { id = p.Id }, entity);
             }
             catch (Exception)
             {
@@ -72,39 +93,76 @@ namespace Eticaret.Api.Controllers
             }
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(SellerProductUpdateDTO p)
+        public async Task<IActionResult> UpdateProduct(SellerProductCreateDTO product)
         {
-            var prd = await _productService.GetAsync(i => i.Id == p.Id);
+            if (product == null) return NotFound();
+            bool Id = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int sellerId);
+
+            var prd = (await _productRepo.GetIdAllIncludeFilterAsync(
+                i => i.Id == product.Id && i.UserId == sellerId,
+                i => i.ProductImages)).FirstOrDefault();
 
             if (prd == null) return NotFound();
 
             try
             {
-                await _productService.UpdateAsync(ProductUpdateToDTO(p, prd));
+                var p = ProductUpdateToDTO(product, prd);
+                await _productRepo.UpdateAsync(p);
+
+                if (product.ImageList.Count > 0)
+                {
+                    var imagesToDelete = prd.ProductImages.ToList();
+                    foreach (var item in imagesToDelete)
+                    {
+                        await _productImageRepo.DeleteAsync(item);
+                    }
+                    var img = ProductImagesUpdateToDTO(product, p);
+                    foreach (var item in img)
+                    {
+                        await _productImageRepo.AddAsync(item);
+                    }
+                }
             }
             catch (Exception)
             {
                 return NotFound();
             }
 
-            return Ok(prd);
+            return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int? id)
         {
             if (id == null) return NotFound();
 
-            var prd = await _productService.GetAsync(i => i.Id == id);
+            var prd = (await _productRepo.GetIdAllIncludeFilterAsync(
+                i => i.Id == id,
+                i => i.ProductImages,
+                i => i.ProductComments
+                )).FirstOrDefault();
 
             if (prd == null) return NotFound();
 
             try
             {
-                await _productService.DeleteAsync(prd);
+                var imagesToDelete = prd.ProductImages.ToList();
+                foreach (var image in imagesToDelete)
+                {
+                    await _productImageRepo.DeleteAsync(image);
+                }
+
+                // ProductComments koleksiyonunun bir kopyasını oluşturun
+                var commentsToDelete = prd.ProductComments.ToList();
+                foreach (var comment in commentsToDelete)
+                {
+                    await _commentRepo.DeleteAsync(comment);
+                }
+                await _productRepo.DeleteAsync(prd);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return NotFound();
+                // Hata mesajını loglayın veya geri döndürün
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
             return NoContent();
         }
@@ -124,15 +182,14 @@ namespace Eticaret.Api.Controllers
                 CategoryId = p.CategoryId,
                 CategoryName = p.CategoryFk!.Name ?? "",
                 CategoryColor = p.CategoryFk!.Color ?? "",
-                SellerName = $"{p.SellerFk!.FirstName} {p.SellerFk.LastName}",
+                SellerName = $"{p.UserFk!.FirstName} {p.UserFk.LastName}",
                 CommentCount = p.ProductComments.Count,
                 OrderCount = p.OrderItems.Count,
                 CartCount = p.CartItems.Count,
                 CreatedAt = p.CreatedAt.ToString("dd.MM.yyyy"),
             };
         }
-
-        private static Product ProductUpdateToDTO(SellerProductUpdateDTO p, Product prd)
+        private static Product ProductUpdateToDTO(SellerProductCreateDTO p, Product prd)
         {
             prd.Id = p.Id;
             prd.Name = p.Name;
@@ -141,9 +198,39 @@ namespace Eticaret.Api.Controllers
             prd.StockAmount = p.StockAmount;
             prd.CategoryId = p.CategoryId;
             prd.Enabled = p.Enabled;
+            prd.ProductImages.Clear();
+            foreach (var item in p.ImageList)
+            {
+                prd.ProductImages.Add(
+                    new ProductImage()
+                    {
+                        Url = item.Url,
+                        ProductId = item.ProductId,
+                        UserId = item.SellerId
+                    }
+                );
+            }
+
             return prd;
         }
-        private static SellerProductUpdateDTO ProductDetailToDTO(Product product)
+        private List<ProductImage> ProductImagesUpdateToDTO(SellerProductCreateDTO p, Product prd)
+        {
+            if (p.ImageList.Count > 0)
+            {
+                prd.ProductImages.Clear();
+                prd.ProductImages = p.ImageList.Select(i =>
+                    new ProductImage()
+                    {
+                        Url = i.Url,
+                        ProductId = p.Id,
+                        UserId = p.SellerId
+                    }
+                ).ToList();
+            }
+            return prd.ProductImages;
+
+        }
+        private static SellerProductUpdateDTO ProductDetailToDTO(Product product, int sellerId)
         {
             return new SellerProductUpdateDTO()
             {
@@ -152,6 +239,7 @@ namespace Eticaret.Api.Controllers
                 Price = product.Price,
                 Details = product.Details,
                 StockAmount = product.StockAmount,
+                SellerId = sellerId,
                 CategoryId = product.CategoryId,
                 Enabled = product.Enabled,
                 ImageList = product.ProductImages.Select(i => i.Url ?? "").Where(url => url != "").ToList()
@@ -166,9 +254,21 @@ namespace Eticaret.Api.Controllers
             prd.Details = p.Details;
             prd.StockAmount = p.StockAmount;
             prd.CategoryId = p.CategoryId;
-            prd.SellerId = p.SellerId;
+            prd.UserId = p.SellerId;
             prd.Enabled = p.Enabled;
             return prd;
+
+        }
+        private List<ProductImage> ProductImagesCreateToDTO(SellerProductCreateDTO p, Product product)
+        {
+            var imgList = p.ImageList.Select(i =>
+                    new ProductImage()
+                    {
+                        Url = i.Url,
+                        ProductId = product.Id,
+                        UserId = product.UserId
+                    }).ToList();
+            return imgList;
 
         }
 

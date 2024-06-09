@@ -1,64 +1,79 @@
-﻿@model IEnumerable<Role>
+﻿@model IEnumerable<RoleListWithUserDTO>
 @{
     ViewData["Title"] = "List of Role";
 }
-<h1>@ViewData["Title"]</h1>
 
 
-
-
-<div class="row border ">
-    <div class="col-1 border p-4 bg-secondary text-white">ROL</div>
-    <div class="col-11 border p-4 bg-secondary text-white">
-        <div class="row">
-            <div class="col-2">FirstName</div>
-            <div class="col-2">LastName</div>
-            <div class="col-2">Email</div>
-            <div class="col-2">CreatedAt</div>
-        </div>
+<div class="row mb-5">
+    <div class="col-4">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+    <div class="col-7">
+        <form asp-action="Create" asp-area="Admin" asp-controller="Role" method="post"
+            class="form-inline my-2 my-lg-0 justify-content-end">
+            <input id="roleName" name="roleName" class="form-control mr-sm-2" type="text" placeholder="Ara">
+            <button class="btn btn-secondary searchBtn my-2 my-sm-0" type="submit">
+               <i class="fa-solid fa-plus"></i>
+            </button>
+        </form>
     </div>
 </div>
+@*<div class="col">
+<form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" action="/Admin/Products/Index">
+<input id="ara" name="search" type="search" class="form-control form-control-dark" placeholder="Ara..."
+aria-label="Search">
+</form>
+</div>*@
+
 @foreach (var item in Model)
 {
-
     <div class="row border ">
-    <div class="col-1 border p-2 bg-secondary text-white text-rotate">
-        <div>@Html.DisplayFor(modelItem => item.Name) </div>
-        <div>( @Html.DisplayFor(modelItem => item.Users.Count))</div>
+    <div class="col-2 border p-2 bg-secondary text-white text-rotate" style="max-width: 160px !important;">
+
+        <div>
+             <form asp-action="UpdateRoleName" asp-area="Admin" asp-controller="Role" method="post"
+                      style="padding-top: 20px !important;" class="form-inline my-2 my-lg-0">
+                    <input type="hidden" name="id" value="@item.Id" />
+                    <input name="roleName" class="form-control roleNameInput" type="text" value="@item.Name"
+                           style="width: 140px !important; margin-bottom: 10px !important">
+                    <button class="btn btn-danger searchBtn my-sm-0 editButton" type="submit"
+                            style="width: 140px !important; margin-bottom: 10px !important" disabled>
+                        Düzenle
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                </form>
+        </div>
+        <div>
+            <form asp-action="DeleteRole" asp-area="Admin" asp-controller="Role" method="post"
+                class="form-inline my-2 my-lg-0">
+                <input type="hidden" id="id" name="id" value="@item.Id" />
+                <button class="btn btn-danger searchBtn my-sm-0" type="submit"
+                    style="width: 140px !important; margin-bottom: 10px !important">
+                    Sil
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </form>
+        </div>
     </div>
-    <div class="col-11" style="font-size: 15px !important;">
+    <div class="col-9 border-bottom" style="font-size: 15px !important;">
 
         @foreach (var user in item.Users)
             {
-                <div class="row border p-2">
-                    <div class="col-2">@user.FirstName</div>
-                    <div class="col-2">@user.LastName</div>
-                    <div class="col-2">@user.Email</div>
-                    <div class="col-2">@user.CreatedAt</div>
+                <div class="row p-2">
+                    <div class="col-1">@user.Id</div>
+                    <div class="col-7">@user.FullName</div>
                     <div class="col-4">
                         <div class="row justify-content-end">
-                            @if (item.Id == 1 || item.Id == 2)
-                            {
-                                <div class="col-l-4">
-                                    <a class="btn btn-sm btn-primary btn-m" asp-action="Admin" asp-Controller="Role"
-                                        asp-route-id="@user.Id">Admin Yap</a>
+                            <form asp-action="ChangeUserRole" asp-controller="Role" method="post" class="form-inline">
+                                <input type="hidden" name="userId" value="@user.Id" />
+                                <div lass="dropdown border">
+                                    <select name="roleId" class="dropdown-item border p-2 changeRole" 
+                                     data-role-id=@item.Id asp-items="ViewBag.Roles"></select>
                                 </div>
-                            }
-
-                            @if (item.Id == 3 || item.Id == 1)
-                            {
-                                <div class="col-l-4">
-                                    <a class="btn btn-sm btn-warning btn-m" asp-action="Buyer" asp-Controller="Role"
-                                        asp-route-id="@user.Id">Kullanıcı Yap</a>
-                                </div>
-                            }
-                            @if (item.Id == 2 || item.Id == 3)
-                            {
-                                <div class="col-l-4">
-                                    <a class="btn btn-sm btn-success btn-m" asp-action="Seller" asp-Controller="Role"
-                                        asp-route-id="@user.Id">Satıcı Yap</a>
-                                </div>
-                            }
+                                <button type="submit" class="btn btn-primary">
+                                    Değiştir
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -66,3 +81,28 @@
         </div>
     </div>
 }
+
+@* 
+@section Script {
+    <Script>
+        $(document).ready(function () {
+            $('.changeRole').each(function () {
+                var roleId = $(this).attr("data-role-id");
+                $(this).find('option[value="' + roleId + '"]').prop('selected', true);
+            });
+        });
+    $(document).ready(function () {
+        $('.roleNameInput').on('input', function () {
+            var form = $(this).closest('form');
+            var editButton = form.find('.editButton');
+            var roleName = $(this).val().trim();
+            if (roleName.length > 0) {
+                editButton.removeAttr('disabled');
+            } else {
+                editButton.attr('disabled', true);
+            }
+        });
+    });
+
+    </Script>
+}  *@

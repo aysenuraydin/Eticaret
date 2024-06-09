@@ -7,29 +7,28 @@ using Microsoft.EntityFrameworkCore;
 namespace Eticaret.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("~/api/[controller]")]
     public class ProductController : ControllerBase
     {
-        private readonly IProductRepository _productService;
+        private readonly IProductRepository _productRepo;
 
-        public ProductController(IProductRepository productService)
+        public ProductController(IProductRepository productRepo)
         {
-            _productService = productService;
+            _productRepo = productRepo;
         }
         [HttpGet]
 
         public async Task<IActionResult> GetProducts()
         {
-            var products = await _productService.GetIdAllIncludeFilterAsync(
-                                        p => p.IsConfirmed && p.Enabled && p.StockAmount > 0,
-                                        p => p.ProductImages
-                                       );
-
-            var prd = products
+            var products = (await _productRepo.GetIdAllIncludeFilterAsync(
+                         p => p.IsConfirmed && p.Enabled && p.StockAmount > 0,
+                         p => p.ProductImages
+                        ))
                          .OrderByDescending(p => p.CreatedAt)
-                         .Select(p => ProductListToDTO(p));
+                         .Select(p => ProductListToDTO(p))
+                         .ToList();
 
-            return Ok(prd);
+            return Ok(products);
         }
 
         [HttpGet("{id}")]
@@ -37,21 +36,17 @@ namespace Eticaret.Api.Controllers
         {
             if (id == null) return NotFound();
 
-            var product = await _productService.GetIdAllIncludeFilterAsync(
+            var product = (await _productRepo.GetIdAllIncludeFilterAsync(
                           p => p.Id == id,
                           p => p.CategoryFk!,
-                          p => p.SellerFk!,
+                          p => p.UserFk!,
                           p => p.ProductComments,
                           p => p.ProductImages
-                         );
+                         )).FirstOrDefault();
 
 
             if (product == null) return NotFound();
-
-            var prd = product.Select(p => ProductDetailToDTO(p))
-                             .FirstOrDefault();
-
-            return Ok(prd);
+            return Ok(ProductDetailToDTO(product));
         }
         private static ProductListDTO ProductListToDTO(Product p)
         {
@@ -76,7 +71,7 @@ namespace Eticaret.Api.Controllers
                 Details = p.Details,
                 StockAmount = p.StockAmount,
                 CategoryName = p.CategoryFk?.Name ?? string.Empty,
-                SellerName = $"{p.SellerFk?.FirstName ?? string.Empty} {p.SellerFk?.LastName ?? string.Empty}".Trim(),
+                SellerName = $"{p.UserFk?.FirstName ?? string.Empty} {p.UserFk?.LastName ?? string.Empty}".Trim(),
                 ProductImagesUrl = p.ProductImages.Select(p =>
                 new Images
                 {

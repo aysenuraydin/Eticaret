@@ -2,12 +2,10 @@
 
 using System.Text;
 using System.Text.Json;
-using Eticaret.Application.Abstract;
 using Eticaret.Domain;
 using Eticaret.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 {
@@ -15,7 +13,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
     public class UserController : Controller
     {
         private readonly HttpClient _httpClient;
-        public UserController(IUserRepository userService, IHttpClientFactory httpClientFactory)
+        public UserController(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient();
             _httpClient.BaseAddress = new Uri("http://localhost:5177/api/");

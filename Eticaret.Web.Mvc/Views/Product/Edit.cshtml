@@ -26,12 +26,12 @@
                             {
                                 @foreach (var img in Model.ImageList)
                                 {
-                                    <div class="item-slick3" data-thumb="/assets/img/@img">
+                                    <div class="item-slick3" data-thumb="/UploadedFiles/@img">
                                         <div class="wrap-pic-w pos-relative">
-                                            <img src="/assets/img/@img" alt="IMG-PRODUCT">
+                                            <img src="/UploadedFiles/@img" alt="IMG-PRODUCT">
 
                                             <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
-                                                href="/assets/img/@img">
+                                                href="/UploadedFiles/@img">
                                                 <i class="fa fa-expand"></i>
                                             </a>
                                         </div>
@@ -52,6 +52,7 @@
                 @Html.AntiForgeryToken()
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="SellerId" />
 
                 <div class="form-group">
                     <label asp-for="Name" class="control-label"></label>
@@ -82,11 +83,20 @@
                     <span asp-validation-for="Enabled" class="text-danger"></span>
                 </div>
 
+                @* <div class="input-group my-3">
+                <div class="custom-file">
+                <input asp-for="ImageList" class="custom-file-input" type="file"
+                aria-describedby="inputGroupFileAddon01" multiple />
+                <label class="custom-file-label" for="inputGroupFile01">Ürün Resimlerini Seç</label>
+                <span asp-validation-for="ImageList" class="text-danger"></span>
+                </div>
+                </div> *@
                 <div class="input-group my-3">
                     <div class="custom-file">
                         <input asp-for="ImageList" class="custom-file-input" type="file"
                             aria-describedby="inputGroupFileAddon01" multiple />
                         <label class="custom-file-label" for="inputGroupFile01">Ürün Resimlerini Seç</label>
+                        @* <span asp-validation-for="ProductImages" class="text-danger"></span> *@
                         <span asp-validation-for="ImageList" class="text-danger"></span>
                     </div>
                 </div>

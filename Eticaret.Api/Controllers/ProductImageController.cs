@@ -1,21 +1,22 @@
 ﻿using Eticaret.Application.Abstract;
 using Eticaret.Domain;
 using Eticaret.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("~/api/[controller]")]
     public class ProductImageController : ControllerBase
     {
-        private readonly IProductImageRepository _productImageService;
+        private readonly IProductImageRepository _productImageRepo;
         public ProductImageController(
-            IProductImageRepository productImageService
+            IProductImageRepository productImageRepo
             )
         {
-            _productImageService = productImageService;
+            _productImageRepo = productImageRepo;
         }
 
         [HttpGet("{id}")]
@@ -23,26 +24,30 @@ namespace Eticaret.Api.Controllers
         {
             if (id == null) return NotFound();
 
-            var images = await _productImageService.GetIdAllIncludeFilterAsync(
+            var images = (await _productImageRepo.GetIdAllIncludeFilterAsync(
                           p => p.ProductId == id,
-                          p => p.SellerFk!
-                         );
+                          p => p.UserFk
+                         ))
+                         .OrderByDescending(p => p.CreatedAt)
+                         .Select(p => ProductImageListToDTO(p))
+                         .ToList();
 
             if (images == null) return NotFound();
-
-            var img = images
-                        .OrderByDescending(p => p.CreatedAt)
-                        .Select(p => ProductImageListToDTO(p))
-                        .ToList();
-            return Ok(img);
+            return Ok(images);
         }
         [HttpPost]
+        [Authorize(Roles = "seller")]
         public async Task<IActionResult> CreateProduct(ProductImageCreateDTO image)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
                 var img = ProductImageCreateToDTO(image);
-                await _productImageService.AddAsync(img);
+                await _productImageRepo.AddAsync(img);
                 return CreatedAtAction(nameof(GetImages), new { id = img.ProductId }, img);
             }
             catch (Exception)
@@ -52,17 +57,20 @@ namespace Eticaret.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "seller")]
         public async Task<IActionResult> DeleteImages(int? id)
         {
             if (id == null) return NotFound();
 
-            var prd = await _productImageService.GetAllAsync(i => i.ProductId == id);
+            var prd = await _productImageRepo.GetAllAsync(i => i.ProductId == id);
 
-            if (prd == null) return NotFound();
+            if (prd == null || !prd.Any()) return NotFound();
 
             try
             {
-                var deleteTasks = prd.Select(i => _productImageService.DeleteAsync(i));
+                var deleteTasks = prd
+                                .Where(i => i != null)
+                                .Select(i => _productImageRepo.DeleteAsync(i!));
                 await Task.WhenAll(deleteTasks);
             }
             catch (Exception)
@@ -79,7 +87,7 @@ namespace Eticaret.Api.Controllers
                 Url = p.Url,
                 CreatedAt = p.CreatedAt.ToString("dd.MM.yyyy"),
                 ProductId = p.ProductId,
-                SellerId = p.SellerId
+                SellerId = p.UserId
             };
         }
         private static ProductImage ProductImageCreateToDTO(ProductImageCreateDTO p)
@@ -88,7 +96,7 @@ namespace Eticaret.Api.Controllers
             {
                 Url = p.Url ?? Guid.NewGuid().ToString(),
                 ProductId = p.ProductId,
-                SellerId = p.SellerId
+                UserId = p.SellerId
             };
         }
     }

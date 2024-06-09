@@ -1,46 +1,43 @@
-using System.Net;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using Eticaret.Application.Abstract;
-using Eticaret.Domain;
 using Eticaret.Web.Mvc.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.Extensions.Logging;
+using Eticaret.Dto;
+using System.Text.Json;
+using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Eticaret.Web.Mvc.Controllers
 {
     [Authorize]
     public class AuthController : Controller
     {
-        private readonly IUserRepository _userService;
-
-        public AuthController(IUserRepository userService)
+        private readonly HttpClient _httpClient;
+        public AuthController(IHttpClientFactory httpClientFactory)
         {
-            _userService = userService;
+            _httpClient = httpClientFactory.CreateClient();
+            _httpClient.BaseAddress = new Uri("http://localhost:5177/api/");
         }
+
         [AllowAnonymous]
         public IActionResult Register()
         {
             return View(new RegisterViewModel());
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public IActionResult Register(RegisterViewModel user)
+        public async Task<IActionResult> Register(RegisterViewModel user)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var userAcount = new User()
+                    var userAccount = new RegisterDTO()
                     {
                         Email = user.Email,
                         FirstName = user.FirstName,
@@ -48,8 +45,14 @@ namespace Eticaret.Web.Mvc.Controllers
                         Password = user.Password
                     };
 
-                    _userService.Add(userAcount);
-                    return RedirectToAction(nameof(Index), "Home");
+                    var json = JsonSerializer.Serialize(userAccount);
+
+                    var response = await _httpClient.PostAsync("Auth/register", new StringContent(json, Encoding.UTF8, "application/json"));
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction(nameof(Index), "Home");
+                    }
                 }
                 catch
                 {
@@ -58,6 +61,7 @@ namespace Eticaret.Web.Mvc.Controllers
             }
             return View(user);
         }
+
         [AllowAnonymous]
         public IActionResult Login()
         {
@@ -67,6 +71,7 @@ namespace Eticaret.Web.Mvc.Controllers
             }
             return View(new LoginViewModel());
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
@@ -76,56 +81,28 @@ namespace Eticaret.Web.Mvc.Controllers
             {
                 try
                 {
-                    var isUser = _userService.GetAll().Where(u => u.Enabled)
-                            .FirstOrDefault(u => u.Email == user.Email && u.Password == user.Password);
-
-
-                    if (isUser != null)
+                    var userAccount = new LoginDTO()
                     {
-                        var userClaims = new List<Claim>
-                            {
-                                new Claim(ClaimTypes.NameIdentifier, isUser.Id.ToString()),
-                                new Claim(ClaimTypes.Name, (isUser.FirstName +" "+isUser.LastName) ?? ""),
-                                new Claim(ClaimTypes.Email, isUser.Email ?? ""),
-                                new Claim(ClaimTypes.GivenName, isUser.Email ?? ""),
-                            };
+                        Email = user.Email,
+                        Password = user.Password
+                    };
 
-                        if (isUser.RoleId == 3)
+                    var json = JsonSerializer.Serialize(userAccount);
+                    var response = await _httpClient.PostAsync("Auth/login", new StringContent(json, Encoding.UTF8, "application/json"));
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var tokenResponse = await response.Content.ReadAsStringAsync();
+                        if (tokenResponse != null)
                         {
-                            userClaims.Add(new Claim(ClaimTypes.Role, "admin"));
+                            SetUserCookie(tokenResponse);
+                            return RedirectToAction(nameof(Index), "Home");
                         }
-                        else if (isUser.RoleId == 2)
+                        else
                         {
-                            userClaims.Add(new Claim(ClaimTypes.Role, "buyer"));
+                            ModelState.AddModelError("", "Geçersiz kullanıcı adı veya şifre");
                         }
-                        else if (isUser.RoleId == 1)
-                        {
-                            userClaims.Add(new Claim(ClaimTypes.Role, "seller"));
-                        }
-
-                        var claimsIdentity = new ClaimsIdentity(userClaims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                        var authProperties = new AuthenticationProperties
-                        {
-                            IsPersistent = false
-                        };
-
-                        if (user.RememberMe)
-                        {
-                            authProperties = new AuthenticationProperties
-                            {
-                                IsPersistent = true
-                            };
-                        }
-                        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                        await HttpContext.SignInAsync(
-                            CookieAuthenticationDefaults.AuthenticationScheme,
-                            new ClaimsPrincipal(claimsIdentity), authProperties
-                        );
-
-                        return RedirectToAction(nameof(Index), "Home");
                     }
-
                 }
                 catch
                 {
@@ -134,19 +111,70 @@ namespace Eticaret.Web.Mvc.Controllers
             }
             return View(user);
         }
+
         [AllowAnonymous]
         public IActionResult ForgotPassword()
         {
             return View();
         }
+
         public async Task<IActionResult> Logout()
         {
             if (!User.Identity!.IsAuthenticated)
             {
                 return RedirectToAction(nameof(Login), "Home");
             }
+
+            await _httpClient.PostAsync("Auth/logout", null);
+
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction(nameof(Login));
+
+            Response.Cookies.Delete("token");//!
+            return RedirectToAction(nameof(Index), "Home");
         }
+        private void SetUserCookie(string tokenResponse)
+        {
+            var jsonDoc = JsonDocument.Parse(tokenResponse);
+            var token = jsonDoc.RootElement.GetProperty("token").GetString();
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+
+            if (jwtToken == null)
+            {
+                throw new SecurityTokenMalformedException("Invalid JWT token.");
+            }
+
+            var userClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.NameId)?.Value ?? ""),
+                new Claim(ClaimTypes.Name, jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value ?? ""),
+                new Claim(ClaimTypes.Email, jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Email)?.Value ?? ""),
+                new Claim(ClaimTypes.GivenName, jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.GivenName)?.Value ?? ""),
+                new Claim(ClaimTypes.Role, jwtToken.Claims.FirstOrDefault(c => c.Type == "role")?.Value ?? "")
+            };
+
+            var claimsIdentity = new ClaimsIdentity(userClaims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = false
+            };
+
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).Wait();
+            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties).Wait();
+
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                SameSite = SameSiteMode.Strict,
+                Secure = true,
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
+
+            Response.Cookies.Append("token", tokenHandler.WriteToken(jwtToken), cookieOptions);//!
+        }
+
     }
 }

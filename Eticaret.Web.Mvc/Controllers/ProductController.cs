@@ -4,56 +4,56 @@ using System.Text.Json;
 using Eticaret.Application.Abstract;
 using Eticaret.Domain;
 using Eticaret.Dto;
-using Eticaret.Web.Mvc.Utils;
+using Eticaret.File.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Eticaret.Web.Mvc.Controllers
 {
     [Authorize(Roles = "seller")]
     public class ProductController : Controller
     {
-        private readonly IProductCommentRepository _productCommentService;
         private HttpClient _httpClient;
+        private HttpClient _httpClientFile;
 
-        public ProductController(
-        IProductCommentRepository productCommentService,
-        IHttpClientFactory httpClientFactory)
+        public ProductController(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient();
             _httpClient.BaseAddress = new Uri("http://localhost:5177/api/");
 
-            _productCommentService = productCommentService;
+            _httpClientFile = httpClientFactory.CreateClient();
+            _httpClientFile.BaseAddress = new Uri("http://localhost:5112/api/");
         }
 
         public async Task<IActionResult> Index()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId != null && int.TryParse(userId, out int Id))
+            try
             {
-                using (var response = await _httpClient.GetAsync($"SellerProduct/All/{userId}"))
-                {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var products = await response.Content.ReadFromJsonAsync<List<AdminProductListDTO>>() ?? new List<AdminProductListDTO>();
-                        return View(products);
-                    }
-                    else
-                    {
-                        ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-                        return View("Error");
-                    }
-                }
-            }
-            else return BadRequest();
-        }
+                var response = await _httpClient.GetAsync($"SellerProduct");
 
+                if (response.IsSuccessStatusCode)
+                {
+                    var products = await response.Content.ReadFromJsonAsync<List<AdminProductListDTO>>() ?? new List<AdminProductListDTO>();
+                    return View(products);
+                }
+                else
+                {
+                    return View(new List<AdminProductListDTO>());
+                }
+
+
+            }
+            catch (Exception)
+            {
+                return View("Error");
+            }
+        }
         public async Task<IActionResult> Create()
         {
             bool Id = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int sellerId);
             var product = new SellerProductCreateDTO() { SellerId = sellerId };
-
 
             ViewBag.Category = new SelectList(await GetCategories(), "Id", "Name");
             return View(product);
@@ -67,16 +67,14 @@ namespace Eticaret.Web.Mvc.Controllers
             {
                 try
                 {
-                    var json = JsonSerializer.Serialize(product);
+                    var prd = await CreateImage(product, ImageList);
+                    var json = JsonSerializer.Serialize(prd);
 
                     var response = await _httpClient.PostAsync("SellerProduct", new StringContent(json, Encoding.UTF8, "application/json"));
 
                     if (response.IsSuccessStatusCode)
                     {
-                        var newProduct = await response.Content.ReadFromJsonAsync<SellerProductCreateDTO>();
-
-                        CreateImage(newProduct!, ImageList);
-                        return RedirectToAction(nameof(Index), "Product");
+                        return RedirectToAction(nameof(Index));
                     }
                 }
                 catch
@@ -86,50 +84,55 @@ namespace Eticaret.Web.Mvc.Controllers
             }
             ViewBag.Category = new SelectList(await GetCategories(), "Id", "Name");
             return View(product);
-
         }
 
-        public async void CreateImage(SellerProductCreateDTO product, List<IFormFile> ImageList)
+        public async Task<SellerProductCreateDTO> CreateImage(SellerProductCreateDTO product, List<IFormFile> imageList)
         {
-            if (ImageList != null && ImageList.Any())
+            if (imageList.Count > 0)
             {
-                foreach (var item in ImageList)
+                product.ImageList.Clear();
+                for (int i = 0; i < imageList.Count; i++)
                 {
-                    try
+                    var Url = await AddImg(imageList[i]);
+                    var x = new UpdateImage()
                     {
-                        var json = JsonSerializer.Serialize(
-                             new ProductImageCreateDTO()
-                             {
-                                 Url = await FileHelper.FileLoaderAsync(item),
-                                 ProductId = product.Id,
-                                 SellerId = product.SellerId
-                             }
-                        );
-
-                        var response = await _httpClient.PostAsync("ProductImage", new StringContent(json, Encoding.UTF8, "application/json"));
-
-                        if (response.IsSuccessStatusCode)
-                        {
-                            var newCategory = await response.Content.ReadFromJsonAsync<ProductImage>();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        ViewBag.Error = ex.Message;
-                    }
+                        Url = Url,
+                        ProductId = product.Id,
+                        SellerId = product.SellerId
+                    };
+                    product.ImageList.Add(x);
                 }
             }
+            return product;
         }
-        public async void DeleteImage(SellerProductCreateDTO product)
+
+        public async Task<string> AddImg(IFormFile ImageList)
         {
             try
             {
-                var response = await _httpClient.DeleteAsync($"ProductImage/{product.Id}");
+                var formData = new MultipartFormDataContent();
+                formData.Add(new StreamContent(ImageList.OpenReadStream()), "file", ImageList.FileName);
 
+                var response = await _httpClientFile.PostAsync("File", formData);
+                if (response.IsSuccessStatusCode)
+                {
+                    var imgUrl = await response.Content.ReadFromJsonAsync<FileEntity>();
+
+                    if (imgUrl != null) return imgUrl.LocalName!;
+                    return "";
+                }
+                else
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+
+                    ViewBag.Error = error;
+                    return "";
+                }
             }
             catch (Exception ex)
             {
                 ViewBag.Error = ex.Message;
+                return ex.Message;
             }
         }
 
@@ -138,6 +141,10 @@ namespace Eticaret.Web.Mvc.Controllers
             using (var response = await _httpClient.GetAsync($"SellerProduct/{id}"))
             {
                 SellerProductUpdateDTO product = await response.Content.ReadFromJsonAsync<SellerProductUpdateDTO>() ?? new();
+
+                // int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int seller);
+                // product.SellerId = seller;
+
                 ViewBag.Category = new SelectList(await GetCategories(), "Id", "Name");
                 return View(product);
             }
@@ -147,23 +154,29 @@ namespace Eticaret.Web.Mvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(SellerProductUpdateDTO product, List<IFormFile> ImageList)
         {
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var json = JsonSerializer.Serialize(product);
+                    var resp = await _httpClient.GetAsync($"SellerProduct/{product.Id}");
 
-                    var response = await _httpClient.PutAsync($"SellerProduct/{product.Id}", new StringContent(json, Encoding.UTF8, "application/json"));
-
-                    if (response.IsSuccessStatusCode)
+                    if (resp.IsSuccessStatusCode)
                     {
-                        var newProduct = await response.Content.ReadFromJsonAsync<SellerProductCreateDTO>();
+                        SellerProductUpdateDTO p = await resp.Content.ReadFromJsonAsync<SellerProductUpdateDTO>() ?? new();
+                        var images = p.ImageList;
+                        foreach (var item in images)
+                        {
+                            await RemoveImg(item);
+                        }
+                        var prd = await CreateImage(TransformProduct(product), ImageList);
+                        var json = JsonSerializer.Serialize(prd);
 
-                        DeleteImage(newProduct!);
-                        CreateImage(newProduct!, ImageList);
+                        var response = await _httpClient.PutAsync($"SellerProduct/{product.Id}", new StringContent(json, Encoding.UTF8, "application/json"));
 
-                        return RedirectToAction(nameof(Index), "Product");
+                        if (response.IsSuccessStatusCode)
+                        {
+                            return RedirectToAction(nameof(Index), "Product");
+                        }
                     }
                 }
                 catch
@@ -172,30 +185,43 @@ namespace Eticaret.Web.Mvc.Controllers
                 }
             }
             ViewBag.Category = new SelectList(await GetCategories(), "Id", "Name");
-            return View(product);
+            return View();
         }
-
-
 
         public async Task<IActionResult> Delete(int id)
         {
             using (var response = await _httpClient.GetAsync($"SellerProduct/{id}"))
             {
-                var product = await response.Content.ReadFromJsonAsync<SellerProductListDTO>() ?? new();
-                return View(product);
+                var product = await response.Content.ReadFromJsonAsync<SellerProductUpdateDTO>() ?? new();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return View(product);
+                }
+                return RedirectToAction(nameof(Index), "Product");
+
             }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id, SellerProductListDTO category)
+        public async Task<IActionResult> Delete(int id, SellerProductUpdateDTO? p)
         {
             try
             {
-                var response = await _httpClient.DeleteAsync($"SellerProduct/{id}");
+                var resp = await _httpClient.GetAsync($"SellerProduct/{id}");
+                if (resp.IsSuccessStatusCode)
+                {
+                    SellerProductUpdateDTO product = await resp.Content.ReadFromJsonAsync<SellerProductUpdateDTO>() ?? new();
 
-                if (response.IsSuccessStatusCode)
+                    var response = await _httpClient.DeleteAsync($"SellerProduct/{id}");
+
+                    foreach (var item in product.ImageList)
+                    {
+                        await RemoveImg(item);
+                    }
                     return RedirectToAction(nameof(Index), "Product");
+                }
                 else
                     return View("Error");
             }
@@ -206,29 +232,35 @@ namespace Eticaret.Web.Mvc.Controllers
             }
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public IActionResult Comment(int ProductId, byte StarCount, string Text)
+        public async Task<IActionResult> Comment(int ProductId, byte StarCount, string Text)
         {
             if (StarCount != 0 && Text != null && ProductId != 0)
             {
                 try
                 {
-                    var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    if (userIdClaim != null && int.TryParse(userIdClaim, out int userId))
+                    var comment = new ProductCommentCreateDTO()
                     {
-                        var comment = new ProductComment() { Text = Text, StarCount = StarCount, UserId = userId, ProductId = ProductId };
-                        _productCommentService.Add(comment!);
+                        Text = Text,
+                        StarCount = StarCount,
+                        ProductId = ProductId
+                    };
+                    var json = JsonSerializer.Serialize(comment);
+
+                    var response = await _httpClient.PostAsync("ProductComment", new StringContent(json, Encoding.UTF8, "application/json"));
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToRoute(new
+                        {
+                            //controller = nameof(HomeController).Replace("Controller", string.Empty),
+                            controller = "Home",
+                            action = nameof(HomeController.ProductDetail),
+                            id = ProductId
+                        });
                     }
-                    return RedirectToRoute(new
-                    {
-                        //controller = nameof(HomeController).Replace("Controller", string.Empty),
-                        controller = "Home",
-                        action = nameof(HomeController.ProductDetail),
-                        id = ProductId
-                    });
                 }
                 catch
                 {
@@ -237,6 +269,7 @@ namespace Eticaret.Web.Mvc.Controllers
             }
             return RedirectToRoute(new
             {
+                //controller = nameof(HomeController).Replace("Controller", string.Empty),
                 controller = "Home",
                 action = nameof(HomeController.ProductDetail),
                 id = ProductId
@@ -252,5 +285,45 @@ namespace Eticaret.Web.Mvc.Controllers
                 return products;
             }
         }
+
+        public async Task RemoveImg(string url)
+        {
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"File/{url}");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = ex.Message;
+            }
+        }
+        public SellerProductCreateDTO TransformProduct(SellerProductUpdateDTO product)
+        {
+            var p = new SellerProductCreateDTO();
+
+
+            p.Id = product.Id;
+            p.Name = product.Name;
+            p.Price = product.Price;
+            p.Details = product.Details;
+            foreach (var item in product.ImageList)
+            {
+                UpdateImage img = new()
+                {
+                    Url = item,
+                    ProductId = product.Id,
+                    SellerId = product.SellerId
+                };
+                p.ImageList.Add(img);
+            }
+            p.StockAmount = product.StockAmount;
+            p.CategoryId = product.CategoryId;
+            p.SellerId = product.SellerId;
+            p.Enabled = product.Enabled;
+
+            return p;
+        }
+
+
     }
 }

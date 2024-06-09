@@ -16,8 +16,6 @@ namespace Eticaret.Application.Repositories
             _databaseContext = databaseContext;
             _dbSet = _databaseContext.Set<T>();
         }
-
-
         public List<T> GetAll()
         {
             return _dbSet.ToList();
@@ -30,29 +28,26 @@ namespace Eticaret.Application.Repositories
         {
             return await _dbSet.ToListAsync();
         }
-        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> expression)
+        public async Task<IEnumerable<T?>> GetAllAsync(Expression<Func<T, bool>> expression)
         {
             return await _dbSet.Where(expression).ToListAsync();
         }
-
-        public T Get(Expression<Func<T, bool>> expression)
+        public T? Get(Expression<Func<T, bool>> expression)
         {
             return _dbSet.FirstOrDefault(expression)!;
         }
-        public async Task<T> GetAsync(Expression<Func<T, bool>> expression)
+        public async Task<T?> GetAsync(Expression<Func<T, bool>> expression)
         {
-            return await _dbSet.FirstOrDefaultAsync(expression) ?? new T();
+            return await _dbSet.FirstOrDefaultAsync(expression);
         }
-
-        public T Find(int id)
+        public T? Find(int id)
         {
-            return _dbSet.Find(id)!;
+            return _dbSet.Find(id);
         }
-        public async Task<T> FindAsync(int id)
+        public async Task<T?> FindAsync(int id)
         {
-            return await _dbSet.FindAsync(id) ?? new T();
+            return await _dbSet.FindAsync(id);
         }
-
         public int Add(T entity)
         {
             _dbSet.Add(entity);
@@ -63,7 +58,6 @@ namespace Eticaret.Application.Repositories
             await _dbSet.AddAsync(entity);
             return SaveChanges();
         }
-
         public int Update(T entity)
         {
             _databaseContext.Update(entity);
@@ -74,7 +68,6 @@ namespace Eticaret.Application.Repositories
             _databaseContext.Update(entity);
             return await SaveChangesAsync();
         }
-
         public int Delete(T entity)
         {
             _dbSet.Remove(entity);
@@ -85,7 +78,6 @@ namespace Eticaret.Application.Repositories
             _dbSet.Remove(entity);
             return await SaveChangesAsync();
         }
-
         public int SaveChanges()
         {
             return _databaseContext.SaveChanges();
@@ -94,15 +86,13 @@ namespace Eticaret.Application.Repositories
         {
             return await _databaseContext.SaveChangesAsync();
         }
-
-        public async Task<T> GetIncludeAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] tables)
+        public async Task<T?> GetIncludeAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] tables)
         {
             IQueryable<T> db = _dbSet;
             foreach (var table in tables)
             {
                 db = db.Include(table);
             }
-
             return await db.FirstOrDefaultAsync(expression) ?? new T();
         }
         public List<T> GetAllInclude(params Expression<Func<T, object>>[] tables)
@@ -112,8 +102,7 @@ namespace Eticaret.Application.Repositories
             {
                 db = db.Include(table);
             }
-
-            return db.ToList(); ;
+            return db.ToList();
         }
         public async Task<List<T>> GetAllIncludeAsync(params Expression<Func<T, object>>[] tables)
         {
@@ -122,11 +111,8 @@ namespace Eticaret.Application.Repositories
             {
                 db = db.Include(table);
             }
-
             return await db.ToListAsync();
         }
-
-
         public async Task<List<T>> GetIdAllIncludeFilterAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] tables)
         {
             IQueryable<T> db = _dbSet;
@@ -134,10 +120,8 @@ namespace Eticaret.Application.Repositories
             {
                 db = db.Include(table);
             }
-
             return await db.Where(expression).ToListAsync();
         }
-
         public List<T> GetIdAllIncludeFilter(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] tables)
         {
             IQueryable<T> db = _dbSet;
@@ -145,51 +129,39 @@ namespace Eticaret.Application.Repositories
             {
                 db = db.Include(table);
             }
-
             return db.Where(expression).ToList();
         }
-        public T GetIncludeFilter(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] tables)
+        public T? GetIncludeFilter(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] tables)
         {
             IQueryable<T> db = _dbSet;
             foreach (var table in tables)
             {
                 db = db.Include(table);
             }
-
-            return db.Where(expression).FirstOrDefault() ?? new T();
+            return db.Where(expression).FirstOrDefault();
         }
-
-        public async Task<T> GetIncludeFilterAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] tables)
+        public async Task<T?> GetIncludeFilterAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] tables)
         {
             IQueryable<T> db = _dbSet;
             foreach (var table in tables)
             {
                 db = db.Include(table);
             }
-
             var result = await db.Where(expression).FirstOrDefaultAsync();
-            return result ?? new T();
+            return result;
         }
-
-        public IQueryable<T> GetAllIncludeQueryable(params Expression<Func<T, object>>[] tables)
+        public IQueryable<T?> GetAllIncludeQueryable(params Expression<Func<T, object>>[] tables)
         {
             IQueryable<T> db = _dbSet;
             foreach (var table in tables)
             {
                 db = db.Include(table);
             }
-
             return db;
         }
-
         public DbSet<T> GetDb()
         {
             return _dbSet;
         }
-
-
-#nullable disable
-#nullable restore
-
     }
 }

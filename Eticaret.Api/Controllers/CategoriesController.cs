@@ -7,28 +7,25 @@ using Microsoft.EntityFrameworkCore;
 namespace Eticaret.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("~/api/[controller]")]
     public class CategoriesController : ControllerBase
     {
-        private readonly ICategoryRepository _categoryService;
+        private readonly ICategoryRepository _categoryRepo;
         public CategoriesController(
-            ICategoryRepository categoryService
+            ICategoryRepository categoryRepo
             )
         {
-            _categoryService = categoryService;
+            _categoryRepo = categoryRepo;
         }
         [HttpGet]
-
         public async Task<IActionResult> GetProducts()
         {
-            var products = await _categoryService.GetAllAsync();
+            var products = (await _categoryRepo.GetAllAsync())
+                                 .Select(p => CategoriesListToDTO(p))
+                                 .ToList();
 
-            var prd = products
-                         .Select(p => CategoriesListToDTO(p));
-
-            return Ok(prd);
+            return Ok(products);
         }
-
 
         private static CategoryListDTO CategoriesListToDTO(Category c)
         {

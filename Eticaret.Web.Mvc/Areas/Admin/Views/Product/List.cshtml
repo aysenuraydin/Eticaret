@@ -75,11 +75,11 @@
                     <td>
                         @if (!item.ImageUrlList.Any())
                         {
-                            <img src="https://via.placeholder.com/300x300" alt="Ürun resmi">
+                            <img src="https://via.placeholder.com/65x65" alt="Ürun resmi">
                         }
                         else
                         {
-                            <img src="/assets/img/@item.ImageUrlList[0]" height="100px;">
+                            <img src="/UploadedFiles/@item.ImageUrlList[0]" max-height="100px;" width="65px">
                         }
                     </td>
                     <td>

@@ -14,7 +14,7 @@ namespace Eticaret.Persistence.Ef.Configurations
             builder.Property(u => u.CreatedAt).IsRequired();
             builder.Property(u => u.ProductId).IsRequired();
             builder.Property(u => u.OrderId).IsRequired();
-            builder.Property(u => u.SellerId).IsRequired();
+            builder.Property(u => u.UserId).IsRequired();
         }
     }
 }

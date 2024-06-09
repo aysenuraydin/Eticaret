@@ -7,48 +7,41 @@ using Microsoft.EntityFrameworkCore;
 namespace Eticaret.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("~/api/[controller]")]
     public class HomeController : ControllerBase
     {
-        private readonly IProductRepository _productService;
+        private readonly IProductRepository _productRepo;
 
-        public HomeController(IProductRepository productService)
+        public HomeController(IProductRepository productRepo)
         {
-            _productService = productService;
+            _productRepo = productRepo;
         }
         [HttpGet]
 
         public async Task<IActionResult> GetProducts()
         {
-            var products = await _productService.GetIdAllIncludeFilterAsync(
+            var products = (await _productRepo.GetIdAllIncludeFilterAsync(
                                         p => p.IsConfirmed && p.Enabled && p.StockAmount > 0,
                                         p => p.ProductImages
-                                       );
-
-            var prd = products
-                         .OrderByDescending(p => p.CreatedAt)
-                         .Select(p => ProductListToDTO(p));
-
-            return Ok(prd);
+                                       ))
+                                        .OrderByDescending(p => p.CreatedAt)
+                                        .Select(p => ProductListToDTO(p))
+                                        .ToList();
+            return Ok(products);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProduct(int? id)
         {
-            var productList = await _productService.GetIdAllIncludeFilterAsync(
-                                       p => p.IsConfirmed && p.Enabled && p.StockAmount > 0,
+            var productList = await _productRepo.GetIdAllIncludeFilterAsync(
+                                       p => p.IsConfirmed && p.Enabled && p.StockAmount > 0 && p.CategoryId == id,
                                        p => p.ProductImages
                                       );
 
-            if (id != null) productList = productList
-                                            .Where(c => c.CategoryId == id)
-                                            .ToList();
-
-            var prd = productList
-                          .OrderByDescending(p => p.CreatedAt)
-                          .Select(p => ProductListToDTO(p));
-
-            return Ok(prd);
+            return Ok(productList
+                     .OrderByDescending(p => p.CreatedAt)
+                     .Select(p => ProductListToDTO(p))
+                     );
         }
         private static ProductListDTO ProductListToDTO(Product p)
         {

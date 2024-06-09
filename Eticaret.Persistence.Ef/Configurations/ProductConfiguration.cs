@@ -16,7 +16,7 @@ namespace Eticaret.Persistence.Ef.Configurations
             builder.Property(u => u.CreatedAt).IsRequired();
             builder.Property(u => u.IsConfirmed).IsRequired();
             builder.Property(u => u.Enabled).IsRequired();
-            builder.Property(u => u.SellerId).IsRequired();
+            builder.Property(u => u.UserId).IsRequired();
             builder.Property(u => u.CategoryId).IsRequired();
 
             //bunlar önemli !!!

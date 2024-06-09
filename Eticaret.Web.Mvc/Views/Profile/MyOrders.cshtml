@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Order>
+﻿@model IEnumerable<OrderDetailDTO>
 @{
     Layout = "_ProfileLayout";
 }
@@ -6,7 +6,7 @@
 <div class="p-5">
     <h3 class="pb-5">Sipariş Listem</h3>
     <div class="accordion" id="accordionExample">
-        @if (Model.Count() == 0)
+        @if (Model == null || !Model.Any())
         {
             <div class="alert alert-secondary">
                 Henüz hiç sipariş vermedin !
@@ -53,23 +53,23 @@
                                     {
                                         <tr>
                                             <td>
-                                                @if (!order.ProductFk.ProductImages.Any())
+                                                @if (order.ProductImages == null || order.ProductImages.Length == 0)
                                                 {
                                                     <img src="https://via.placeholder.com/100x100" alt="Ürun resmi">
                                                 }
                                                 else
                                                 {
-                                                    <img src="/assets/img/@order.ProductFk.ProductImages[0].Url" width="80px;">
+                                                    <img src="/UploadedFiles/@order.ProductImages" width="80px;">
                                                 }
                                             </td>
                                             <td>
                                                 <a asp-controller="Home" asp-action="ProductDetail" asp-route-id="@order.ProductId">
-                                                    @order.ProductFk.Name
+                                                    @order.ProductName
                                                 </a>
                                             </td>
-                                            <td>@order.ProductFk.SellerFk!.FirstName @order.ProductFk.SellerFk!.LastName</td>
+                                            <td>SellerName</td>
                                             <td>@order.Quantity</td>
-                                            <td>@order.UnitPrice ₺</td>
+                                            <td>@order.ProductPrice ₺</td>
                                         </tr>
                                     }
                                     <tr>
@@ -77,7 +77,7 @@
                                         <td></td>
                                         <td></td>
                                         <td> <b>Toplam : </b> </td>
-                                        <td>@item.OrderItems.Sum(o => o.Quantity * o.UnitPrice) ₺</td>
+                                        <td>@item.OrderItems.Sum(o => o.Quantity * o.ProductPrice) ₺</td>
                                     </tr>
                                 </tbody>
                             </table>

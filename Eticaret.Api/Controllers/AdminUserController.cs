@@ -1,68 +1,69 @@
 ﻿using System.Data.Common;
+using System.Security.Claims;
 using Eticaret.Application.Abstract;
 using Eticaret.Domain;
 using Eticaret.Dto;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Api.Controllers
 {
+    [Authorize(Roles = "admin")]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("~/api/[controller]")]
     public class AdminUserController : ControllerBase
     {
-        private readonly IUserRepository _userService;
-
-        public AdminUserController(IUserRepository userService)
+        private readonly UserManager<User> _userManager;
+        public AdminUserController(UserManager<User> userManager)
         {
-            _userService = userService;
+            _userManager = userManager;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
-            var users = await _userService.GetAllIncludeAsync(
-                                        p => p.RoleFk,
-                                        p => p.CartItems,
-                                        p => p.ProductComments,
-                                        p => p.Orders
-                                       );
-
-            var user = users
-                     .OrderByDescending(p => p.CreatedAt)
-                     .Select(p => UserListToDTO(p))
-                     .ToList();
-
-            return Ok(user);
+            var users = await _userManager.Users
+                               .Include(p => p.RoleFk)
+                               .Include(p => p.CartItems)
+                               .Include(p => p.ProductComments)
+                               .Include(p => p.Orders)
+                               .OrderByDescending(p => p.CreatedAt)
+                               .Select(p => UserListToDTO(p))
+                               .ToListAsync();
+            return Ok(users);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int? id)
         {
             if (id == null) return NotFound();
 
-            var user = await _userService.GetIdAllIncludeFilterAsync(
-                                            p => p.Id == id,
-                                            p => p.RoleFk,
-                                            p => p.CartItems,
-                                            p => p.ProductComments,
-                                            p => p.Orders
-                                         );
+            var user = await _userManager.Users
+                               .Include(p => p.RoleFk)
+                               .Include(p => p.CartItems)
+                               .Include(p => p.ProductComments)
+                               .Include(p => p.Orders)
+                               .FirstOrDefaultAsync(p => p.Id == id);
 
             if (user == null) return NotFound();
-
-            var u = user.Select(p => UserListToDTO(p))
-                        .FirstOrDefault();
-            return Ok(u);
+            return Ok(UserListToDTO(user));
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(AdminUserUpdateDTO p)
         {
-            var user = await _userService.GetAsync(i => i.Id == p.Id);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = await _userManager.FindByIdAsync(p.Id.ToString());
 
             if (user == null) return NotFound();
 
             try
             {
-                await _userService.UpdateAsync(UserApproveToDTO(p, user));
+                await _userManager.UpdateAsync(UserApproveToDTO(p, user));
             }
             catch (Exception)
             {
@@ -76,13 +77,13 @@ namespace Eticaret.Api.Controllers
         {
             if (id == null) return NotFound();
 
-            var user = await _userService.GetAsync(i => i.Id == id);
+            var user = await _userManager.FindByIdAsync(id.ToString()!);
 
             if (user == null) return NotFound();
 
             try
             {
-                await _userService.DeleteAsync(user);
+                await _userManager.DeleteAsync(user);
             }
             catch (Exception)
             {
@@ -98,6 +99,8 @@ namespace Eticaret.Api.Controllers
                 Id = u.Id,
                 Email = u.Email,
                 FullName = $"{u.FirstName} {u.LastName}",
+                FirstName = u.FirstName,
+                LastName = u.FirstName,
                 Enabled = u.Enabled,
                 CreatedAt = u.CreatedAt.ToString("dd.MM.yyyy"),
                 RoleName = u.RoleFk.Name,
@@ -113,4 +116,3 @@ namespace Eticaret.Api.Controllers
         }
     }
 }
-
