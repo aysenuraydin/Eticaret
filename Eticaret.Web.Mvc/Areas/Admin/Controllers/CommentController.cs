@@ -1,11 +1,6 @@
-using System.Text;
-using System.Text.Json;
-using Eticaret.Application.Abstract;
-using Eticaret.Domain;
 using Eticaret.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 {
@@ -13,6 +8,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
     public class CommentController : Controller
     {
         private readonly HttpClient _httpClient;
+
         public CommentController(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient();
@@ -21,84 +17,125 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 
         public async Task<IActionResult> List()
         {
-            using (var response = await _httpClient.GetAsync("AdminProductComment"))
-            {
-                if (response.IsSuccessStatusCode)
-                {
-                    var comments = await response.Content.ReadFromJsonAsync<List<AdminProductCommentListDTO>>() ?? new List<AdminProductCommentListDTO>();
-                    return View(comments);
-                }
-                else
-                {
-                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-                    return View("Error");
-                }
-            }
-        }
-        public async Task<IActionResult> Approve(int id)
-        {
-            using (var response = await _httpClient.GetAsync($"AdminProductComment/{id}"))
-            {
-                AdminProductCommentListDTO comment = await response.Content.ReadFromJsonAsync<AdminProductCommentListDTO>() ?? new();
-                return View(comment);
-            }
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Approve(ProductComment comment)
-        {
             try
             {
-                var json = JsonSerializer.Serialize(comment);
-
-                var response = await _httpClient.PutAsync($"AdminProductComment/{comment.Id}", new StringContent(json, Encoding.UTF8, "application/json"));
+                var response = await _httpClient.GetAsync("AdminProductComment");
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var updateBook = await response.Content.ReadFromJsonAsync<AdminProductCommentListDTO>();
-                    return RedirectToAction(nameof(List));
-                }
-                else
-                {
-                    var error = await response.Content.ReadAsStringAsync();
+                    var comments = await response.Content.ReadFromJsonAsync<List<AdminProductCommentListDTO>>() ?? new();
 
-                    ViewBag.Error = error;
-                    return View("Error");
+                    return View(comments);
                 }
+
+                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
             }
             catch (Exception ex)
             {
-                ViewBag.Error = ex.Message;
-                return View("Error");
+                ViewBag.ErrorMessage = $"Error: {ex.Message}";
             }
+
+            return View(new List<AdminProductCommentListDTO>());
+        }
+
+        public async Task<IActionResult> Approve(int id)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"AdminProductComment/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    AdminProductCommentListDTO comment = await response.Content.ReadFromJsonAsync<AdminProductCommentListDTO>() ?? new();
+
+                    return View(comment);
+                }
+
+                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+            }
+
+            return View();
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Approve(AdminProductCommentListDTO comment)
+        {
+            try
+            {
+                AdminProductCommentUpdateDTO c = new()
+                {
+                    Id = comment.Id,
+                    IsConfirmed = comment.IsConfirmed
+
+                };
+
+                var response = await _httpClient.PutAsJsonAsync($"AdminProductComment/{comment.Id}", c);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction(nameof(List));
+                }
+
+                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                ModelState.AddModelError("", "Güncelleme sırasında bir hata oluştu.");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Hata Oluştu: {ex.Message}");
+                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+            }
+
+            return View(comment);
         }
 
         public async Task<IActionResult> Delete(int id)
         {
-            using (var response = await _httpClient.GetAsync($"AdminProductComment/{id}"))
+            try
             {
-                AdminProductCommentListDTO product = await response.Content.ReadFromJsonAsync<AdminProductCommentListDTO>() ?? new();
-                return View(product);
+                using (var response = await _httpClient.GetAsync($"AdminProductComment/{id}"))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        AdminProductCommentListDTO product = await response.Content.ReadFromJsonAsync<AdminProductCommentListDTO>() ?? new();
+
+                        return View(product);
+                    }
+
+                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                }
             }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+            }
+
+            return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id, ProductComment? comment)
+        public async Task<IActionResult> Delete(int id, AdminProductCommentListDTO? comment)
         {
             try
             {
                 var response = await _httpClient.DeleteAsync($"AdminProductComment/{id}");
 
-                if (response.IsSuccessStatusCode)
-                    return RedirectToAction(nameof(List));
-                else
-                    return View("Error");
+                if (response.IsSuccessStatusCode) return RedirectToAction(nameof(List));
+
+                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
             }
             catch (Exception ex)
             {
-                ViewBag.Error = ex.Message;
-                return View("Error");
+                ViewBag.ErrorMessage = $"Error: {ex.Message}";
             }
+
+            return RedirectToAction(nameof(List));
         }
     }
 }

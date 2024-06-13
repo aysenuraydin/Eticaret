@@ -1,10 +1,8 @@
-﻿using System.Data.Common;
-using Eticaret.Application.Abstract;
+﻿using Eticaret.Application.Abstract;
 using Eticaret.Domain;
 using Eticaret.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Api.Controllers
 {
@@ -19,6 +17,7 @@ namespace Eticaret.Api.Controllers
         {
             _productRepo = productRepo;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetProducts()
         {
@@ -36,32 +35,31 @@ namespace Eticaret.Api.Controllers
 
             return Ok(products);
         }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProduct(int? id)
         {
             if (id == null) return NotFound();
 
             var product = (await _productRepo.GetIdAllIncludeFilterAsync(
-                          p => p.Id == id,
-                          p => p.ProductImages,
-                          p => p.ProductComments,
-                          p => p.UserFk!,
-                          p => p.CategoryFk!,
-                          p => p.OrderItems,
-                          p => p.CartItems
-                         )).FirstOrDefault();
+                                 p => p.Id == id,
+                                 p => p.ProductImages,
+                                 p => p.ProductComments,
+                                 p => p.UserFk!,
+                                 p => p.CategoryFk!,
+                                 p => p.OrderItems,
+                                 p => p.CartItems
+                                )).FirstOrDefault();
 
             if (product == null) return NotFound();
 
             return Ok(ProductListToDTO(product));
         }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(AdminProductUpdateDTO p)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (p == null) return BadRequest();
 
             var prd = await _productRepo.GetAsync(i => i.Id == p.Id);
 
@@ -78,6 +76,7 @@ namespace Eticaret.Api.Controllers
 
             return Ok(prd);
         }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int? id)
         {
@@ -95,6 +94,7 @@ namespace Eticaret.Api.Controllers
             {
                 return NotFound();
             }
+
             return NoContent();
         }
 
@@ -119,9 +119,11 @@ namespace Eticaret.Api.Controllers
                 CreatedAt = p.CreatedAt.ToString("dd.MM.yyyy"),
             };
         }
+
         private static Product ProductApproveToDTO(AdminProductUpdateDTO p, Product prd)
         {
             prd.IsConfirmed = p.IsConfirmed;
+
             return prd;
         }
     }

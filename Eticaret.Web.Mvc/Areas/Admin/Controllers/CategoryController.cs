@@ -1,13 +1,6 @@
-
-using Eticaret.Application.Abstract;
-using Eticaret.Domain;
 using Eticaret.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.EntityFrameworkCore;
-using System.Text;
-using System.Text.Json;
 
 namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 {
@@ -15,6 +8,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
     public class CategoryController : Controller
     {
         private readonly HttpClient _httpClient;
+
         public CategoryController(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient();
@@ -23,86 +17,117 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 
         public IActionResult Create()
         {
-            return View(new AdminCategoryCreateDTO());
+            return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AdminCategoryCreateDTO category)
         {
+            if (!ModelState.IsValid) return View(category);
+
             try
             {
-                var json = JsonSerializer.Serialize(category);
-
-                var response = await _httpClient.PostAsync("AdminCategory", new StringContent(json, Encoding.UTF8, "application/json"));
+                var response = await _httpClient.PostAsJsonAsync("AdminCategory", category);
 
                 if (response.IsSuccessStatusCode)
                 {
                     return RedirectToAction(nameof(Index), "Home");
                 }
-                else
-                {
-                    var error = await response.Content.ReadAsStringAsync();
 
-                    ViewBag.Error = error;
-                    return View(category);
+                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+            }
+
+            return View(category);
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            try
+            {
+                using (var response = await _httpClient.GetAsync($"AdminCategory/{id}"))
+                {
+                    var product = await response.Content.ReadFromJsonAsync<AdminCategoryListDTO>() ?? new();
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var p = new AdminCategoryUpdateDTO()
+                        {
+                            Id = product.Id,
+                            Name = product.Name,
+                            Css = product.Css,
+                            Color = product.Color
+                        };
+
+                        return View(p);
+                    }
+
+                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
                 }
             }
             catch (Exception ex)
             {
-                ViewBag.Error = ex.Message;
-                return View("Error");
+                ViewBag.ErrorMessage = $"Error: {ex.Message}";
             }
+
+            return RedirectToAction(nameof(Index), "Home");
         }
-        public async Task<IActionResult> Edit(int id)
-        {
-            using (var response = await _httpClient.GetAsync($"AdminCategory/{id}"))
-            {
-                var product = await response.Content.ReadFromJsonAsync<AdminCategoryListDTO>() ?? new();
-                var p = new AdminCategoryUpdateDTO()
-                {
-                    Id = product.Id,
-                    Name = product.Name,
-                    Css = product.Css,
-                    Color = product.Color
-                };
-                return View(p);
-            }
-        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, AdminCategoryUpdateDTO category)
         {
+            if (!ModelState.IsValid) return View(category);
+
             try
             {
-                var json = JsonSerializer.Serialize(category);
-                var response = await _httpClient.PutAsync($"AdminCategory/{id}", new StringContent(json, Encoding.UTF8, "application/json"));
+                var response = await _httpClient.PutAsJsonAsync($"AdminCategory/{id}", category);
 
                 if (response.IsSuccessStatusCode)
                 {
                     return RedirectToAction(nameof(Index), "Home");
                 }
-                else
-                {
-                    var error = await response.Content.ReadAsStringAsync();
 
-                    ViewBag.Error = error;
-                    return View("Error");
-                }
+                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                ModelState.AddModelError("", "Güncelleme sırasında bir hata oluştu.");
             }
             catch (Exception ex)
             {
-                ViewBag.Error = ex.Message;
-                return View("Error");
+                ViewBag.ErrorMessage = $"Error:{ex.Message}";
+                ModelState.AddModelError("", $"Hata Oluştu: {ex.Message}");
+
             }
+
+            return View(category);
         }
+
         public async Task<IActionResult> Delete(int id)
         {
-            using (var response = await _httpClient.GetAsync($"AdminCategory/{id}"))
+            try
             {
-                var product = await response.Content.ReadFromJsonAsync<AdminCategoryListDTO>() ?? new();
-                return View(product);
+                var response = await _httpClient.GetAsync($"AdminCategory/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var product = await response.Content.ReadFromJsonAsync<AdminCategoryListDTO>() ?? new();
+
+                    return View(product);
+                }
+
+                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
             }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+            }
+
+            return RedirectToAction("Index", "Home");
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id, AdminCategoryListDTO category)
@@ -111,17 +136,16 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
             {
                 var response = await _httpClient.DeleteAsync($"AdminCategory/{id}");
 
-                if (response.IsSuccessStatusCode)
-                    return RedirectToAction(nameof(Index), "Home");
-                else
-                    return View("Error");
+                if (response.IsSuccessStatusCode) RedirectToAction("Index", "Home");
+
+                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
             }
             catch (Exception ex)
             {
-                ViewBag.Error = ex.Message;
-                return View("Error");
+                ViewBag.ErrorMessage = $"Error: {ex.Message}";
             }
 
+            return RedirectToAction("Index", "Home");
         }
     }
 }

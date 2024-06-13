@@ -28,8 +28,7 @@ namespace Eticaret.Dto
         public byte StarCount { get; set; }
 
         [Display(Name = "Kullanıcı ID")]
-        [Required(ErrorMessage = "Kullanıcı ID alanı gereklidir.")]
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
 
         [Display(Name = "Ürün ID")]
         [Required(ErrorMessage = "Ürün ID alanı gereklidir.")]

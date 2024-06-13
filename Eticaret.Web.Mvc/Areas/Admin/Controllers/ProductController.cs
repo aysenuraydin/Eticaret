@@ -1,11 +1,6 @@
-using System.Text;
-using System.Text.Json;
-using Eticaret.Application.Abstract;
-using Eticaret.Domain;
 using Eticaret.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 {
@@ -13,6 +8,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
     public class ProductController : Controller
     {
         private readonly HttpClient _httpClient;
+
         public ProductController(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient();
@@ -21,65 +17,99 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 
         public async Task<IActionResult> List()
         {
-            using (var response = await _httpClient.GetAsync("AdminProduct"))
+            try
             {
-                if (response.IsSuccessStatusCode)
+                using (var response = await _httpClient.GetAsync("AdminProduct"))
                 {
-                    var products = await response.Content.ReadFromJsonAsync<List<AdminProductListDTO>>() ?? new List<AdminProductListDTO>();
-                    return View(products);
-                }
-                else
-                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var products = await response.Content.ReadFromJsonAsync<List<AdminProductListDTO>>();
+
+                        return View(products);
+                    }
+
                     ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-                    return View("Error");
                 }
             }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+            }
+
+            return View(new List<AdminProductListDTO>());
         }
+
         public async Task<IActionResult> Approve(int id)
         {
-            using (var response = await _httpClient.GetAsync($"AdminProduct/{id}"))
+            try
             {
-                AdminProductListDTO product = await response.Content.ReadFromJsonAsync<AdminProductListDTO>() ?? new();
-                return View(product);
+                using (var response = await _httpClient.GetAsync($"AdminProduct/{id}"))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        AdminProductListDTO product = await response.Content.ReadFromJsonAsync<AdminProductListDTO>() ?? new();
+
+                        return View(product);
+                    }
+
+                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                }
             }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+            }
+
+            return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Approve(AdminProductListDTO product)
         {
             try
             {
-                var json = JsonSerializer.Serialize(product);
-
-                var response = await _httpClient.PutAsync($"AdminProduct/{product.Id}", new StringContent(json, Encoding.UTF8, "application/json"));
+                var response = await _httpClient.PutAsJsonAsync($"AdminProduct/{product.Id}", product);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var updateBook = await response.Content.ReadFromJsonAsync<AdminProductListDTO>();
                     return RedirectToAction(nameof(List));
                 }
-                else
-                {
-                    var error = await response.Content.ReadAsStringAsync();
 
-                    ViewBag.Error = error;
-                    return View("Error");
+                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+            }
+
+            return View(product);
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                using (var response = await _httpClient.GetAsync($"AdminProduct/{id}"))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        AdminProductListDTO product = await response.Content.ReadFromJsonAsync<AdminProductListDTO>() ?? new();
+
+                        return View(product);
+                    }
+
+                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
                 }
             }
             catch (Exception ex)
             {
-                ViewBag.Error = ex.Message;
-                return View("Error");
+                ViewBag.ErrorMessage = $"Error: {ex.Message}";
             }
+
+            return View();
         }
-        public async Task<IActionResult> Delete(int id)
-        {
-            using (var response = await _httpClient.GetAsync($"AdminProduct/{id}"))
-            {
-                AdminProductListDTO product = await response.Content.ReadFromJsonAsync<AdminProductListDTO>() ?? new();
-                return View(product);
-            }
-        }
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -88,16 +118,16 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
             {
                 var response = await _httpClient.DeleteAsync($"AdminProduct/{id}");
 
-                if (response.IsSuccessStatusCode)
-                    return RedirectToAction(nameof(List));
-                else
-                    return View("Error");
+                if (response.IsSuccessStatusCode) return RedirectToAction(nameof(List));
+
+                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
             }
             catch (Exception ex)
             {
-                ViewBag.Error = ex.Message;
-                return View("Error");
+                ViewBag.ErrorMessage = $"Error: {ex.Message}";
             }
+
+            return RedirectToAction(nameof(List)); //!
         }
     }
 }

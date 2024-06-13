@@ -1,15 +1,6 @@
-
-
-using System.Security.Claims;
-using System.Text;
-using System.Text.Json;
-using Eticaret.Application.Abstract;
-using Eticaret.Domain;
 using Eticaret.Dto;
-using Eticaret.Web.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 
 namespace Eticaret.Web.Mvc.Controllers
@@ -18,7 +9,8 @@ namespace Eticaret.Web.Mvc.Controllers
     public class CartController : Controller
     {
         private readonly HttpClient _httpClient;
-        public CartController(IHttpClientFactory httpClientFactory, ICartItemRepository cartItemRepository)
+
+        public CartController(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient();
             _httpClient.BaseAddress = new Uri("http://localhost:5177/api/");
@@ -32,62 +24,72 @@ namespace Eticaret.Web.Mvc.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction(nameof(Edit), "Cart");
+                    return RedirectToAction(nameof(Edit));
                 }
-                else
-                {
-                    ModelState.AddModelError("", "Ürün eklenirken bir hata oluştu.");
-                }
+
+                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
             }
-            catch
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", "Bir hata oluştu!");
+                ViewBag.ErrorMessage = $"Error: {ex.Message}";
             }
 
-            return RedirectToAction(nameof(Edit), "Cart");
+            return RedirectToAction(nameof(Edit));
         }
 
         public async Task<IActionResult> Edit()
         {
-            using (var response = await _httpClient.GetAsync($"Cart"))
+            try
             {
-                if (response.IsSuccessStatusCode)
+                using (var response = await _httpClient.GetAsync($"Cart"))
                 {
-                    var carts = await response.Content.ReadFromJsonAsync<List<CartItemListDTO>>() ?? new();
-                    return View(carts);
-                }
-                return View(new List<CartItemListDTO>());
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var carts = await response.Content.ReadFromJsonAsync<List<CartItemListDTO>>() ?? new();
 
+                        return View(carts);
+                    }
+
+                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                }
             }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+            }
+
+            return View(new List<CartItemListDTO>());
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(CartItemListDTO item)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid) return View(item);
+
+            try
             {
-                try
-                {
-                    var json = JsonSerializer.Serialize(item);
+                CartItemUpdateDTO cartItem = new() { Id = item.Id, Quantity = item.Quantity };
 
-                    var response = await _httpClient.PutAsync($"Cart/{item.Id}", new StringContent(json, Encoding.UTF8, "application/json"));
+                var response = await _httpClient.PutAsJsonAsync($"Cart/{item.Id}", cartItem);
 
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return RedirectToAction(nameof(Edit), "Cart");
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("", "Güncelleme sırasında bir hata oluştu.");
-                    }
-                }
-                catch (Exception ex)
+                if (response.IsSuccessStatusCode)
                 {
-                    ModelState.AddModelError("", $"Hata Oluştu: {ex.Message}");
+                    return RedirectToAction(nameof(Edit));
                 }
+
+                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                ModelState.AddModelError("", "Güncelleme sırasında bir hata oluştu.");
             }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Hata Oluştu: {ex.Message}");
+                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+            }
+
             return View(item);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
@@ -96,17 +98,17 @@ namespace Eticaret.Web.Mvc.Controllers
             {
                 var response = await _httpClient.DeleteAsync($"Cart/{id}");
 
-                if (response.IsSuccessStatusCode)
-
-                    return RedirectToAction(nameof(Edit), "Cart"); //!
-                else
-                    return View("Error");
+                if (!response.IsSuccessStatusCode)
+                {
+                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                }
             }
             catch (Exception ex)
             {
-                ViewBag.Error = ex.Message;
-                return View("Error");
+                ViewBag.ErrorMessage = $"Error: {ex.Message}";
             }
+
+            return RedirectToAction(nameof(Edit));
         }
     }
 }

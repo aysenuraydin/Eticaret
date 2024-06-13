@@ -1,6 +1,4 @@
-﻿using System.Data.Common;
-using System.Security.Claims;
-using Eticaret.Application.Abstract;
+﻿using System.Security.Claims;
 using Eticaret.Domain;
 using Eticaret.Dto;
 using Microsoft.AspNetCore.Authorization;
@@ -38,10 +36,12 @@ namespace Eticaret.Api.Controllers
                                    .FirstOrDefaultAsync(p => p.Id == userId);
 
                 if (user == null) return NotFound();
+
                 return Ok(UserListToDTO(user));
             }
             return BadRequest("User ID is not valid.");
         }
+
         [HttpPut]
         public async Task<IActionResult> UpdateUser(UserUpdateDTO p)
         {
@@ -74,6 +74,7 @@ namespace Eticaret.Api.Controllers
                             }
                         }
                     }
+
                     if (validPass!.Succeeded)//diğer inputlar güncellemeye uygun mu
                     {
                         var result = await _userManager.UpdateAsync(updatedUser);
@@ -95,6 +96,7 @@ namespace Eticaret.Api.Controllers
             }
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
+
         private static AdminUserListDTO UserListToDTO(User u)
         {
             return new AdminUserListDTO
@@ -103,7 +105,7 @@ namespace Eticaret.Api.Controllers
                 Email = u.Email,
                 FullName = $"{u.FirstName} {u.LastName}",
                 FirstName = u.FirstName,
-                LastName = u.FirstName,
+                LastName = u.LastName,
                 Enabled = u.Enabled,
                 CreatedAt = u.CreatedAt.ToString("dd.MM.yyyy"),
                 RoleName = u.RoleFk.Name,
@@ -112,12 +114,14 @@ namespace Eticaret.Api.Controllers
                 OrderCount = u.Orders.Count
             };
         }
+
         private static User UserUpdateToDTO(UserUpdateDTO user, User u)
         {
             u.FirstName = user.FirstName ?? "";
             u.LastName = user.LastName ?? "";
             u.Email = user.Email ?? "";
             u.PasswordHash = user.Password ?? "";
+
             return u;
         }
     }

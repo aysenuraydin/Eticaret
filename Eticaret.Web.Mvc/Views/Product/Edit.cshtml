@@ -8,7 +8,7 @@
     <hr />
     <div class="row">
         <div class="col-4">
-            @if (!Model.ImageList.Any())
+            @if (Model.ImageList?.Count == 0 || Model.ImageList == null)
             {
                 <img src="https://via.placeholder.com/300x300" alt="Ürun resmi">
             }
@@ -93,7 +93,7 @@
                 </div> *@
                 <div class="input-group my-3">
                     <div class="custom-file">
-                        <input asp-for="ImageList" class="custom-file-input" type="file"
+                        <input id="ImgList" name="ImgList" class="custom-file-input" type="file"
                             aria-describedby="inputGroupFileAddon01" multiple />
                         <label class="custom-file-label" for="inputGroupFile01">Ürün Resimlerini Seç</label>
                         @* <span asp-validation-for="ProductImages" class="text-danger"></span> *@
@@ -126,7 +126,7 @@
 @section Scripts {
     <script>
         //const ProductImages = document.getElementById('ProductImages');
-        const ProductImages = document.getElementById('ImageList');
+        const ProductImages = document.getElementById('ImgList');
         const imagePreview = document.getElementById('imagePreview');
 
         ProductImages.addEventListener('change', function (event) {

@@ -1,114 +1,136 @@
-
-using System.Security.Claims;
-using System.Text;
-using System.Text.Json;
-using Eticaret.Application.Abstract;
 using Eticaret.Dto;
 using Eticaret.Web.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Web.Mvc.Controllers
 {
     [Authorize]
     public class ProfileController : Controller
     {
+        private readonly HttpClient _httpClient;
+
         public ProfileController(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient();
             _httpClient.BaseAddress = new Uri("http://localhost:5177/api/");
         }
-        private readonly HttpClient _httpClient;
 
         public async Task<IActionResult> Details()
         {
-            using (var response = await _httpClient.GetAsync("Profile"))
+            try
             {
-                if (response.IsSuccessStatusCode)
+                using (var response = await _httpClient.GetAsync("Profile"))
                 {
-                    var user = await response.Content.ReadFromJsonAsync<AdminUserListDTO>() ?? new AdminUserListDTO() ?? new AdminUserListDTO();
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var user = await response.Content.ReadFromJsonAsync<AdminUserListDTO>() ?? new AdminUserListDTO() ?? new AdminUserListDTO();
 
-                    return View(user);
-                }
-                else
-                {
+                        return View(user);
+                    }
+
                     ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-                    return View("Error");
                 }
             }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+            }
+
+            return View();
         }
+
         public async Task<IActionResult> Edit()
         {
-            using (var response = await _httpClient.GetAsync("Profile"))
+            try
             {
-                if (response.IsSuccessStatusCode)
+                using (var response = await _httpClient.GetAsync("Profile"))
                 {
-                    var user = await response.Content.ReadFromJsonAsync<AdminUserListDTO>() ?? new AdminUserListDTO() ?? new AdminUserListDTO();
-
-                    if (user != null)
+                    if (response.IsSuccessStatusCode)
                     {
-                        RegisterViewModel editUser = new()
+                        var user = await response.Content.ReadFromJsonAsync<AdminUserListDTO>() ?? new AdminUserListDTO() ?? new AdminUserListDTO();
+
+                        if (user != null)
                         {
-                            FirstName = user.FirstName!,
-                            LastName = user.LastName!,
-                            Email = user.Email!
-                        };
-                        return View(editUser);
+                            RegisterViewModel editUser = new()
+                            {
+                                FirstName = user.FirstName!,
+                                LastName = user.LastName!,
+                                Email = user.Email!
+                            };
+
+                            return View(editUser);
+                        }
                     }
+
+                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
                 }
-                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-                return View("Error");
             }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+            }
+
+            return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(RegisterViewModel user)
         {
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    var u = new UserUpdateDTO()
-                    {
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        Password = user.Password,
-                        Email = user.Email,
-                    };
+            if (!ModelState.IsValid) return View(user);
 
-                    var json = JsonSerializer.Serialize(u);
-                    var content = new StringContent(json, Encoding.UTF8, "application/json");
-                    var response = await _httpClient.PutAsync($"Profile", content);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return RedirectToAction(nameof(Details));
-                    }
-                }
-                catch
-                {
-                    ModelState.AddModelError("", "Hata Oluştu!");
-                }
-            }
-            return View(user);
-        }
-        public async Task<IActionResult> MyOrders()
-        {
-            using (var response = await _httpClient.GetAsync($"Order"))
+            try
             {
+                var u = new UserUpdateDTO()
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Password = user.Password,
+                    Email = user.Email,
+                };
+
+                var response = await _httpClient.PutAsJsonAsync($"Profile", u);
+
                 if (response.IsSuccessStatusCode)
                 {
-                    var orders = await response.Content.ReadFromJsonAsync<List<OrderDetailDTO>>();
-
-                    if (orders != null) return View(orders);
+                    return RedirectToAction(nameof(Details));
                 }
-                else
+
+                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+                ModelState.AddModelError("", "Hata Oluştu!");
+            }
+
+            return View(user);
+        }
+
+        public async Task<IActionResult> MyOrders()
+        {
+            try
+            {
+                using (var response = await _httpClient.GetAsync($"Order"))
                 {
-                    return View(new List<OrderDetailDTO>());
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var orders = await response.Content.ReadFromJsonAsync<List<OrderDetailDTO>>();
+
+                        if (orders != null) return View(orders);
+
+                        ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                    }
                 }
             }
-            return RedirectToAction(nameof(Index), "Home");
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+                ModelState.AddModelError("", "Hata Oluştu!");
+            }
+
+            return View(new List<OrderDetailDTO>());
 
         }
     }

@@ -1,4 +1,5 @@
-﻿@model SellerProductCreateDTO
+﻿@using IdentityModel
+@model SellerProductCreateDTO
 @* @model Product *@
 @{
     ViewData["Title"] = "Create Product";
@@ -18,7 +19,7 @@
                 @Html.AntiForgeryToken()
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="Id" />
-                <input type="hidden" asp-for="SellerId" />
+                <input type="hidden" asp-for="SellerId" value="@User.FindFirst(JwtClaimTypes.Subject)?.Value " />
                 <div class="form-group">
                     <label asp-for="Name" class="control-label"></label>
                     <input asp-for="Name" class="form-control" />

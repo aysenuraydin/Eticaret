@@ -1,17 +1,13 @@
-
-using System.Diagnostics;
-using System.Text.Json;
-using Eticaret.Application.Abstract;
 using Eticaret.Dto;
 using Eticaret.Web.Mvc.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Web.Mvc.Controllers
 {
     public class HomeController : Controller
     {
         private readonly HttpClient _httpClient;
+
         public HomeController(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient();
@@ -30,27 +26,28 @@ namespace Eticaret.Web.Mvc.Controllers
 
                         return View(products); ;
                     }
-                    else
-                    {
-                        ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-                        return View(new List<ProductListDTO>());
-                    }
+
+                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
                 }
             }
             catch (HttpRequestException httpRequestException)
             {
-                Console.WriteLine($"Request error: {httpRequestException.Message}");
-                return View(new List<ProductListDTO>());
+                ViewBag.ErrorMessage = $"Error: {httpRequestException.Message}";
             }
+
+            return View(new List<ProductListDTO>());
         }
+
         public IActionResult AboutUs()
         {
             return View();
         }
+
         public IActionResult Contact()
         {
             return View();
         }
+
         public async Task<IActionResult> Listing(int? id, string? q)
         {
             var productList = new List<ProductListDTO>();
@@ -59,6 +56,11 @@ namespace Eticaret.Web.Mvc.Controllers
             using (var response = await _httpClient.GetAsync(url))
             {
                 productList = await response.Content.ReadFromJsonAsync<List<ProductListDTO>>() ?? new();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                }
             }
 
             if (!string.IsNullOrWhiteSpace(q))
@@ -74,9 +76,15 @@ namespace Eticaret.Web.Mvc.Controllers
             }
 
             var categoriesList = new List<CategoryListDTO>();
+
             using (var response = await _httpClient.GetAsync("Categories"))
             {
                 categoriesList = await response.Content.ReadFromJsonAsync<List<CategoryListDTO>>() ?? new();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                }
             }
 
             ProductListViewModel productAndSearch = new();
@@ -88,17 +96,30 @@ namespace Eticaret.Web.Mvc.Controllers
 
         public async Task<IActionResult> ProductDetail(int id)
         {
-            using (var response = await _httpClient.GetAsync($"Product/{id}"))
+            try
             {
-                var product = await response.Content.ReadFromJsonAsync<ProductDetailDTO>() ?? new ProductDetailDTO();
-                return View(product);
-            }
-        }
+                using (var response = await _httpClient.GetAsync($"Product/{id}"))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var product = await response.Content.ReadFromJsonAsync<ProductDetailDTO>();
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+                        if (TempData["Message"] != null) ViewBag.ErrorMessage = TempData["Message"];
+
+                        return View(product); ;
+                    }
+
+                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                }
+            }
+            catch (HttpRequestException httpRequestException)
+            {
+                ViewBag.ErrorMessage = $"Error: {httpRequestException.Message}";
+            }
+
+            if (TempData["Message"] != null) ViewBag.ErrorMessage = TempData["Message"];
+
+            return View();
         }
     }
 }
