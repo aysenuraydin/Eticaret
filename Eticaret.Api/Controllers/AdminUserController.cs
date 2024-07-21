@@ -1,7 +1,4 @@
-﻿using System.Data.Common;
-using System.Security.Claims;
-using Eticaret.Application.Abstract;
-using Eticaret.Domain;
+﻿using Eticaret.Domain;
 using Eticaret.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -12,7 +9,7 @@ namespace Eticaret.Api.Controllers
 {
     [Authorize(Roles = "admin")]
     [ApiController]
-    [Route("~/api/[controller]")]
+    [Route("api/[controller]")]
     public class AdminUserController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
@@ -32,12 +29,14 @@ namespace Eticaret.Api.Controllers
                                .OrderByDescending(p => p.CreatedAt)
                                .Select(p => UserListToDTO(p))
                                .ToListAsync();
+
             return Ok(users);
         }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null) return BadRequest(new { message = "UserId is required." });
 
             var user = await _userManager.Users
                                .Include(p => p.RoleFk)
@@ -46,20 +45,19 @@ namespace Eticaret.Api.Controllers
                                .Include(p => p.Orders)
                                .FirstOrDefaultAsync(p => p.Id == id);
 
-            if (user == null) return NotFound();
+            if (user == null) return NotFound(new { message = "User is not found." });
+
             return Ok(UserListToDTO(user));
         }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(AdminUserUpdateDTO p)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (p == null) return NotFound(new { message = "Eksik bilgi girdiniz" });
 
-            var user = await _userManager.FindByIdAsync(p.Id.ToString());
+            var user = await _userManager.FindByIdAsync(p.Id.ToString()!);
 
-            if (user == null) return NotFound();
+            if (user == null) return NotFound(new { message = "User is not found." });
 
             try
             {
@@ -72,6 +70,7 @@ namespace Eticaret.Api.Controllers
 
             return Ok(user);
         }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int? id)
         {
@@ -89,6 +88,7 @@ namespace Eticaret.Api.Controllers
             {
                 return NotFound();
             }
+
             return NoContent();
         }
 
@@ -109,9 +109,11 @@ namespace Eticaret.Api.Controllers
                 OrderCount = u.Orders.Count
             };
         }
+
         private static User UserApproveToDTO(AdminUserUpdateDTO p, User u)
         {
             u.Enabled = p.Enabled;
+
             return u;
         }
     }

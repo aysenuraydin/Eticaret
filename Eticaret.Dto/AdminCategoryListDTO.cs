@@ -29,12 +29,8 @@ namespace Eticaret.Dto
 
         [Required(ErrorMessage = "Kategori adı gereklidir.")]
         public string Name { get; set; } = null!;
-
-        [Required(ErrorMessage = "Kategori rengi gereklidir.")]
-        public string? Color { get; set; } = null!;
-
-        [Required(ErrorMessage = "Kategori CSS sınıfı gereklidir.")]
-        public string? Css { get; set; } = null!;
+        public string? Color { get; set; }
+        public string? Css { get; set; }
     }
 
     public class AdminCategoryCreateDTO

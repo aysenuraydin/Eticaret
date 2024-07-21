@@ -1,16 +1,14 @@
-﻿using System.Drawing;
-using Eticaret.Application.Abstract;
+﻿using Eticaret.Application.Abstract;
 using Eticaret.Domain;
 using Eticaret.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Api.Controllers
 {
     [Authorize(Roles = "admin")]
     [ApiController]
-    [Route("~/api/[controller]")]
+    [Route("api/[controller]")]
     public class AdminCategoryController : ControllerBase
     {
         private readonly ICategoryRepository _categoryRepo;
@@ -23,13 +21,14 @@ namespace Eticaret.Api.Controllers
         public async Task<IActionResult> GetCategories()
         {
             var products = (await _categoryRepo.GetAllIncludeAsync(
-                                        i => i.Products
-                                        ))
-                                        .Select(p => CategoriesListToDTO(p))
-                                        .ToList();
+                                i => i.Products
+                                ))
+                                .Select(p => CategoriesListToDTO(p))
+                                .ToList();
 
             return Ok(products);
         }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategory(int? id)
         {
@@ -44,13 +43,12 @@ namespace Eticaret.Api.Controllers
             if (product == null) return NotFound();
             return Ok(CategoriesListToDTO(product));
         }
+
         [HttpPost]
         public async Task<IActionResult> CreateCategory(AdminCategoryCreateDTO entity)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (entity == null) return BadRequest();
+
             try
             {
                 var p = CategoriesCreateToDTO(entity);
@@ -83,6 +81,7 @@ namespace Eticaret.Api.Controllers
 
             return Ok(ctgry);
         }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int? id)
         {
@@ -100,9 +99,9 @@ namespace Eticaret.Api.Controllers
             {
                 return NotFound();
             }
+
             return NoContent();
         }
-
 
         private static AdminCategoryListDTO CategoriesListToDTO(Category c)
         {
@@ -116,6 +115,7 @@ namespace Eticaret.Api.Controllers
                 ProductCount = c.Products.Count,
             };
         }
+
         private static Category CategoriesUpdateToDTO(AdminCategoryUpdateDTO p, Category c)
         {
             c.Name = p.Name ?? "";
@@ -124,6 +124,7 @@ namespace Eticaret.Api.Controllers
 
             return c;
         }
+
         private static Category CategoriesCreateToDTO(AdminCategoryCreateDTO p)
         {
             return new Category()

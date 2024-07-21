@@ -1,5 +1,3 @@
-
-using System.Text;
 using System.Text.Json;
 using Eticaret.Dto;
 using Microsoft.AspNetCore.Authorization;
@@ -13,9 +11,7 @@ namespace Eticaret.Web.Mvc.Controllers
 
         public OrderController(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri("http://localhost:5177/api/");
-
+            _httpClient = httpClientFactory.CreateClient("api");
         }
 
         [HttpPost]
@@ -27,47 +23,60 @@ namespace Eticaret.Web.Mvc.Controllers
                 try
                 {
                     OrderDTO order = new() { Address = Address };
-                    var json = JsonSerializer.Serialize(order);
 
-                    var response = await _httpClient.PostAsync("Order", new StringContent(json, Encoding.UTF8, "application/json"));
+                    var response = await _httpClient.PostAsJsonAsync("Order", order);
 
                     if (response.IsSuccessStatusCode)
                     {
                         var responseBody = await response.Content.ReadAsStringAsync();
                         var responseData = JsonSerializer.Deserialize<Dictionary<string, string>>(responseBody);
-                        var orderCode = responseData["orderCode"];
+                        var orderCode = responseData?["orderCode"];
 
                         return RedirectToRoute(new
                         {
                             action = nameof(Details),
-                            orderCode = orderCode
+                            orderCode = orderCode ?? ""
                         });
                     }
+
+                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
                 }
-                catch
+                catch (HttpRequestException httpRequestException)
                 {
-                    ModelState.AddModelError("", "Hata Oluştu!");
+                    ViewBag.ErrorMessage = $"Error: {httpRequestException.Message}";
                 }
             }
-            return View();
+
+            ModelState.AddModelError("", "Hata Oluştu!");
+
+            return RedirectToRoute(new
+            {
+                action = nameof(CartController.Edit),
+                controller = nameof(CartController).Replace("Controller", string.Empty)
+            });
         }
 
         public async Task<IActionResult> Details(string orderCode)
         {
-            using (var response = await _httpClient.GetAsync($"Order/{orderCode}"))
+            try
             {
-                if (response.IsSuccessStatusCode)
+                using (var response = await _httpClient.GetAsync($"Order/{orderCode}"))
                 {
-                    var orders = await response.Content.ReadFromJsonAsync<OrderDetailDTO>();
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var orders = await response.Content.ReadFromJsonAsync<OrderDetailDTO>();
 
-                    if (orders != null) return View(orders);
-                }
-                else
-                {
+                        if (orders != null) return View(orders);
+                    }
+
                     ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-                    return View("Error");
                 }
             }
+            catch (HttpRequestException httpRequestException)
+            {
+                ViewBag.ErrorMessage = $"Error: {httpRequestException.Message}";
+            }
+
             return RedirectToAction(nameof(Index), "Home");
         }
     }

@@ -111,7 +111,7 @@
 
             <!-- Sidebar Message -->
             <div class="sidebar-card d-none d-lg-flex">
-                <img class="sidebar-card-illustration mb-2" src="~undraw_rocket.svg" alt="...">
+                <img class="sidebar-card-illustration mb-2" src="/UploadedFiles/undraw_rocket.svg" alt="...">
                 <p class="text-center mb-2"><strong>SB Admin Pro</strong> is packed with premium features,
                     components,
                     and more!</p>
@@ -334,8 +334,22 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+                    @if (ViewBag.ErrorMessage != null)
+                    {
+                        <div id="alertMessages" style="z-index: 3 !important;">
+                            <div class="show w-25">
+                                <div class="alert alert-primary alert-dismissible p-4">
+                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">
+                                        <h3 class="text-primary">&times;</h3>
+                                    </a>
+                                    <h5 class="text-primary"> <strong>@ViewBag.ErrorMessage</strong> Hata Oluştu!</h5>
+                                </div>
+                            </div>
+                        </div>
+                    }
                     @RenderBody()
                 </div>
+
                 <!-- /.container-fluid -->
 
             </div>
@@ -470,6 +484,15 @@
                 }
             });
         });
+    </script>
+    <script>
+        // Sayfa yüklendikten 5 saniye sonra uyarıyı kapatır
+        setTimeout(function () {
+            var alertMessage = document.getElementById('alertMessages');
+            if (alertMessage != null) {
+                alertMessage.style.display = 'none';
+            }
+        }, 5000); // 5000 milisaniye = 5 saniye
     </script>
 </body>
 

@@ -1,17 +1,15 @@
-﻿using System.Drawing;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Eticaret.Application.Abstract;
 using Eticaret.Domain;
 using Eticaret.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Api.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("~/api/[controller]")]
+    [Route("api/[controller]")]
     public class CartController : ControllerBase
     {
         private readonly ICartItemRepository _cartItemRepo;
@@ -30,7 +28,8 @@ namespace Eticaret.Api.Controllers
                 var products = (await _cartItemRepo.GetIdAllIncludeFilterAsync(
                                       i => i.UserId == userId,
                                       i => i.ProductFk!
-                                      )).Select(p => CartsToDTO(p))
+                                      ))
+                                      .Select(p => CartsToDTO(p))
                                       .ToList();
 
                 foreach (var product in products)
@@ -41,6 +40,7 @@ namespace Eticaret.Api.Controllers
 
                 return Ok(products);
             }
+
             return NotFound();
         }
 
@@ -62,6 +62,7 @@ namespace Eticaret.Api.Controllers
 
                 return Ok(prd);
             }
+
             return NotFound(userId);
         }
 
@@ -89,28 +90,30 @@ namespace Eticaret.Api.Controllers
                     cartItem.Quantity += 1;
                     await _cartItemRepo.UpdateAsync(cartItem);
                 }
+
                 return NoContent();
             }
+
             return NotFound();
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCartItem(int id, CartItemListDTO item)
+        public async Task<IActionResult> UpdateCartItem(int id, CartItemUpdateDTO item)
         {
-            if (id != item.Id)
-            {
-                return NotFound();
-            }
+            if (id != item.Id) return BadRequest();
 
             try
             {
                 var cartItem = await _cartItemRepo.FindAsync(item.Id);
+
                 if (cartItem != null)
                 {
                     cartItem.Quantity = item.Quantity;
                     await _cartItemRepo.UpdateAsync(cartItem);
+
                     return NoContent();
                 }
+
                 return NotFound();
             }
             catch (Exception ex)
@@ -136,6 +139,7 @@ namespace Eticaret.Api.Controllers
             {
                 return NotFound();
             }
+
             return NoContent();
         }
 
@@ -149,6 +153,7 @@ namespace Eticaret.Api.Controllers
                 ProductPrice = c.ProductFk.Price,
                 Quantity = c.Quantity,
             };
+
             return cart;
         }
     }

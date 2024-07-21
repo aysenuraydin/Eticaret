@@ -45,7 +45,6 @@ namespace Eticaret.Dto
         public int CategoryId { get; set; }
 
         [Display(Name = "Satıcı")]
-        [Required(ErrorMessage = "Satıcı alanı gereklidir.")]
         public int SellerId { get; set; }
 
         [Display(Name = "Satışta Mı?")]
@@ -87,7 +86,6 @@ namespace Eticaret.Dto
         public int CategoryId { get; set; }
 
         [Display(Name = "Satıcı")]
-        [Required(ErrorMessage = "Satıcı alanı gereklidir.")]
         public int SellerId { get; set; }
 
         [Display(Name = "Satışta Mı?")]

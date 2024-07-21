@@ -1,6 +1,6 @@
 
+using Eticaret.Dto;
 using Eticaret.File.Data;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eticaret.File.Controllers

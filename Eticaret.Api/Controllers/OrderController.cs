@@ -1,24 +1,19 @@
-﻿using System;
-using System.Drawing;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Eticaret.Application.Abstract;
 using Eticaret.Domain;
 using Eticaret.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
 namespace Eticaret.Api.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("~/api/[controller]")]
+    [Route("api/[controller]")]
     public class OrderController : ControllerBase
     {
         private readonly IOrderRepository _orderService;
         private readonly IOrderItemRepository _orderItemService;
         private readonly ICartItemRepository _cartItemService;
-
         public OrderController(IOrderRepository orderService,
                             IOrderItemRepository orderItemService,
                             ICartItemRepository cartItemService)
@@ -27,31 +22,25 @@ namespace Eticaret.Api.Controllers
             _orderItemService = orderItemService;
             _cartItemService = cartItemService;
         }
-
         [HttpGet]
         public async Task<IActionResult> GetOrders()
         {
             if (int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId))
             {
                 var orders = await _orderService.GetAllOrdersItemsAsync(userId);
-
-                if (orders == null || !orders.Any()) return NotFound();
-
+                if (orders == null) return NotFound();
                 var orderDtos = orders.Select(i => OrderListToDTO(i)).ToList();
                 return Ok(orderDtos);
             }
             return BadRequest();
         }
-
         [HttpGet("{orderCode}")]
         public async Task<IActionResult> GetOrder(string orderCode)
         {
             var order = await _orderService.GetOrdersItemsAsync(orderCode);
-
             if (order == null) return NotFound();
             return Ok(OrderListToDTO(order));
         }
-
         [HttpPost]
         public async Task<IActionResult> CreateOrder(OrderDTO entity)
         {
@@ -59,12 +48,10 @@ namespace Eticaret.Api.Controllers
             {
                 if (int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId))
                 {
-
                     var cartitems = await _cartItemService.GetIdAllIncludeFilterAsync(
                                                 c => c.UserId == userId,
                                                 c => c.ProductFk!
                                                 );
-
                     List<OrderItem> orderList = new();
                     Order order = new()
                     {
@@ -72,7 +59,6 @@ namespace Eticaret.Api.Controllers
                         UserId = userId
                     };
                     await _orderService.AddAsync(order);
-
                     foreach (var cart in cartitems)
                     {
                         OrderItem orderItem = new()
@@ -95,7 +81,6 @@ namespace Eticaret.Api.Controllers
                 return NotFound();
             }
         }
-
         private static OrderDetailDTO OrderListToDTO(Order o)
         {
             return new OrderDetailDTO
@@ -104,19 +89,18 @@ namespace Eticaret.Api.Controllers
                 OrderCode = o.OrderCode,
                 CreatedAt = o.CreatedAt,
                 OrderItems = o.OrderItems.Select(i =>
-                new CartItemListDTO()
-                {
-                    Id = i.Id,
-                    ProductImages = i.ProductFk.ProductImages[0].Url,
-                    ProductName = i.ProductFk.Name,
-                    ProductId = i.Id,
-                    ProductPrice = i.ProductFk.Price,
-                    Quantity = i.Quantity,
-                }
-                ).ToList(),
+                        new CartItemListDTO()
+                        {
+                            Id = i.Id,
+                            ProductImages = i.ProductFk.ProductImages[0].Url,
+                            ProductName = i.ProductFk.Name,
+                            ProductId = i.Id,
+                            ProductPrice = i.ProductFk.Price,
+                            Quantity = i.Quantity,
+                        }
+                    ).ToList(),
             };
         }
 
     }
 }
-

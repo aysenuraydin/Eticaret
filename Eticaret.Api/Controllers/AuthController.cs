@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Eticaret.Domain;
 using Eticaret.Dto;
+using IdentityModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace Eticaret.Api.Controllers
 {
     [ApiController]
-    [Route("~/api/[controller]")]
+    [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
@@ -35,10 +36,7 @@ namespace Eticaret.Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> CreateUser(RegisterDTO model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (model == null) return NotFound();
 
             var user = new User
             {
@@ -47,6 +45,7 @@ namespace Eticaret.Api.Controllers
                 LastName = model.LastName,
                 Email = model.Email
             };
+
             if (user.Email == "admin@admin.com") user.RoleId = 3;
             else if (user.Email == "seller@seller.com") user.RoleId = 1;
 
@@ -55,6 +54,7 @@ namespace Eticaret.Api.Controllers
             if (result.Succeeded)
             {
                 var role = await _roleManager.Roles.FirstOrDefaultAsync(i => i.Id == user.RoleId);
+
                 if (role != null)
                 {
                     // Rol bulundu, kullanıcıya rol atama işlemi gerçekleştirilebilir.
@@ -71,33 +71,25 @@ namespace Eticaret.Api.Controllers
             return BadRequest(result.Errors);
         }
 
+        [Authorize]
         [HttpGet("{email}")]
         public async Task<IActionResult> GetUser(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
 
-            if (user == null)
-            {
-                return NotFound(new { message = "Email hatalı" });
-            }
+            if (user == null) return NotFound(new { message = "Email hatalı" });
+
             return Ok(user);
         }
 
         [HttpPost("login")]
-        [AllowAnonymous]
         public async Task<IActionResult> LoginUser(LoginDTO model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (model == null) return BadRequest();
 
             var user = await _userManager.FindByEmailAsync(model.Email);
 
-            if (user == null)
-            {
-                return BadRequest(new { message = "Email hatalı" });
-            }
+            if (user == null) return BadRequest(new { message = "Email hatalı" });
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
 
@@ -107,14 +99,6 @@ namespace Eticaret.Api.Controllers
 
                 var token = await GenerateJwtToken(user);
 
-                Response.Cookies.Append("token", token, new CookieOptions
-                {
-                    HttpOnly = true,
-                    SameSite = SameSiteMode.Strict,
-                    Secure = true,
-                    Expires = DateTime.UtcNow.AddDays(7)
-                });
-
                 return Ok(new { token });
             }
 
@@ -122,9 +106,11 @@ namespace Eticaret.Api.Controllers
         }
 
         [HttpPost("logout")]
+        [Authorize]
         public async Task<IActionResult> LogoutUser()
         {
             var user = await _signInManager.UserManager.GetUserAsync(User);
+
             if (user == null)
             {
                 return Unauthorized(new { message = "Oturum açmış bir kullanıcı bulunamadı" });
@@ -132,65 +118,35 @@ namespace Eticaret.Api.Controllers
 
             await _signInManager.SignOutAsync();
 
-            Response.Cookies.Delete("token");
-
             return Ok(new { message = "Oturum başarıyla sonlandırıldı" });
         }
+
         private async Task<string> GenerateJwtToken(User user)
         {
             var userRoles = await _userManager.GetRolesAsync(user);
-
-            var secret = _configuration["AppSettings:Secret"];
+            var secret = _configuration["AppSettings:Secret"]
+                ?? throw new Exception("AppSettings Secret key not found");
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(secret!);
+            var key = Encoding.ASCII.GetBytes(secret);
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Role, userRoles[0]),
-                    new Claim(ClaimTypes.GivenName, user.FirstName),
-                    new Claim(JwtRegisteredClaimNames.Sub, user.UserName!),
-                    new Claim(JwtRegisteredClaimNames.Email, user.Email!),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-
+                    new (JwtClaimTypes.Subject, user.Id.ToString()),
+                    new (JwtClaimTypes.Role, userRoles[0]),
+                    new (JwtClaimTypes.GivenName, user.FirstName),
+                    new (JwtClaimTypes.NickName, user.UserName!),
+                    new (JwtClaimTypes.Email, user.Email!),
+                    new (JwtClaimTypes.JwtId, Guid.NewGuid().ToString())
                 }),
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
+
             return tokenHandler.WriteToken(token); ;
-        }
-
-        private async Task AssignUserRole(User user)
-        {
-            string role = user.RoleId switch
-            {
-                3 => "ADMIN",
-                2 => "BUYER",
-                1 => "SELLER",
-                _ => string.Empty
-            };
-
-            if (user.Email == "admin@admin.com")
-            {
-                user.RoleId = 3;
-                role = "ADMİN";
-            }
-            else if (user.Email == "seller@seller.com")
-            {
-                user.RoleId = 1;
-                role = "SELLER";
-            }
-
-            var existingRole = await _roleManager.Roles.FirstOrDefaultAsync(r => r.Name == role);
-            if (existingRole == null)
-            {
-                await _roleManager.CreateAsync(new Role { Name = role.ToUpper() });
-            }
-
-            await _userManager.AddToRoleAsync(user, role);
         }
     }
 }

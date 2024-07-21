@@ -1,5 +1,4 @@
-﻿
-using Eticaret.Domain;
+﻿using Eticaret.Domain;
 using Eticaret.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -11,7 +10,7 @@ namespace Eticaret.Api.Controllers
     [ApiController]
     [Authorize(Roles = "admin")]
     [Authorize]
-    [Route("~/api/[controller]")]
+    [Route("api/[controller]")]
     public class AdminRoleController : ControllerBase
     {
         private readonly RoleManager<Role> _roleManager;
@@ -30,8 +29,10 @@ namespace Eticaret.Api.Controllers
                                 .Include(i => i.Users)
                                 .Select(i => RolesListDTO(i))
                                 .ToListAsync();
+
             return Ok(roles);
         }
+
         [HttpGet("Users")]
         public async Task<IActionResult> GetRolesWithUsers()
         {
@@ -39,25 +40,23 @@ namespace Eticaret.Api.Controllers
                                 .Include(i => i.Users)
                                 .Select(i => RolesListWithUserDTO(i))
                                 .ToListAsync();
+
             return Ok(roles);
         }
 
         [HttpPut("Users/{userId}")]
         public async Task<IActionResult> UpdateUserRole(int? userId, RoleUpdateDTO roleId)
         {
-            if (userId == null)
-            {
-                return BadRequest(new { message = "UserId is required." });
-            }
+            if (userId == null) return BadRequest(new { message = "UserId is required." });
 
             var user = await _userManager.FindByIdAsync(userId.ToString()!);
+
             if (user == null)
             {
                 return NotFound(new { message = "User not found." });
             }
 
             user.RoleId = roleId.Id;
-
             user.SecurityStamp = Guid.NewGuid().ToString();
 
             if (string.IsNullOrEmpty(user.UserName))
@@ -68,6 +67,7 @@ namespace Eticaret.Api.Controllers
             try
             {
                 var result = await _userManager.UpdateAsync(user);
+
                 if (!result.Succeeded)
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Failed to update user role." });
@@ -80,10 +80,12 @@ namespace Eticaret.Api.Controllers
 
             return Ok(user);
         }
+
         [HttpPut("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> UpdateRole(int? id, RoleUpdateDTO role)
         {
-            if (id == null) return BadRequest();
+            if (id == null) return NotFound();
 
             var r = await _roleManager.FindByIdAsync(id.ToString()!);
 
@@ -106,10 +108,7 @@ namespace Eticaret.Api.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> CreateRole(RoleUpdateDTO role)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (role == null) return NotFound();
 
             Role r = new() { Name = role.Name!.ToLower(), NormalizedName = role.Name!.ToUpper() };
 
@@ -119,27 +118,26 @@ namespace Eticaret.Api.Controllers
             {
                 return StatusCode(201);
             }
+
             return BadRequest(result.Errors);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRole(int? id)
         {
-            if (id == null)
-                return NotFound();
+            if (id == null) return NotFound();
 
             var role = await _roleManager.FindByIdAsync(id.ToString()!);
 
-            if (role == null)
-                return NotFound();
+            if (role == null) return NotFound();
 
-            if (role.Name == "buyer" || role.Name == "seller")
-                return NoContent();
+            //bu roller silinemez
+            if (role.Name == "buyer" || role.Name == "seller") return NoContent();
 
             // Kullanıcıların rolünü güncelle
             var usersWithRole = await _userManager.Users
-                                                  .Where(x => x.RoleId == id)
-                                                  .ToListAsync();
+                                       .Where(x => x.RoleId == id)
+                                       .ToListAsync();
 
             foreach (var user in usersWithRole)
             {
@@ -147,7 +145,6 @@ namespace Eticaret.Api.Controllers
                 await _userManager.UpdateAsync(user);
             }
 
-            // Rolü sil
             try
             {
                 await _roleManager.DeleteAsync(role);
@@ -159,9 +156,11 @@ namespace Eticaret.Api.Controllers
 
             return NoContent();
         }
+
         private static RoleListWithUserDTO RolesListWithUserDTO(Role c)
         {
             RoleListWithUserDTO entity = new();
+
             if (c != null)
             {
                 entity.Id = c.Id;
@@ -172,16 +171,20 @@ namespace Eticaret.Api.Controllers
                     FullName = $"{i.FirstName} {i.LastName}",
                 }).ToList();
             }
+
             return entity;
         }
+
         private static RoleUpdateDTO RolesListDTO(Role c)
         {
             RoleUpdateDTO entity = new();
+
             if (c != null)
             {
                 entity.Id = c.Id;
                 entity.Name = c.Name ?? "";
             }
+
             return entity;
         }
     }

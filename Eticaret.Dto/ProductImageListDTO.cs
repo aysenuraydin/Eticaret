@@ -4,6 +4,7 @@ namespace Eticaret.Dto
 {
     public class ProductImageListDTO
     {
+        public int Id { get; set; }
         [Display(Name = "Görsel URL'si")]
         [Required(ErrorMessage = "Görsel URL'si alanı gereklidir.")]
         [Url(ErrorMessage = "Geçersiz URL formatı.")]

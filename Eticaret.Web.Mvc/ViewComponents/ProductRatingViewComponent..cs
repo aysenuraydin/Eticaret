@@ -12,8 +12,7 @@ namespace ticaret.Web.Mvc.ViewComponents
         private readonly HttpClient _httpClient;
         public ProductRatingViewComponent(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri("http://localhost:5177/api/");
+            _httpClient = httpClientFactory.CreateClient("api");
         }
 
         public async Task<IViewComponentResult> InvokeAsync(int id)

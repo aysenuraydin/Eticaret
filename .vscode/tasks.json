@@ -2,14 +2,46 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "buildbackend",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/e-ticaret-mvc.sln",
+                "${workspaceFolder}/Eticaret.Api/Eticaret.Api.csproj",
                 "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary;ForceNoAlign"
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "cleanbackend",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "clean",
+                "${workspaceFolder}/Eticaret.Api/Eticaret.Api.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "buildfrontend",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/Eticaret.Web.Mvc/Eticaret.Web.Mvc.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "cleanfrontend",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "clean",
+                "${workspaceFolder}/Eticaret.Web.Mvc/Eticaret.Web.Mvc.csproj"
             ],
             "problemMatcher": "$msCompile"
         },
@@ -36,6 +68,20 @@
                 "${workspaceFolder}/e-ticaret-mvc.sln"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "rebuildbackend",
+            "dependsOn": [
+                "cleanbackend",
+                "buildbackend"
+            ]
+        },
+        {
+            "label": "rebuildfrontend",
+            "dependsOn": [
+                "cleanfrontend",
+                "buildfrontend"
+            ]
         }
     ]
 }

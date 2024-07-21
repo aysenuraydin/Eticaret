@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Eticaret.File.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
+using Eticaret.Dto;
 
 namespace Eticaret.File
 {
@@ -51,7 +52,7 @@ namespace Eticaret.File
                 LocalName = localName,
                 ContentType = file.ContentType,
                 Extension = extension,
-                Size = file.Size,
+                Size = file.Data.Length,
                 FilePath = filePath,
                 CreatedAt = DateTime.UtcNow
             };

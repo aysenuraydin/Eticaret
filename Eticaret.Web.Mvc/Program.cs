@@ -1,29 +1,61 @@
-using Eticaret.Persistence.Ef;
-using Eticaret.Application;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Eticaret.Web.Mvc;
-using Microsoft.Extensions.FileProviders;
 
+using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Eticaret.Web.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using IdentityModel;
+using System.Net.Http.Headers;
+using IdentityModel.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
-builder.Services.AddHttpClient();
+builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddPersistenceServices(builder.Configuration);
-builder.Services.AddApplicationServices();
-
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-.AddCookie(options =>
+builder.Services.AddHttpClient("api", (provider, client) => //!
 {
-    options.Cookie.Name = "MyCookie";
-    options.ExpireTimeSpan = TimeSpan.FromDays(7);
-    options.LoginPath = "/Auth/Login";
-    options.LogoutPath = "/Home/Index";
+    // client.BaseAddress = new Uri("https://localhost:7083/api");
+    client.BaseAddress = new Uri("http://localhost:5177/api/");
+    // client.DefaultRequestHeaders.Clear();
+
+    // client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
+    IHttpContextAccessor contextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+    var context = contextAccessor.HttpContext;
+    var token = context?.Items["jwt"]?.ToString();
+    if (!string.IsNullOrEmpty(token))
+    {
+        client.SetBearerToken(token);
+    }
 });
+
+builder.Services.AddHttpClient("fileApi", (provider, client) =>
+{
+    client.BaseAddress = new Uri("http://localhost:7044/api/");
+});
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.MapInboundClaims = false;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            NameClaimType = JwtClaimTypes.Name,
+            RoleClaimType = JwtClaimTypes.Role,
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            RequireExpirationTime = true,
+            ClockSkew = TimeSpan.Zero,
+            RequireSignedTokens = false,
+            ValidateIssuerSigningKey = false,
+            SignatureValidator = (token, parameters) => new Microsoft.IdentityModel.JsonWebTokens.JsonWebToken(token) //!
+        };
+    });
+
 builder.Services.AddAuthorization();
 
-
 var app = builder.Build();
+
+app.UseMiddleware<CustomMiddleware>();
 
 if (!app.Environment.IsDevelopment())
 {
@@ -32,10 +64,12 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
-var rootPath = Path.Combine(Directory.GetCurrentDirectory(), "/Users/aysenuraydin/Documents/GitHub/Eticaret/Eticaret.File/UploadedFiles");
+var rootPath = Path.Combine(Directory.GetCurrentDirectory(), "/Users/aysenuraydin/Documents/GitHub/Eticaret/Eticaret.File/UploadedFiles");//!dinamik hale getir
 var fileProvider = new PhysicalFileProvider(rootPath);
+
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = fileProvider,
@@ -44,9 +78,8 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.UseRouting();
 
-app.UseMiddleware<CustomMiddleware>();
-
 app.UseAuthentication(); // login için 
+
 app.UseAuthorization(); //  yetkilendirme için
 
 app.MapControllerRoute(

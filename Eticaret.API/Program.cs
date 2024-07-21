@@ -1,9 +1,8 @@
-
-
 using System.Text;
 using Eticaret.Application;
 using Eticaret.Domain;
 using Eticaret.Persistence.Ef;
+using IdentityModel;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -12,20 +11,16 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddPersistenceServices(builder.Configuration);
+
 builder.Services.AddApplicationServices();
 
-var secret = builder.Configuration.GetSection("AppSettings:Secret").Value;
-
-// secret değişkeninin null olmadığından emin olun
-if (string.IsNullOrEmpty(secret))
-{
-    throw new InvalidOperationException("Secret key cannot be null or empty.");
-}
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.MaxDepth = 64;
     });
+
+var key = Encoding.ASCII.GetBytes(builder.Configuration["AppSettings:Secret"]!);
 
 builder.Services.AddAuthentication(options =>
 {
@@ -34,27 +29,38 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = true;
-    options.SaveToken = true;
+    options.MapInboundClaims = false;
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;//? //!
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        //ValidIssuer = "yourdomain.com", // Token'ın üretildiği yer
-        //ValidAudience = "yourdomain.com", // Token'ın kullanılacağı yer
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)) // Güvenlik anahtarı
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = false,
+        ValidateLifetime = true,
+        ValidateAudience = false,
+        NameClaimType = JwtClaimTypes.Name,//!
+        RoleClaimType = JwtClaimTypes.Role//!
     };
-    options.Events = new JwtBearerEvents
+    options.Events = new JwtBearerEvents()
     {
-        OnMessageReceived = context =>
+        OnMessageReceived = async (context) =>
         {
-            context.Token = context.Request.Cookies["token"];
-            return Task.CompletedTask;
+            var token = context.Token;
+            await Task.CompletedTask;
+        },
+        OnChallenge = async (context) =>
+        {
+            await Task.CompletedTask;
+        },
+        OnAuthenticationFailed = async (context) =>
+        {
+            await Task.CompletedTask;
         }
     };
 });
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddIdentity<User, Role>()
     .AddEntityFrameworkStores<EticaretDbContext>()
@@ -75,10 +81,10 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
 });
 
-builder.Services.AddAuthorization();
-
 builder.Services.AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(option =>
 {
     option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
@@ -93,17 +99,17 @@ builder.Services.AddSwaggerGen(option =>
     });
     option.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new string[]{}
-        }
+         {
+             new OpenApiSecurityScheme
+             {
+                 Reference = new OpenApiReference
+                 {
+                     Type = ReferenceType.SecurityScheme,
+                     Id = "Bearer"
+                 }
+             },
+             new string[]{}
+         }
     });
 });
 
@@ -112,10 +118,11 @@ builder.Services.AddCors(options =>
     options.AddPolicy("_myAllowOrigins",
         builder =>
         {
-            builder.WithOrigins("http://127.0.0.1:5177")
-                .AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod();
+            builder//.WithOrigins("http://127.0.0.1:5177") //!yanlış //mvc adresi olmalıydı
+                .AllowAnyOrigin()//ya yukarıdaki ya da bu satır.
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+            // .AllowCredentials();
         });
 });
 
@@ -126,28 +133,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-//app.UseMiddleware<UnauthorizedMiddleware>();
-
-app.UseHttpsRedirection();
-
-app.UseRouting();
-
-// app.Use(async (context, next) =>
-// {
-//     var token = context.Request.Cookies["AuthToken"];
-//     if (!string.IsNullOrEmpty(token))
-//     {
-//         if (context.Request.Headers.ContainsKey("Authorization"))
-//         {
-//             context.Request.Headers.Remove("Authorization");
-//         }
-//         context.Request.Headers.Append("Authorization", "Bearer " + token);
-//     }
-//     await next();
-// });
 
 app.UseCors("_myAllowOrigins");
+//app.UseHttpsRedirection();
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
+

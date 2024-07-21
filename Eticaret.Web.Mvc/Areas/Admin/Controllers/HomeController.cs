@@ -1,11 +1,6 @@
-﻿using System.Net.Http;
-using Eticaret.Application.Abstract;
-using Eticaret.Domain;
-using Eticaret.Dto;
+﻿using Eticaret.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
 
 namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 {
@@ -16,25 +11,31 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 
         public HomeController(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri("http://localhost:5177/api/");
+            _httpClient = httpClientFactory.CreateClient("api");
         }
 
         public async Task<IActionResult> Index()
         {
-            using (var response = await _httpClient.GetAsync("AdminCategory"))
+            try
             {
-                if (response.IsSuccessStatusCode)
+                using (var response = await _httpClient.GetAsync("AdminCategory"))
                 {
-                    var products = await response.Content.ReadFromJsonAsync<List<AdminCategoryListDTO>>() ?? new List<AdminCategoryListDTO>();
-                    return View(products);
-                }
-                else
-                {
-                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-                    return View("Error");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var products = await response.Content.ReadFromJsonAsync<List<AdminCategoryListDTO>>() ?? [];
+
+                        return View(products);
+                    }
+
+                    ViewBag.ErrorMessage = $"Error In: {response.ReasonPhrase}";
                 }
             }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"Error catch: {ex.Message}";
+            }
+
+            return View(new List<AdminCategoryListDTO>());
         }
     }
 }

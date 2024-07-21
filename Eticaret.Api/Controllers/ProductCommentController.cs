@@ -4,12 +4,11 @@ using Eticaret.Domain;
 using Eticaret.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Api.Controllers
 {
     [ApiController]
-    [Route("~/api/[controller]")]
+    [Route("api/[controller]")]
     public class ProductCommentController : ControllerBase
     {
         private readonly IProductCommentRepository _productCommentRepo;
@@ -25,29 +24,34 @@ namespace Eticaret.Api.Controllers
             if (id == null) return NotFound();
 
             var comment = (await _productCommentRepo.GetIdAllIncludeFilterAsync(
-                          p => p.ProductId == id && p.IsConfirmed == true,
-                          p => p.UserFk!
-                         ))
-                         .OrderByDescending(p => p.CreatedAt)
-                         .Select(p => ProductCommentListToDTO(p))
-                         .ToList();
+                                  p => p.ProductId == id && p.IsConfirmed == true,
+                                  p => p.UserFk!
+                                 ))
+                                 .OrderByDescending(p => p.CreatedAt)
+                                 .Select(p => ProductCommentListToDTO(p))
+                                 .ToList();
 
             return Ok(comment);
         }
+
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateProductComment(ProductCommentCreateDTO entity)
         {
-            if (entity == null) return NotFound(ModelState);
+            if (entity == null) return NotFound();
             try
             {
                 if (int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId))
                 {
-                    entity.UserId = userId;
                     var p = ProductCreatToDTO(entity);
+
+                    p.UserId = userId;
+
                     await _productCommentRepo.AddAsync(p);
+
                     return CreatedAtAction(nameof(GetProductComment), new { id = p.Id }, p);
                 }
+
                 return NotFound();
             }
             catch (Exception)
@@ -65,13 +69,13 @@ namespace Eticaret.Api.Controllers
                 UserName = $"{p.UserFk?.FirstName ?? string.Empty} {p.UserFk?.LastName ?? string.Empty}".Trim(),
             };
         }
+
         private static ProductComment ProductCreatToDTO(ProductCommentCreateDTO p)
         {
             return new ProductComment
             {
                 Text = p.Text,
                 StarCount = p.StarCount,
-                UserId = p.UserId,
                 ProductId = p.ProductId
             };
         }

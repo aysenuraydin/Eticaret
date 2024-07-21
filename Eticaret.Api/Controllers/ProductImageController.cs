@@ -3,22 +3,32 @@ using Eticaret.Domain;
 using Eticaret.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Api.Controllers
 {
     [ApiController]
-    [Route("~/api/[controller]")]
+    [Route("api/[controller]")]
     public class ProductImageController : ControllerBase
     {
         private readonly IProductImageRepository _productImageRepo;
-        public ProductImageController(
-            IProductImageRepository productImageRepo
-            )
+        public ProductImageController(IProductImageRepository productImageRepo)
         {
             _productImageRepo = productImageRepo;
         }
+        [HttpGet]
+        public async Task<IActionResult> GetAllImages()
+        {
+            var images = (await _productImageRepo.GetAllIncludeAsync(
+                          p => p.UserFk
+                         ))
+                         .OrderByDescending(p => p.CreatedAt)
+                         .Select(p => ProductImageListToDTO(p))
+                         .ToList();
 
+            if (images == null) return NotFound();
+
+            return Ok(images);
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetImages(int? id)
         {
@@ -33,21 +43,21 @@ namespace Eticaret.Api.Controllers
                          .ToList();
 
             if (images == null) return NotFound();
+
             return Ok(images);
         }
+
         [HttpPost]
         [Authorize(Roles = "seller")]
         public async Task<IActionResult> CreateProduct(ProductImageCreateDTO image)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (image == null) return NotFound();
 
             try
             {
                 var img = ProductImageCreateToDTO(image);
                 await _productImageRepo.AddAsync(img);
+
                 return CreatedAtAction(nameof(GetImages), new { id = img.ProductId }, img);
             }
             catch (Exception)
@@ -77,6 +87,7 @@ namespace Eticaret.Api.Controllers
             {
                 return NotFound();
             }
+
             return NoContent();
         }
 
@@ -84,12 +95,14 @@ namespace Eticaret.Api.Controllers
         {
             return new ProductImageListDTO
             {
+                Id = p.Id,
                 Url = p.Url,
                 CreatedAt = p.CreatedAt.ToString("dd.MM.yyyy"),
                 ProductId = p.ProductId,
                 SellerId = p.UserId
             };
         }
+
         private static ProductImage ProductImageCreateToDTO(ProductImageCreateDTO p)
         {
             return new ProductImage
