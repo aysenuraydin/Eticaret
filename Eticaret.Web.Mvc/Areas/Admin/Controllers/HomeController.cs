@@ -11,8 +11,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 
         public HomeController(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri("http://localhost:5177/api/");
+            _httpClient = httpClientFactory.CreateClient("api");
         }
 
         public async Task<IActionResult> Index()
@@ -23,17 +22,17 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
                 {
                     if (response.IsSuccessStatusCode)
                     {
-                        var products = await response.Content.ReadFromJsonAsync<List<AdminCategoryListDTO>>() ?? new List<AdminCategoryListDTO>();
+                        var products = await response.Content.ReadFromJsonAsync<List<AdminCategoryListDTO>>() ?? [];
 
                         return View(products);
                     }
 
-                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                    ViewBag.ErrorMessage = $"Error In: {response.ReasonPhrase}";
                 }
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+                ViewBag.ErrorMessage = $"Error catch: {ex.Message}";
             }
 
             return View(new List<AdminCategoryListDTO>());

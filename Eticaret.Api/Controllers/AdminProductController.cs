@@ -8,7 +8,7 @@ namespace Eticaret.Api.Controllers
 {
     [Authorize(Roles = "admin")]
     [ApiController]
-    [Route("~/api/[controller]")]
+    [Route("api/[controller]")]
     public class AdminProductController : ControllerBase
     {
         private readonly IProductRepository _productRepo;

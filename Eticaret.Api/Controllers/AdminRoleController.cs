@@ -10,7 +10,7 @@ namespace Eticaret.Api.Controllers
     [ApiController]
     [Authorize(Roles = "admin")]
     [Authorize]
-    [Route("~/api/[controller]")]
+    [Route("api/[controller]")]
     public class AdminRoleController : ControllerBase
     {
         private readonly RoleManager<Role> _roleManager;

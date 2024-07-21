@@ -1,5 +1,4 @@
 using Eticaret.Dto;
-using Eticaret.File.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,11 +13,8 @@ namespace Eticaret.Web.Mvc.Controllers
 
         public ProductController(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri("http://localhost:5177/api/");
-
-            _httpClientFile = httpClientFactory.CreateClient();
-            _httpClientFile.BaseAddress = new Uri("http://localhost:5112/api/");
+            _httpClient = httpClientFactory.CreateClient("api");
+            _httpClientFile = httpClientFactory.CreateClient("fileApi");
         }
 
         public async Task<IActionResult> Index()
@@ -306,9 +302,9 @@ namespace Eticaret.Web.Mvc.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var imgUrl = await response.Content.ReadFromJsonAsync<FileEntity>();
+                    var imgUrl = await response.Content.ReadFromJsonAsync<FileDto>();
 
-                    if (imgUrl != null) return imgUrl.LocalName!;
+                    if (imgUrl != null) return imgUrl.Name!;
                 }
 
                 ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";

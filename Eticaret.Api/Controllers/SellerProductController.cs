@@ -2,6 +2,7 @@
 using Eticaret.Application.Abstract;
 using Eticaret.Domain;
 using Eticaret.Dto;
+using IdentityModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +10,7 @@ namespace Eticaret.Api.Controllers
 {
     [ApiController]
     [Authorize(Roles = "seller")]
-    [Route("~/api/[controller]")]
+    [Route("api/[controller]")]
     public class SellerProductController : ControllerBase
     {
         private readonly IProductRepository _productRepo;
@@ -28,7 +29,7 @@ namespace Eticaret.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProducts()
         {
-            //bool Id = int.TryParse(User.FindFirstValue(JwtClaimTypes.Subject), out int sellerId2);
+            //bool Id = int.TryParse(User.FindFirstValue(JwtClaimTypes.Subject), out int sellerId);//!
             bool result = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int sellerId);
 
             var products = (await _productRepo.GetIdAllIncludeFilterAsync(

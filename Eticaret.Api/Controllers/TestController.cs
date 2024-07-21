@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Eticaret.Api.Controllers
 {
     [ApiController]
-    [Route("~/api/[controller]")]
+    [Route("api/[controller]")]
     public class TestController : ControllerBase
     {
         [HttpGet("protected")]

@@ -10,7 +10,7 @@ namespace Eticaret.Api.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("~/api/[controller]")]
+    [Route("api/[controller]")]
     public class ProfileController : ControllerBase
     {
         private readonly UserManager<User> _userManager;

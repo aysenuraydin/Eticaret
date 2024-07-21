@@ -19,6 +19,7 @@ public class CustomMiddleware
         if (!string.IsNullOrEmpty(token))
         {
             context.Request.Headers.Append("Authorization", $"Bearer {token}");
+            context.Items.Add("jwt", token); //!
         }
         await _next(context);
     }

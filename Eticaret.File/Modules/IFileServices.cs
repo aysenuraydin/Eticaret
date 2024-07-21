@@ -1,5 +1,6 @@
 
 
+using Eticaret.Dto;
 using Eticaret.File.Data;
 
 namespace Eticaret.File

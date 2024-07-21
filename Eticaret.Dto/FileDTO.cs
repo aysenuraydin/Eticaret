@@ -1,12 +1,11 @@
 
-namespace Eticaret.File.Data
+namespace Eticaret.Dto
 {
     public class FileDto
     {
         public string Name { get; set; } = null!;
         public string ContentType { get; set; } = null!;
         public byte[] Data { get; set; } = null!;
-        public int Size => Data.Length;
     }
 }
 

@@ -13,8 +13,7 @@ namespace Eticaret.Web.Mvc.Controllers
 
         public AuthController(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri("http://localhost:5177/api/");
+            _httpClient = httpClientFactory.CreateClient("api");
         }
 
         [AllowAnonymous]
@@ -137,7 +136,7 @@ namespace Eticaret.Web.Mvc.Controllers
                 HttpOnly = true,
                 SameSite = SameSiteMode.Strict,
                 Secure = true,
-                Expires = DateTime.UtcNow.AddDays(7)
+                Expires = DateTime.UtcNow.AddHours(1)
             };
 
             if (token != null)

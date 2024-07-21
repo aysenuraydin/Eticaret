@@ -11,8 +11,7 @@ namespace ticaret.Web.Mvc.ViewComponents
 
         public CartViewComponent(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri("http://localhost:5177/api/");
+            _httpClient = httpClientFactory.CreateClient("api");
         }
 
         public async Task<IViewComponentResult> InvokeAsync()

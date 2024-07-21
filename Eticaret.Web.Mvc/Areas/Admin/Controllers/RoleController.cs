@@ -9,13 +9,10 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
     public class RoleController : Controller
     {
         private readonly HttpClient _httpClient;
-
         public RoleController(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri("http://localhost:5177/api/");
+            _httpClient = httpClientFactory.CreateClient("api");
         }
-
         public async Task<IActionResult> Index()
         {
             try
@@ -26,7 +23,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
                     {
                         var roles = await response.Content.ReadFromJsonAsync<List<RoleListWithUserDTO>>() ?? new List<RoleListWithUserDTO>();
 
-                        var roleResponse = await _httpClient.GetAsync("AdminRole/Users");
+                        var roleResponse = await _httpClient.GetAsync("AdminRole");
 
                         if (roleResponse.IsSuccessStatusCode)
                         {

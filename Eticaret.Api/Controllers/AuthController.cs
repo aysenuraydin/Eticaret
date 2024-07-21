@@ -13,7 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace Eticaret.Api.Controllers
 {
     [ApiController]
-    [Route("~/api/[controller]")]
+    [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
@@ -124,22 +124,23 @@ namespace Eticaret.Api.Controllers
         private async Task<string> GenerateJwtToken(User user)
         {
             var userRoles = await _userManager.GetRolesAsync(user);
-            var secret = _configuration["AppSettings:Secret"];
+            var secret = _configuration["AppSettings:Secret"]
+                ?? throw new Exception("AppSettings Secret key not found");
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(secret!);
+            var key = Encoding.ASCII.GetBytes(secret);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(JwtClaimTypes.Subject, user.Id.ToString()),
-                    new Claim(JwtClaimTypes.Role, userRoles[0]),
-                    new Claim(JwtClaimTypes.GivenName, user.FirstName),
-                    new Claim(JwtClaimTypes.NickName, user.UserName!),
-                    new Claim(JwtClaimTypes.Email, user.Email!),
-                    new Claim(JwtClaimTypes.JwtId, Guid.NewGuid().ToString())
+                    new (JwtClaimTypes.Subject, user.Id.ToString()),
+                    new (JwtClaimTypes.Role, userRoles[0]),
+                    new (JwtClaimTypes.GivenName, user.FirstName),
+                    new (JwtClaimTypes.NickName, user.UserName!),
+                    new (JwtClaimTypes.Email, user.Email!),
+                    new (JwtClaimTypes.JwtId, Guid.NewGuid().ToString())
                 }),
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 

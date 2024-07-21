@@ -9,7 +9,7 @@ namespace Eticaret.Api.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("~/api/[controller]")]
+    [Route("api/[controller]")]
     public class CartController : ControllerBase
     {
         private readonly ICartItemRepository _cartItemRepo;

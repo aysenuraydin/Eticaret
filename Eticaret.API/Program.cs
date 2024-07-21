@@ -2,6 +2,7 @@ using System.Text;
 using Eticaret.Application;
 using Eticaret.Domain;
 using Eticaret.Persistence.Ef;
+using IdentityModel;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -28,15 +29,34 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
+    options.MapInboundClaims = false;
     options.RequireHttpsMetadata = false;
-    options.SaveToken = true;
+    options.SaveToken = true;//? //!
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(key),
         ValidateIssuer = false,
         ValidateLifetime = true,
-        ValidateAudience = false
+        ValidateAudience = false,
+        NameClaimType = JwtClaimTypes.Name,//!
+        RoleClaimType = JwtClaimTypes.Role//!
+    };
+    options.Events = new JwtBearerEvents()
+    {
+        OnMessageReceived = async (context) =>
+        {
+            var token = context.Token;
+            await Task.CompletedTask;
+        },
+        OnChallenge = async (context) =>
+        {
+            await Task.CompletedTask;
+        },
+        OnAuthenticationFailed = async (context) =>
+        {
+            await Task.CompletedTask;
+        }
     };
 });
 
@@ -98,10 +118,11 @@ builder.Services.AddCors(options =>
     options.AddPolicy("_myAllowOrigins",
         builder =>
         {
-            builder.WithOrigins("http://127.0.0.1:5177")
-                .AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod();
+            builder//.WithOrigins("http://127.0.0.1:5177") //!yanlış //mvc adresi olmalıydı
+                .AllowAnyOrigin()//ya yukarıdaki ya da bu satır.
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+            // .AllowCredentials();
         });
 });
 
@@ -113,16 +134,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
-app.UseRouting();
-
 app.UseCors("_myAllowOrigins");
-
+//app.UseHttpsRedirection();
+app.UseRouting();
 app.UseAuthentication();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
+

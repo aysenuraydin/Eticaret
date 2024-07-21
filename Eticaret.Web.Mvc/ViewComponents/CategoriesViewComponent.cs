@@ -10,14 +10,17 @@ namespace ticaret.Web.Mvc.ViewComponents
         private readonly HttpClient _httpClient;
         public CategoriesViewComponent(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri("http://localhost:5177/api/");
+            _httpClient = httpClientFactory.CreateClient("api");
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
             using (var response = await _httpClient.GetAsync("Categories"))
             {
+                if (!response.IsSuccessStatusCode)
+                {
+                    return View(new List<CategoryListDTO>());
+                }
                 List<CategoryListDTO> products = await response.Content.ReadFromJsonAsync<List<CategoryListDTO>>() ?? new();
 
                 return View(products);

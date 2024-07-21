@@ -12,8 +12,7 @@ namespace Eticaret.Web.Mvc.Controllers
 
         public ProfileController(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri("http://localhost:5177/api/");
+            _httpClient = httpClientFactory.CreateClient("api");
         }
 
         public async Task<IActionResult> Details()

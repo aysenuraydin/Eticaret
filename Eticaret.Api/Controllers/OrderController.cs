@@ -8,7 +8,7 @@ namespace Eticaret.Api.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("~/api/[controller]")]
+    [Route("api/[controller]")]
     public class OrderController : ControllerBase
     {
         private readonly IOrderRepository _orderService;

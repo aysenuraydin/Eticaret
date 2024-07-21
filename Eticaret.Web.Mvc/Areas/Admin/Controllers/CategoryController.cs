@@ -11,8 +11,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 
         public CategoryController(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri("http://localhost:5177/api/");
+            _httpClient = httpClientFactory.CreateClient("api");
         }
 
         public IActionResult Create()

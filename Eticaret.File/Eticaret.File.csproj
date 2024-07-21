@@ -17,4 +17,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.2" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Eticaret.Dto\Eticaret.Dto.csproj" />
+  </ItemGroup>
 </Project>

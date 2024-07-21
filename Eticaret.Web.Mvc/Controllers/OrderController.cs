@@ -11,9 +11,7 @@ namespace Eticaret.Web.Mvc.Controllers
 
         public OrderController(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri("http://localhost:5177/api/");
-
+            _httpClient = httpClientFactory.CreateClient("api");
         }
 
         [HttpPost]
