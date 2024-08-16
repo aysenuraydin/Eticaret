@@ -59,14 +59,7 @@ namespace Eticaret.Api.Controllers
 
             if (prd == null) return NotFound();
 
-            try
-            {
-                await _productCommentRepo.UpdateAsync(ProductCommentApproveToDTO(p, prd));
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
+            await _productCommentRepo.UpdateAsync(ProductCommentApproveToDTO(p, prd));
 
             return Ok(prd);
         }
@@ -80,14 +73,7 @@ namespace Eticaret.Api.Controllers
 
             if (prd == null) return NotFound(new { message = "Comment is not found." });
 
-            try
-            {
-                await _productCommentRepo.DeleteAsync(prd);
-            }
-            catch (Exception)
-            {
-                return NotFound(new { message = "Comment con't deleted." });
-            }
+            await _productCommentRepo.DeleteAsync(prd);
 
             return NoContent();
         }

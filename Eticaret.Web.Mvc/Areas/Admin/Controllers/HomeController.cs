@@ -13,30 +13,22 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
         {
             _httpClient = httpClientFactory.CreateClient("api");
         }
-
         public async Task<IActionResult> Index()
         {
-            try
+            if (TempData["ErrorMessage"] != null) ViewBag.ErrorMessage = TempData["ErrorMessage"];
+
+            using (var response = await _httpClient.GetAsync("AdminCategory"))
             {
-                using (var response = await _httpClient.GetAsync("AdminCategory"))
+                if (response.IsSuccessStatusCode)
                 {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var products = await response.Content.ReadFromJsonAsync<List<AdminCategoryListDTO>>() ?? [];
-
-                        return View(products);
-                    }
-
-                    ViewBag.ErrorMessage = $"Error In: {response.ReasonPhrase}";
+                    var products = await response.Content.ReadFromJsonAsync<List<AdminCategoryListDTO>>() ?? new List<AdminCategoryListDTO>();
+                    return View(products);
                 }
+                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
             }
-            catch (Exception ex)
-            {
-                ViewBag.ErrorMessage = $"Error catch: {ex.Message}";
-            }
-
-            return View(new List<AdminCategoryListDTO>());
+            return View();
         }
+
     }
 }
 

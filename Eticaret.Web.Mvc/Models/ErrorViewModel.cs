@@ -1,6 +1,6 @@
 namespace Eticaret.Web.Mvc.Models
 {
-    public class ErrorViewModel  //a- kendiliIinden vardI bu sayfa
+    public class ErrorViewModel
     {
         public string? RequestId { get; set; }
 

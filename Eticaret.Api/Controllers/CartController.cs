@@ -102,24 +102,17 @@ namespace Eticaret.Api.Controllers
         {
             if (id != item.Id) return BadRequest();
 
-            try
+            var cartItem = await _cartItemRepo.FindAsync(item.Id);
+
+            if (cartItem != null)
             {
-                var cartItem = await _cartItemRepo.FindAsync(item.Id);
+                cartItem.Quantity = item.Quantity;
+                await _cartItemRepo.UpdateAsync(cartItem);
 
-                if (cartItem != null)
-                {
-                    cartItem.Quantity = item.Quantity;
-                    await _cartItemRepo.UpdateAsync(cartItem);
-
-                    return NoContent();
-                }
-
-                return NotFound();
+                return NoContent();
             }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Hata Oluştu: {ex.Message}");
-            }
+
+            return NotFound();
         }
 
         [HttpDelete("{id}")]
@@ -131,14 +124,7 @@ namespace Eticaret.Api.Controllers
 
             if (prd == null) return NotFound();
 
-            try
-            {
-                await _cartItemRepo.DeleteAsync(prd);
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
+            await _cartItemRepo.DeleteAsync(prd);
 
             return NoContent();
         }

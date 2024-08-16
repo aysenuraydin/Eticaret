@@ -49,43 +49,46 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @if (Model != null && Model.Any())
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FullName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CreatedAt)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.RoleName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CartItemCount)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProductCommentCount)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.OrderCount)
-                </td>
-                <td>
-                    <a class="btn btn-sm btn-@(item.Enabled?"primary":"danger") btn-m" asp-action="Approve"
-                        asp-route-id="@item.Id" style="min-width: 95px !important;">
-                        @(item.Enabled ? "Onayı Kaldır" : "Onayla")
-                    </a>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FullName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreatedAt)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RoleName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CartItemCount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProductCommentCount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OrderCount)
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-@(item.Enabled?"primary":"danger") btn-m" asp-action="Approve"
+                            asp-route-id="@item.Id" style="min-width: 95px !important;">
+                            @(item.Enabled ? "Onayı Kaldır" : "Onayla")
+                        </a>
 
-                    <a class="btn btn-sm btn-outline-danger btn-m" asp-action="Delete" asp-route-id="@item.Id"
-                        style="min-width: 95px !important;">Sil</a>
-                </td>
-            </tr>
+                        <a class="btn btn-sm btn-outline-danger btn-m" asp-action="Delete" asp-route-id="@item.Id"
+                            style="min-width: 95px !important;">Sil</a>
+                    </td>
+                </tr>
+            }
         }
     </tbody>
 </table>

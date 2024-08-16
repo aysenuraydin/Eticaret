@@ -65,14 +65,7 @@ namespace Eticaret.Api.Controllers
 
             if (prd == null) return NotFound();
 
-            try
-            {
-                await _productRepo.UpdateAsync(ProductApproveToDTO(p, prd));
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
+            await _productRepo.UpdateAsync(ProductApproveToDTO(p, prd));
 
             return Ok(prd);
         }
@@ -86,14 +79,7 @@ namespace Eticaret.Api.Controllers
 
             if (prd == null) return NotFound();
 
-            try
-            {
-                await _productRepo.DeleteAsync(prd);
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
+            await _productRepo.DeleteAsync(prd);
 
             return NoContent();
         }

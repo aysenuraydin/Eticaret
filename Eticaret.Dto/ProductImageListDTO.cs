@@ -1,41 +1,43 @@
 using System.ComponentModel.DataAnnotations;
+using FluentValidation;
 
 namespace Eticaret.Dto
 {
     public class ProductImageListDTO
     {
         public int Id { get; set; }
-        [Display(Name = "Görsel URL'si")]
-        [Required(ErrorMessage = "Görsel URL'si alanı gereklidir.")]
-        [Url(ErrorMessage = "Geçersiz URL formatı.")]
         public string? Url { get; set; }
-
-        [Display(Name = "Oluşturma Tarihi")]
-        [Required(ErrorMessage = "Oluşturma tarihi alanı gereklidir.")]
         public string? CreatedAt { get; set; }
-
-        [Display(Name = "Ürün ID")]
-        [Required(ErrorMessage = "Ürün ID alanı gereklidir.")]
         public int ProductId { get; set; }
-
-        [Display(Name = "Satıcı ID")]
-        [Required(ErrorMessage = "Satıcı ID alanı gereklidir.")]
         public int SellerId { get; set; }
     }
 
-    public class ProductImageCreateDTO
+    public class ProductImageListDTOValidator : AbstractValidator<ProductImageListDTO>
     {
-        [Display(Name = "Görsel URL'si")]
-        [Required(ErrorMessage = "Görsel URL'si alanı gereklidir.")]
-        [Url(ErrorMessage = "Geçersiz URL formatı.")]
-        public string? Url { get; set; }
+        public ProductImageListDTOValidator()
+        {
+            RuleFor(x => x.Id)
+                .NotEmpty().WithMessage("Görsel ID alanı gereklidir.");
 
-        [Display(Name = "Ürün ID")]
-        [Required(ErrorMessage = "Ürün ID alanı gereklidir.")]
-        public int ProductId { get; set; }
+            RuleFor(x => x.Url)
+                .NotEmpty().WithMessage("Görsel URL'si alanı gereklidir.")
+                .Must(BeAValidUrl).WithMessage("Geçersiz URL formatı.");
 
-        [Display(Name = "Satıcı ID")]
-        [Required(ErrorMessage = "Satıcı ID alanı gereklidir.")]
-        public int SellerId { get; set; }
+            RuleFor(x => x.CreatedAt)
+                .NotEmpty().WithMessage("Oluşturma tarihi alanı gereklidir.");
+
+            RuleFor(x => x.ProductId)
+                .NotEmpty().WithMessage("Ürün ID alanı gereklidir.");
+
+            RuleFor(x => x.SellerId)
+                .NotEmpty().WithMessage("Satıcı ID alanı gereklidir.");
+        }
+
+        private bool BeAValidUrl(string? url)
+        {
+            return !string.IsNullOrEmpty(url) && Uri.TryCreate(url, UriKind.Absolute, out var result) &&
+                (result.Scheme == Uri.UriSchemeHttp || result.Scheme == Uri.UriSchemeHttps);
+        }
     }
+
 }

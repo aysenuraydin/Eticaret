@@ -17,47 +17,35 @@ namespace Eticaret.Web.Mvc.Controllers
 
         public async Task<IActionResult> AddProduct(int id)
         {
-            try
-            {
-                var response = await _httpClient.PostAsync($"Cart/{id}", null);
+            var response = await _httpClient.PostAsync($"Cart/{id}", null);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    return RedirectToAction(nameof(Edit));
-                }
-
-                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-            }
-            catch (Exception ex)
+            if (response.IsSuccessStatusCode)
             {
-                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+                return RedirectToAction(nameof(Edit));
             }
+
+            TempData["ErrorMessage"] = $"Error: {response.ReasonPhrase}";
 
             return RedirectToAction(nameof(Edit));
         }
 
         public async Task<IActionResult> Edit()
         {
-            try
+            if (TempData["ErrorMessage"] != null) ViewBag.ErrorMessage = TempData["ErrorMessage"];
+
+            using (var response = await _httpClient.GetAsync($"Cart"))
             {
-                using (var response = await _httpClient.GetAsync($"Cart"))
+                if (response.IsSuccessStatusCode)
                 {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var carts = await response.Content.ReadFromJsonAsync<List<CartItemListDTO>>() ?? new();
+                    var carts = await response.Content.ReadFromJsonAsync<List<CartItemListDTO>>() ?? new();
 
-                        return View(carts);
-                    }
-
-                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                    return View(carts);
                 }
-            }
-            catch (Exception ex)
-            {
-                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+
+                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
             }
 
-            return View(new List<CartItemListDTO>());
+            return View();
         }
 
         [HttpPost]
@@ -66,25 +54,17 @@ namespace Eticaret.Web.Mvc.Controllers
         {
             if (!ModelState.IsValid) return View(item);
 
-            try
+            CartItemUpdateDTO cartItem = new() { Id = item.Id, Quantity = item.Quantity };
+
+            var response = await _httpClient.PutAsJsonAsync($"Cart/{item.Id}", cartItem);
+
+            if (response.IsSuccessStatusCode)
             {
-                CartItemUpdateDTO cartItem = new() { Id = item.Id, Quantity = item.Quantity };
-
-                var response = await _httpClient.PutAsJsonAsync($"Cart/{item.Id}", cartItem);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    return RedirectToAction(nameof(Edit));
-                }
-
-                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-                ModelState.AddModelError("", "Güncelleme sırasında bir hata oluştu.");
+                return RedirectToAction(nameof(Edit));
             }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", $"Hata Oluştu: {ex.Message}");
-                ViewBag.ErrorMessage = $"Error: {ex.Message}";
-            }
+
+            ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+            ModelState.AddModelError("", "Güncelleme sırasında bir hata oluştu.");
 
             return View(item);
         }
@@ -93,18 +73,11 @@ namespace Eticaret.Web.Mvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
-                var response = await _httpClient.DeleteAsync($"Cart/{id}");
+            var response = await _httpClient.DeleteAsync($"Cart/{id}");
 
-                if (!response.IsSuccessStatusCode)
-                {
-                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-                }
-            }
-            catch (Exception ex)
+            if (!response.IsSuccessStatusCode)
             {
-                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+                TempData["ErrorMessage"] = $"Error: {response.ReasonPhrase}";
             }
 
             return RedirectToAction(nameof(Edit));

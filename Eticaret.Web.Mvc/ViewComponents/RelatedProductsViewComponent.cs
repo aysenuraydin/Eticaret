@@ -22,7 +22,7 @@ namespace ticaret.Web.Mvc.ViewComponents
             {
                 if (!response.IsSuccessStatusCode)
                 {
-                    return View(new List<ProductListDTO>());
+                    return View();
                 }
 
                 List<ProductListDTO> products = await response.Content.ReadFromJsonAsync<List<ProductListDTO>>() ?? new();

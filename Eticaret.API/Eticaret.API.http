@@ -1,6 +1,45 @@
-@Eticaret.Api_HostAddress = http://localhost:5112
+@Eticaret = http://localhost:5177/api
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxNCIsInJvbGUiOiJhZG1pbiIsImdpdmVuX25hbWUiOiJhZG1pbiIsIm5pY2tuYW1lIjoiYWRtaW4iLCJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImp0aSI6Ijg0YjE0NTc4LTVjZDUtNDljMi1iMTJlLTMzYWI3ZmQ5Zjg3NiIsIm5iZiI6MTcyMzczNDQ1OSwiZXhwIjoxNzIzNzM4MDU5LCJpYXQiOjE3MjM3MzQ0NTl9.JL1erEnQf2GnBzLYAG85tc1mqZizlPl1Jcks_FS3xEE
 
-GET {{Eticaret.Api_HostAddress}}/weatherforecast/
+### 1. GET /api/Categories
+GET {{Eticaret}}/Categories
 Accept: application/json
 
-###
+### 1. GET /api/Categories
+GET {{Eticaret}}/AdminCategory
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### 2. GET /api/Categories/{id}
+GET {{Eticaret}}/AdminCategory/1
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### 3. DELETE /api/Categories/{id}
+DELETE {{Eticaret}}/AdminCategory/1
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### 4. POST /api/Categories
+POST {{Eticaret}}/AdminCategory
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+{
+    "Name": "Yeni Kategori",
+    "Color": "Blue",
+    "Css": "icon-class"
+}
+
+### 5. PUT /api/Categories/{id}
+PUT {{Eticaret}}/AdminCategory/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+{
+    "Id": 1,
+    "Name": "Güncellenmiş Kategori",
+    "Color": "Red",
+    "Css": "new-icon-class"
+}
+

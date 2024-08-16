@@ -18,43 +18,29 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 
         public async Task<IActionResult> List()
         {
-            try
-            {
-                var response = await _httpClient.GetAsync("AdminUser");
+            var response = await _httpClient.GetAsync("AdminUser");
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var users = await response.Content.ReadFromJsonAsync<List<AdminUserListDTO>>() ?? new List<AdminUserListDTO>();
-                    return View(users);
-                }
-            }
-            catch (Exception ex)
+            if (response.IsSuccessStatusCode)
             {
-                ViewBag.ErrorMessage = $"An error occurred: {ex.Message}";
+                var users = await response.Content.ReadFromJsonAsync<List<AdminUserListDTO>>() ?? new List<AdminUserListDTO>();
+                return View(users);
             }
 
-            return View(new List<AdminUserListDTO>());
+            return View();
         }
 
         public async Task<IActionResult> Approve(int id)
         {
-            try
+            using (var response = await _httpClient.GetAsync($"AdminUser/{id}"))
             {
-                using (var response = await _httpClient.GetAsync($"AdminUser/{id}"))
+                if (response.IsSuccessStatusCode)
                 {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        AdminUserListDTO user = await response.Content.ReadFromJsonAsync<AdminUserListDTO>() ?? new();
+                    AdminUserListDTO user = await response.Content.ReadFromJsonAsync<AdminUserListDTO>() ?? new();
 
-                        return View(user);
-                    }
-
-                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                    return View(user);
                 }
-            }
-            catch (Exception ex)
-            {
-                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+
+                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
             }
 
             return View();
@@ -64,50 +50,36 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Approve(AdminUserListDTO user)
         {
-            try
+            var u = new AdminUserUpdateDTO()
             {
-                var u = new AdminUserUpdateDTO()
-                {
-                    Id = user.Id,
-                    Enabled = user.Enabled
-                };
+                Id = user.Id,
+                Enabled = user.Enabled
+            };
 
-                var response = await _httpClient.PutAsJsonAsync($"AdminUser/{user.Id}", u);
+            var response = await _httpClient.PutAsJsonAsync($"AdminUser/{user.Id}", u);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    return RedirectToAction(nameof(List));
-                }
-
-                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-            }
-            catch (Exception ex)
+            if (response.IsSuccessStatusCode)
             {
-                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+                return RedirectToAction(nameof(List));
             }
+
+            TempData["ErrorMessage"] = $"Error: {response.ReasonPhrase}";
 
             return RedirectToAction(nameof(List));
         }
 
         public async Task<IActionResult> Delete(int id)
         {
-            try
+            using (var response = await _httpClient.GetAsync($"AdminUser/{id}"))
             {
-                using (var response = await _httpClient.GetAsync($"AdminUser/{id}"))
+                if (response.IsSuccessStatusCode)
                 {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        AdminUserListDTO user = await response.Content.ReadFromJsonAsync<AdminUserListDTO>() ?? new();
+                    AdminUserListDTO user = await response.Content.ReadFromJsonAsync<AdminUserListDTO>() ?? new();
 
-                        return View(user);
-                    }
-
-                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                    return View(user);
                 }
-            }
-            catch (Exception ex)
-            {
-                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+
+                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
             }
 
             return View();
@@ -117,18 +89,11 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id, User? user)
         {
-            try
-            {
-                var response = await _httpClient.DeleteAsync($"AdminUser/{id}");
+            var response = await _httpClient.DeleteAsync($"AdminUser/{id}");
 
-                if (response.IsSuccessStatusCode) return RedirectToAction(nameof(List));
+            if (response.IsSuccessStatusCode) return RedirectToAction(nameof(List));
 
-                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-            }
-            catch (Exception ex)
-            {
-                ViewBag.ErrorMessage = $"Error: {ex.Message}";
-            }
+            TempData["ErrorMessage"] = $"Error: {response.ReasonPhrase}";
 
             return RedirectToAction(nameof(List));
         }

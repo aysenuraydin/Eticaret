@@ -53,17 +53,10 @@ namespace Eticaret.Api.Controllers
         {
             if (image == null) return NotFound();
 
-            try
-            {
-                var img = ProductImageCreateToDTO(image);
-                await _productImageRepo.AddAsync(img);
+            var img = ProductImageCreateToDTO(image);
+            await _productImageRepo.AddAsync(img);
 
-                return CreatedAtAction(nameof(GetImages), new { id = img.ProductId }, img);
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
+            return CreatedAtAction(nameof(GetImages), new { id = img.ProductId }, img);
         }
 
         [HttpDelete("{id}")]
@@ -76,17 +69,10 @@ namespace Eticaret.Api.Controllers
 
             if (prd == null || !prd.Any()) return NotFound();
 
-            try
-            {
-                var deleteTasks = prd
+            var deleteTasks = prd
                                 .Where(i => i != null)
                                 .Select(i => _productImageRepo.DeleteAsync(i!));
-                await Task.WhenAll(deleteTasks);
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
+            await Task.WhenAll(deleteTasks);
 
             return NoContent();
         }

@@ -59,14 +59,7 @@ namespace Eticaret.Api.Controllers
 
             if (user == null) return NotFound(new { message = "User is not found." });
 
-            try
-            {
-                await _userManager.UpdateAsync(UserApproveToDTO(p, user));
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
+            await _userManager.UpdateAsync(UserApproveToDTO(p, user));
 
             return Ok(user);
         }
@@ -80,14 +73,7 @@ namespace Eticaret.Api.Controllers
 
             if (user == null) return NotFound();
 
-            try
-            {
-                await _userManager.DeleteAsync(user);
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
+            await _userManager.DeleteAsync(user);
 
             return NoContent();
         }

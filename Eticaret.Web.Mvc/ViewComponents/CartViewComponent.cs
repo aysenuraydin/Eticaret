@@ -1,6 +1,4 @@
-﻿
-using Eticaret.Application.Abstract;
-using Eticaret.Dto;
+﻿using Eticaret.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ticaret.Web.Mvc.ViewComponents
@@ -26,16 +24,13 @@ namespace ticaret.Web.Mvc.ViewComponents
 
                         return View(products);
                     }
-                    else
-                    {
-                        return View(new List<CartItemListDTO>());
-                    }
+                    return View(new List<CartItemListDTO>());
                 }
             }
             catch (HttpRequestException httpRequestException)
             {
                 Console.WriteLine($"Request error: {httpRequestException.Message}");
-                return View(new List<ProductListDTO>());
+                return View();
             }
 
         }

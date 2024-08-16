@@ -14,7 +14,7 @@
             </div>
         </div>
         <div class="header-cart-content flex-w js-pscroll">
-            @if (Model.Count() != 0)
+            @if (Model != null && Model.Any())
             {
                 <ul class="header-cart-wrapitem w-full">
                     @foreach (var cart in Model)

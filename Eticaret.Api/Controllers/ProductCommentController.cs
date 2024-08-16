@@ -24,12 +24,12 @@ namespace Eticaret.Api.Controllers
             if (id == null) return NotFound();
 
             var comment = (await _productCommentRepo.GetIdAllIncludeFilterAsync(
-                                  p => p.ProductId == id && p.IsConfirmed == true,
-                                  p => p.UserFk!
-                                 ))
-                                 .OrderByDescending(p => p.CreatedAt)
-                                 .Select(p => ProductCommentListToDTO(p))
-                                 .ToList();
+                                p => p.ProductId == id && p.IsConfirmed == true,
+                                p => p.UserFk!
+                                ))
+                                .OrderByDescending(p => p.CreatedAt)
+                                .Select(p => ProductCommentListToDTO(p))
+                                .ToList();
 
             return Ok(comment);
         }
@@ -38,26 +38,18 @@ namespace Eticaret.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateProductComment(ProductCommentCreateDTO entity)
         {
-            if (entity == null) return NotFound();
-            try
+            if (int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId))
             {
-                if (int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId))
-                {
-                    var p = ProductCreatToDTO(entity);
+                var p = ProductCreatToDTO(entity);
 
-                    p.UserId = userId;
+                p.UserId = userId;
 
-                    await _productCommentRepo.AddAsync(p);
+                await _productCommentRepo.AddAsync(p);
 
-                    return CreatedAtAction(nameof(GetProductComment), new { id = p.Id }, p);
-                }
-
-                return NotFound();
+                return CreatedAtAction(nameof(GetProductComment), new { id = p.Id }, p);
             }
-            catch (Exception)
-            {
-                return NotFound();
-            }
+
+            return NotFound();
         }
 
         private static ProductCommentListDTO ProductCommentListToDTO(ProductComment p)

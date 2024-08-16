@@ -3275,28 +3275,6 @@ a:hover{
   padding: 2rem cover !important;
 }
 
-#alertMessage{
-  display: flex;
-  justify-content:end ;
-  margin-bottom: -200px !important;
-  margin-right: 35px !important;
-  padding: 50px !important;
-  position: relative;
-  top: 60px;
-}
-#alertMessages{
-  display: flex;
-  justify-content:end ;
-  margin-bottom: -85px !important;
-  position: relative;
-}
-#alertMessage .show{
-width: 300px !important;
-}
-#alertMessages .show{
-  width: 300px !important;
-  }
-
 
 
 

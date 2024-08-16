@@ -13,11 +13,14 @@
                     </ul>
                 </div>
                 <div class="product-slider owl-carousel">
-                    @foreach (var item in Model)
+                    @if (Model != null && Model.Any())
                     {
-                        <div class="item-slick2 p-3">
-                            @await Html.PartialAsync("_ProductListItem", item)
-                        </div>
+                        @foreach (var item in Model)
+                        {
+                            <div class="item-slick2 p-3">
+                                @await Html.PartialAsync("_ProductListItem", item)
+                            </div>
+                        }
                     }
                 </div>
             </div>

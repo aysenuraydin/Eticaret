@@ -13,23 +13,16 @@ namespace Eticaret.Web.Mvc.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            try
+            using (var response = await _httpClient.GetAsync("Home"))
             {
-                using (var response = await _httpClient.GetAsync("Home"))
+                if (response.IsSuccessStatusCode)
                 {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var products = await response.Content.ReadFromJsonAsync<List<ProductListDTO>>();
-                        return View(products); ;
-                    }
-                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                    var products = await response.Content.ReadFromJsonAsync<List<ProductListDTO>>();
+                    return View(products); ;
                 }
+                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
             }
-            catch (HttpRequestException httpRequestException)
-            {
-                ViewBag.ErrorMessage = $"Error: {httpRequestException.Message}";
-            }
-            return View(new List<ProductListDTO>());
+            return View();
         }
         public IActionResult AboutUs()
         {
@@ -79,30 +72,30 @@ namespace Eticaret.Web.Mvc.Controllers
 
         public async Task<IActionResult> ProductDetail(int id)
         {
-            try
+            if (TempData["ErrorMessage"] != null) ViewBag.ErrorMessage = TempData["ErrorMessage"];
+
+            using (var response = await _httpClient.GetAsync($"Product/{id}"))
             {
-                using (var response = await _httpClient.GetAsync($"Product/{id}"))
+                if (response.IsSuccessStatusCode)
                 {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var product = await response.Content.ReadFromJsonAsync<ProductDetailDTO>();
+                    var product = await response.Content.ReadFromJsonAsync<ProductDetailDTO>();
 
-                        if (TempData["Message"] != null) ViewBag.ErrorMessage = TempData["Message"];
+                    if (TempData["Message"] != null) ViewBag.ErrorMessage = TempData["Message"];
 
-                        return View(product); ;
-                    }
-
-                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                    return View(product); ;
                 }
-            }
-            catch (HttpRequestException httpRequestException)
-            {
-                ViewBag.ErrorMessage = $"Error: {httpRequestException.Message}";
+
+                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
             }
 
             if (TempData["Message"] != null) ViewBag.ErrorMessage = TempData["Message"];
 
             return View();
+        }
+        public IActionResult Error()
+        {
+            var errorMessage = HttpContext.Items["ExceptionMessage"]?.ToString();
+            return View(new ErrorViewModel { RequestId = errorMessage });
         }
     }
 }

@@ -11,11 +11,7 @@ namespace Eticaret.Dto
         public decimal ProductPrice { get; set; }
         public byte Quantity { get; set; }
     }
-    public class CartItemUpdateDTO
-    {
-        public int Id { get; set; }
-        public byte Quantity { get; set; }
-    }
+
 }
 
 

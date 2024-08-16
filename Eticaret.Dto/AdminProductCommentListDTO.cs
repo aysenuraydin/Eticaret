@@ -1,32 +1,41 @@
 using System.ComponentModel.DataAnnotations;
+using FluentValidation;
 
 namespace Eticaret.Dto
 {
     public class AdminProductCommentListDTO
     {
-        [Required(ErrorMessage = "Yorum ID'si gereklidir.")]
         public int Id { get; set; }
 
         public string? Text { get; set; }
-
-        [Required(ErrorMessage = "Yıldız sayısı gereklidir.")]
         public byte StarCount { get; set; }
 
         public bool IsConfirmed { get; set; } = false;
-
-        [Required(ErrorMessage = "Oluşturma tarihi gereklidir.")]
         public string? CreatedAt { get; set; }
 
         public string? UserName { get; set; }
 
         public string? ProductName { get; set; }
     }
-
-    public class AdminProductCommentUpdateDTO
+    public class AdminProductCommentListDTOValidator : AbstractValidator<AdminProductCommentListDTO>
     {
-        [Required(ErrorMessage = "Yorum ID'si gereklidir.")]
-        public int Id { get; set; }
+        public AdminProductCommentListDTOValidator()
+        {
+            RuleFor(x => x.Id)
+                .NotEmpty().WithMessage("Yorum ID'si gereklidir.");
 
-        public bool IsConfirmed { get; set; }
+            RuleFor(x => x.StarCount)
+                .Custom((value, context) =>
+                {
+                    int starCount = value;
+                    if (starCount < 1 || starCount > 5)
+                    {
+                        context.AddFailure("Yıldız sayısı 1 ile 5 arasında olmalıdır.");
+                    }
+                });
+
+            RuleFor(x => x.CreatedAt)
+                .NotEmpty().WithMessage("Oluşturma tarihi gereklidir.");
+        }
     }
 }

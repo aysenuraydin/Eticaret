@@ -8,10 +8,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Eticaret.Api.Migrations
+namespace Eticaret.API.Migrations
 {
     [DbContext(typeof(EticaretDbContext))]
-    [Migration("20240613174556_InitialCreate")]
+    [Migration("20240815125614_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -79,70 +79,70 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 1,
                             Color = "	#a4b2b0",
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9660),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1170),
                             Name = "Yelek"
                         },
                         new
                         {
                             Id = 2,
                             Color = "	#896863	",
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9670),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1180),
                             Name = "Triko"
                         },
                         new
                         {
                             Id = 3,
                             Color = "#C27D42	",
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9670),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1180),
                             Name = "Sweatshirt"
                         },
                         new
                         {
                             Id = 4,
                             Color = "	#BF8882	",
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9670),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1190),
                             Name = "Şort"
                         },
                         new
                         {
                             Id = 5,
                             Color = "	#A4B2B0	",
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9670),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1190),
                             Name = "Kazak"
                         },
                         new
                         {
                             Id = 6,
                             Color = "#828DE5",
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9670),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1190),
                             Name = "Elbise"
                         },
                         new
                         {
                             Id = 7,
                             Color = "#595B56	",
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9670),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1190),
                             Name = "Ceket"
                         },
                         new
                         {
                             Id = 8,
                             Color = "	#CDC6C3	",
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9680),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1200),
                             Name = "Pantolon"
                         },
                         new
                         {
                             Id = 9,
                             Color = "#DEBDB0",
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9680),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1200),
                             Name = "Etek"
                         },
                         new
                         {
                             Id = 10,
                             Color = "	#BE969B	",
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9690),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1200),
                             Name = "Bluz"
                         });
                 });
@@ -260,7 +260,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 1,
                             CategoryId = 1,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9710),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1230),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -273,7 +273,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 2,
                             CategoryId = 1,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9720),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1240),
                             Details = "ürün açıklama",
                             Enabled = false,
                             IsConfirmed = true,
@@ -286,7 +286,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 3,
                             CategoryId = 1,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9720),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1250),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -299,7 +299,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 4,
                             CategoryId = 2,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9720),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1250),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -312,7 +312,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 5,
                             CategoryId = 2,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9720),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1250),
                             Details = "ürün açıklama",
                             Enabled = false,
                             IsConfirmed = true,
@@ -325,7 +325,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 6,
                             CategoryId = 2,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9730),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1260),
                             Details = "ürün açıklama",
                             Enabled = false,
                             IsConfirmed = true,
@@ -338,7 +338,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 7,
                             CategoryId = 3,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9730),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1260),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -351,7 +351,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 8,
                             CategoryId = 3,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9730),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1260),
                             Details = "ürün açıklama",
                             Enabled = false,
                             IsConfirmed = true,
@@ -364,7 +364,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 9,
                             CategoryId = 3,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9740),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1270),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -377,7 +377,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 10,
                             CategoryId = 4,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9740),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1290),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -390,7 +390,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 11,
                             CategoryId = 4,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9740),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1290),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -403,7 +403,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 12,
                             CategoryId = 4,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9740),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1290),
                             Details = "ürün açıklama",
                             Enabled = false,
                             IsConfirmed = true,
@@ -416,7 +416,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 13,
                             CategoryId = 4,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9750),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1300),
                             Details = "ürün açıklama",
                             Enabled = false,
                             IsConfirmed = false,
@@ -429,7 +429,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 14,
                             CategoryId = 4,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9750),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1300),
                             Details = "ürün açıklama",
                             Enabled = false,
                             IsConfirmed = true,
@@ -442,7 +442,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 15,
                             CategoryId = 5,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9750),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1300),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -455,7 +455,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 16,
                             CategoryId = 5,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9750),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1310),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -468,7 +468,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 17,
                             CategoryId = 5,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9760),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1310),
                             Details = "ürün açıklama",
                             Enabled = false,
                             IsConfirmed = false,
@@ -481,7 +481,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 18,
                             CategoryId = 6,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9760),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1320),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = false,
@@ -494,7 +494,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 19,
                             CategoryId = 6,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9760),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1320),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -507,7 +507,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 20,
                             CategoryId = 6,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9760),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1320),
                             Details = "ürün açıklama",
                             Enabled = false,
                             IsConfirmed = true,
@@ -520,7 +520,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 21,
                             CategoryId = 6,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9770),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1330),
                             Details = "ürün açıklama",
                             Enabled = false,
                             IsConfirmed = true,
@@ -533,7 +533,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 22,
                             CategoryId = 7,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9770),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1330),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -546,7 +546,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 23,
                             CategoryId = 7,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9770),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1330),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = false,
@@ -559,7 +559,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 24,
                             CategoryId = 7,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9770),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1340),
                             Details = "ürün açıklama",
                             Enabled = false,
                             IsConfirmed = true,
@@ -572,7 +572,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 25,
                             CategoryId = 7,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9780),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1340),
                             Details = "ürün açıklama",
                             Enabled = false,
                             IsConfirmed = true,
@@ -585,7 +585,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 26,
                             CategoryId = 8,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9780),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1340),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -598,7 +598,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 27,
                             CategoryId = 8,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9780),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1350),
                             Details = "ürün açıklama",
                             Enabled = false,
                             IsConfirmed = true,
@@ -611,7 +611,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 28,
                             CategoryId = 8,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9790),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1350),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = false,
@@ -624,7 +624,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 29,
                             CategoryId = 8,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9790),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1350),
                             Details = "ürün açıklama",
                             Enabled = false,
                             IsConfirmed = true,
@@ -637,7 +637,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 30,
                             CategoryId = 9,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9790),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1360),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -650,7 +650,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 31,
                             CategoryId = 9,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9790),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1360),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -663,7 +663,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 32,
                             CategoryId = 9,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9790),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1360),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = false,
@@ -676,7 +676,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 33,
                             CategoryId = 9,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9800),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1360),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -689,7 +689,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 34,
                             CategoryId = 10,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9800),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1370),
                             Details = "ürün açıklama",
                             Enabled = false,
                             IsConfirmed = true,
@@ -702,7 +702,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 35,
                             CategoryId = 10,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9800),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1370),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = false,
@@ -715,7 +715,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 36,
                             CategoryId = 10,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9800),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1380),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -728,7 +728,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 37,
                             CategoryId = 10,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9810),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1380),
                             Details = "ürün açıklama",
                             Enabled = true,
                             IsConfirmed = true,
@@ -741,7 +741,7 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 38,
                             CategoryId = 10,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9810),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1380),
                             Details = "ürün açıklama",
                             Enabled = false,
                             IsConfirmed = true,
@@ -790,7 +790,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9850),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1430),
                             IsConfirmed = true,
                             ProductId = 1,
                             StarCount = (byte)5,
@@ -800,7 +800,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9860),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1440),
                             IsConfirmed = true,
                             ProductId = 2,
                             StarCount = (byte)5,
@@ -810,7 +810,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9860),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1440),
                             IsConfirmed = true,
                             ProductId = 3,
                             StarCount = (byte)3,
@@ -820,7 +820,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9860),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1440),
                             IsConfirmed = true,
                             ProductId = 4,
                             StarCount = (byte)5,
@@ -830,7 +830,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9860),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1440),
                             IsConfirmed = true,
                             ProductId = 5,
                             StarCount = (byte)5,
@@ -840,7 +840,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 6,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9860),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1450),
                             IsConfirmed = true,
                             ProductId = 6,
                             StarCount = (byte)1,
@@ -850,7 +850,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 7,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9870),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1450),
                             IsConfirmed = true,
                             ProductId = 7,
                             StarCount = (byte)5,
@@ -860,7 +860,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 8,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9870),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1450),
                             IsConfirmed = true,
                             ProductId = 8,
                             StarCount = (byte)5,
@@ -870,7 +870,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 9,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9870),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1450),
                             IsConfirmed = true,
                             ProductId = 9,
                             StarCount = (byte)5,
@@ -880,7 +880,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 10,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9870),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1450),
                             IsConfirmed = true,
                             ProductId = 10,
                             StarCount = (byte)4,
@@ -890,7 +890,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 11,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9870),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1460),
                             IsConfirmed = true,
                             ProductId = 11,
                             StarCount = (byte)5,
@@ -900,7 +900,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 12,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9870),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1460),
                             IsConfirmed = true,
                             ProductId = 12,
                             StarCount = (byte)5,
@@ -910,7 +910,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 13,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9880),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1460),
                             IsConfirmed = true,
                             ProductId = 13,
                             StarCount = (byte)5,
@@ -920,7 +920,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 14,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9880),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1460),
                             IsConfirmed = true,
                             ProductId = 14,
                             StarCount = (byte)5,
@@ -930,7 +930,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 15,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9880),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1470),
                             IsConfirmed = true,
                             ProductId = 15,
                             StarCount = (byte)4,
@@ -971,7 +971,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9940),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1550),
                             ProductId = 1,
                             Url = "yelek-01.jpg",
                             UserId = 12
@@ -979,7 +979,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9950),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1560),
                             ProductId = 2,
                             Url = "yelek-02.jpg",
                             UserId = 12
@@ -987,7 +987,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9950),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1560),
                             ProductId = 3,
                             Url = "yelek-03.jpg",
                             UserId = 12
@@ -995,7 +995,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9960),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1570),
                             ProductId = 4,
                             Url = "triko-01.jpg",
                             UserId = 13
@@ -1003,7 +1003,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9960),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1580),
                             ProductId = 5,
                             Url = "triko-02.jpg",
                             UserId = 13
@@ -1011,7 +1011,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 6,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9970),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1580),
                             ProductId = 6,
                             Url = "triko-03.jpg",
                             UserId = 13
@@ -1019,7 +1019,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 7,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9970),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1590),
                             ProductId = 7,
                             Url = "sweatshirt-01.jpg",
                             UserId = 12
@@ -1027,7 +1027,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 8,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9970),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1590),
                             ProductId = 8,
                             Url = "sweatshirt-02.jpg",
                             UserId = 12
@@ -1035,7 +1035,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 9,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9980),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1600),
                             ProductId = 9,
                             Url = "sweatshirt-03.jpg",
                             UserId = 12
@@ -1043,7 +1043,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 10,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9980),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1600),
                             ProductId = 10,
                             Url = "sort-01.jpg",
                             UserId = 13
@@ -1051,7 +1051,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 11,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9990),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1610),
                             ProductId = 11,
                             Url = "sort-02.jpg",
                             UserId = 13
@@ -1059,7 +1059,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 12,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9990),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1610),
                             ProductId = 12,
                             Url = "sort-03.jpg",
                             UserId = 13
@@ -1067,7 +1067,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 13,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1620),
                             ProductId = 13,
                             Url = "sort-04.jpg",
                             UserId = 13
@@ -1075,7 +1075,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 14,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1620),
                             ProductId = 14,
                             Url = "sort-05.jpg",
                             UserId = 13
@@ -1083,7 +1083,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 15,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1630),
                             ProductId = 15,
                             Url = "kazak-01.jpg",
                             UserId = 12
@@ -1091,7 +1091,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 16,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local).AddTicks(10),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1640),
                             ProductId = 16,
                             Url = "kazak-02.jpg",
                             UserId = 12
@@ -1099,7 +1099,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 17,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local).AddTicks(10),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1640),
                             ProductId = 17,
                             Url = "kazak-03.jpg",
                             UserId = 12
@@ -1107,7 +1107,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 18,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local).AddTicks(20),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1650),
                             ProductId = 18,
                             Url = "elbise-01.jpg",
                             UserId = 12
@@ -1115,7 +1115,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 19,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local).AddTicks(20),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1650),
                             ProductId = 19,
                             Url = "elbise-02.jpg",
                             UserId = 12
@@ -1123,7 +1123,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 20,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local).AddTicks(20),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1660),
                             ProductId = 20,
                             Url = "elbise-03.jpg",
                             UserId = 12
@@ -1131,7 +1131,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 21,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local).AddTicks(30),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1660),
                             ProductId = 21,
                             Url = "elbise-04.jpg",
                             UserId = 12
@@ -1139,7 +1139,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 22,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local).AddTicks(30),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1670),
                             ProductId = 22,
                             Url = "ceket-01.jpg",
                             UserId = 13
@@ -1147,7 +1147,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 23,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local).AddTicks(30),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1670),
                             ProductId = 23,
                             Url = "ceket-02.jpg",
                             UserId = 13
@@ -1155,7 +1155,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 24,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local).AddTicks(40),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1680),
                             ProductId = 24,
                             Url = "ceket-03.jpg",
                             UserId = 13
@@ -1163,7 +1163,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 25,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local).AddTicks(40),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1690),
                             ProductId = 25,
                             Url = "ceket-04.jpg",
                             UserId = 13
@@ -1171,7 +1171,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 26,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local).AddTicks(50),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1690),
                             ProductId = 26,
                             Url = "pantolon-01.jpg",
                             UserId = 12
@@ -1179,7 +1179,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 27,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local).AddTicks(50),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1700),
                             ProductId = 27,
                             Url = "pantolon-02.jpg",
                             UserId = 12
@@ -1187,7 +1187,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 28,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local).AddTicks(50),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1700),
                             ProductId = 28,
                             Url = "pantolon-03.jpg",
                             UserId = 12
@@ -1195,7 +1195,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 29,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local).AddTicks(60),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1710),
                             ProductId = 29,
                             Url = "pantolon-01.jpg",
                             UserId = 12
@@ -1203,7 +1203,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 30,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local).AddTicks(60),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1710),
                             ProductId = 30,
                             Url = "etek-01.jpg",
                             UserId = 13
@@ -1211,7 +1211,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 31,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local).AddTicks(70),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1720),
                             ProductId = 31,
                             Url = "etek-02.jpg",
                             UserId = 13
@@ -1219,7 +1219,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 32,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local).AddTicks(70),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1720),
                             ProductId = 32,
                             Url = "etek-03.jpg",
                             UserId = 13
@@ -1227,7 +1227,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 33,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local).AddTicks(70),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1740),
                             ProductId = 33,
                             Url = "etek-04.jpg",
                             UserId = 13
@@ -1235,7 +1235,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 34,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local).AddTicks(80),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1750),
                             ProductId = 34,
                             Url = "bluz-01.jpg",
                             UserId = 12
@@ -1243,7 +1243,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 35,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local).AddTicks(80),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1760),
                             ProductId = 35,
                             Url = "bluz-02.jpg",
                             UserId = 12
@@ -1251,7 +1251,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 36,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local).AddTicks(90),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1760),
                             ProductId = 36,
                             Url = "bluz-03.jpg",
                             UserId = 12
@@ -1259,7 +1259,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 37,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local).AddTicks(90),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1770),
                             ProductId = 37,
                             Url = "bluz-04.jpg",
                             UserId = 12
@@ -1267,7 +1267,7 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 38,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 131, DateTimeKind.Local).AddTicks(100),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1770),
                             ProductId = 38,
                             Url = "bluz-05.jpg",
                             UserId = 12
@@ -1307,21 +1307,21 @@ namespace Eticaret.Api.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9400),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(860),
                             Name = "seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9440),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(900),
                             Name = "buyer",
                             NormalizedName = "BUYER"
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9440),
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(900),
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         });
@@ -1417,8 +1417,8 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "05cea1db-c237-442f-8300-65c3db66f945",
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9490),
+                            ConcurrencyStamp = "cea9463c-bb26-4360-aad3-c4f359093f1b",
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(980),
                             Email = "aysenur@aydin.com",
                             EmailConfirmed = false,
                             Enabled = true,
@@ -1434,8 +1434,8 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2335d995-4395-42f6-bad5-3694e6897928",
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9530),
+                            ConcurrencyStamp = "849480e9-c0cf-42a1-a7c7-e3bc0ce9e811",
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1040),
                             Email = "ays2@ayd.com",
                             EmailConfirmed = false,
                             Enabled = true,
@@ -1451,8 +1451,8 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 3,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "43a7ff7f-c190-4708-ab59-87caf323be67",
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9530),
+                            ConcurrencyStamp = "6147f052-ff88-4125-9f5d-31fb441415a3",
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1050),
                             Email = "ays3@ayd.com",
                             EmailConfirmed = false,
                             Enabled = true,
@@ -1468,8 +1468,8 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 4,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9a3eba83-e07b-4385-bdc7-667e3a81826e",
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9540),
+                            ConcurrencyStamp = "a07d054d-2036-48e6-8ce9-8245dfee0ec0",
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1050),
                             Email = "ays4@ayd.com",
                             EmailConfirmed = false,
                             Enabled = true,
@@ -1485,8 +1485,8 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 5,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6291805c-5f4f-4192-aa09-68da00a1c48e",
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9540),
+                            ConcurrencyStamp = "31893ec7-99c8-4c55-8532-61ff1d49aca7",
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1060),
                             Email = "ays5@ayd.com",
                             EmailConfirmed = false,
                             Enabled = true,
@@ -1502,8 +1502,8 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 6,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9e46f78c-105f-40db-89ed-9994c1b179bd",
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9550),
+                            ConcurrencyStamp = "4d479d0b-55a6-4747-9e9b-65874513fbee",
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1070),
                             Email = "ays6@ayd.com",
                             EmailConfirmed = false,
                             Enabled = true,
@@ -1519,8 +1519,8 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 7,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "51ad8b41-a5e4-4d63-8884-385ddf966a31",
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9550),
+                            ConcurrencyStamp = "0ce3f479-7c00-4220-9ca7-a9d0fef80e98",
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1080),
                             Email = "ays7@ayd.com",
                             EmailConfirmed = false,
                             Enabled = true,
@@ -1536,8 +1536,8 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 8,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "557b683e-8083-452f-9405-81c160f09ed7",
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9560),
+                            ConcurrencyStamp = "5ea2d9a2-0db5-4e08-a1a9-1e2cb32b678a",
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1090),
                             Email = "ays8@ayd.com",
                             EmailConfirmed = false,
                             Enabled = true,
@@ -1553,8 +1553,8 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 9,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "535fe498-2fe5-48b0-a670-74cc06ecd2c5",
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9610),
+                            ConcurrencyStamp = "6b1c2758-1b8e-4096-965b-dc9f778c4a3a",
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1100),
                             Email = "ays9@ayd.com",
                             EmailConfirmed = false,
                             Enabled = true,
@@ -1570,8 +1570,8 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 10,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8fa8a6cc-8141-4238-a954-2e4533d12214",
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9620),
+                            ConcurrencyStamp = "d671f2f7-97ba-42e3-bead-9b9872db157b",
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1110),
                             Email = "ays10@ayd.com",
                             EmailConfirmed = false,
                             Enabled = true,
@@ -1587,8 +1587,8 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 11,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9df225c4-0928-421c-bbe1-df23fcd0241d",
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9620),
+                            ConcurrencyStamp = "9d276e30-ddc0-491a-9add-2cdd176ba5a2",
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1110),
                             Email = "ays11@ayd.com",
                             EmailConfirmed = false,
                             Enabled = true,
@@ -1604,8 +1604,8 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 12,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "61e5ed8c-b7e7-468d-b065-63cfff601ee8",
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9630),
+                            ConcurrencyStamp = "d80e6b07-12c2-4189-b27c-cca60c3562a3",
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1120),
                             Email = "ays12@ayd.com",
                             EmailConfirmed = false,
                             Enabled = true,
@@ -1621,8 +1621,8 @@ namespace Eticaret.Api.Migrations
                         {
                             Id = 13,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0a142705-2bf0-4562-b6ca-01eab4e2946c",
-                            CreatedAt = new DateTime(2024, 6, 13, 20, 45, 56, 130, DateTimeKind.Local).AddTicks(9630),
+                            ConcurrencyStamp = "c084b3e0-6a55-4d44-b394-c0eb4e494174",
+                            CreatedAt = new DateTime(2024, 8, 15, 15, 56, 13, 686, DateTimeKind.Local).AddTicks(1130),
                             Email = "ays13@ayd.com",
                             EmailConfirmed = false,
                             Enabled = true,

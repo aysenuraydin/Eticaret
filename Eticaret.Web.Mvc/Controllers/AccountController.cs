@@ -7,11 +7,11 @@ using System.Text.Json;
 namespace Eticaret.Web.Mvc.Controllers
 {
     [Authorize]
-    public class AuthController : Controller
+    public class AccountController : Controller
     {
         private readonly HttpClient _httpClient;
 
-        public AuthController(IHttpClientFactory httpClientFactory)
+        public AccountController(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient("api");
         }
@@ -29,28 +29,20 @@ namespace Eticaret.Web.Mvc.Controllers
         {
             if (!ModelState.IsValid) return View(user);
 
-            try
+            var userAccount = new RegisterDTO()
             {
-                var userAccount = new RegisterDTO()
-                {
-                    Email = user.Email,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Password = user.Password
-                };
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Password = user.Password
+            };
 
-                //! bunun gibi
-                var response = await _httpClient.PostAsJsonAsync("Auth/register", userAccount);
+            //! bunun gibi
+            var response = await _httpClient.PostAsJsonAsync("Account/register", userAccount);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    return RedirectToAction(nameof(Index), "Home");
-                }
-            }
-            catch (Exception ex)
+            if (response.IsSuccessStatusCode)
             {
-                ViewBag.ErrorMessage = $"Error: {ex.Message}";
-                ModelState.AddModelError("", "Hata Oluştu!");
+                return RedirectToAction(nameof(Index), "Home");
             }
 
             return View(user);
@@ -64,7 +56,7 @@ namespace Eticaret.Web.Mvc.Controllers
                 return RedirectToAction(nameof(Index), "Home");
             }
 
-            return View(new LoginViewModel());
+            return View();
         }
 
         [HttpPost]
@@ -74,34 +66,26 @@ namespace Eticaret.Web.Mvc.Controllers
         {
             if (!ModelState.IsValid) return View(user);
 
-            try
+            var userAccount = new LoginDTO()
             {
-                var userAccount = new LoginDTO()
+                Email = user.Email,
+                Password = user.Password
+            };
+
+            var response = await _httpClient.PostAsJsonAsync("Account/login", userAccount);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var tokenResponse = await response.Content.ReadAsStringAsync();
+
+                if (tokenResponse != null)
                 {
-                    Email = user.Email,
-                    Password = user.Password
-                };
+                    SetUserCookie(tokenResponse);
 
-                var response = await _httpClient.PostAsJsonAsync("Auth/login", userAccount);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var tokenResponse = await response.Content.ReadAsStringAsync();
-
-                    if (tokenResponse != null)
-                    {
-                        SetUserCookie(tokenResponse);
-
-                        return RedirectToAction(nameof(Index), "Home");
-                    }
-
-                    ModelState.AddModelError("", "Geçersiz kullanıcı adı veya şifre");
+                    return RedirectToAction(nameof(Index), "Home");
                 }
-            }
-            catch (Exception ex)
-            {
-                ViewBag.ErrorMessage = $"Error: {ex.Message}";
-                ModelState.AddModelError("", "Hata Oluştu!");
+
+                ModelState.AddModelError("", "Geçersiz kullanıcı adı veya şifre");
             }
 
             return View(user);
@@ -124,7 +108,7 @@ namespace Eticaret.Web.Mvc.Controllers
             Response.Cookies.Delete("token");
             //await _httpClient.PostAsync("Auth/logout", null); //! buna gerek yok
 
-            return RedirectToAction(nameof(Index), "Home");
+            return RedirectToAction(nameof(Login));
         }
 
         private void SetUserCookie(string tokenResponse)

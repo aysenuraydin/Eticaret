@@ -20,31 +20,24 @@ namespace Eticaret.Web.Mvc.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
+                OrderDTO order = new() { Address = Address };
+
+                var response = await _httpClient.PostAsJsonAsync("Order", order);
+
+                if (response.IsSuccessStatusCode)
                 {
-                    OrderDTO order = new() { Address = Address };
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    var responseData = JsonSerializer.Deserialize<Dictionary<string, string>>(responseBody);
+                    var orderCode = responseData?["orderCode"];
 
-                    var response = await _httpClient.PostAsJsonAsync("Order", order);
-
-                    if (response.IsSuccessStatusCode)
+                    return RedirectToRoute(new
                     {
-                        var responseBody = await response.Content.ReadAsStringAsync();
-                        var responseData = JsonSerializer.Deserialize<Dictionary<string, string>>(responseBody);
-                        var orderCode = responseData?["orderCode"];
-
-                        return RedirectToRoute(new
-                        {
-                            action = nameof(Details),
-                            orderCode = orderCode ?? ""
-                        });
-                    }
-
-                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                        action = nameof(Details),
+                        orderCode = orderCode ?? ""
+                    });
                 }
-                catch (HttpRequestException httpRequestException)
-                {
-                    ViewBag.ErrorMessage = $"Error: {httpRequestException.Message}";
-                }
+
+                TempData["ErrorMessage"] = $"Error: {response.ReasonPhrase}";
             }
 
             ModelState.AddModelError("", "Hata Oluştu!");
@@ -58,23 +51,16 @@ namespace Eticaret.Web.Mvc.Controllers
 
         public async Task<IActionResult> Details(string orderCode)
         {
-            try
+            using (var response = await _httpClient.GetAsync($"Order/{orderCode}"))
             {
-                using (var response = await _httpClient.GetAsync($"Order/{orderCode}"))
+                if (response.IsSuccessStatusCode)
                 {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var orders = await response.Content.ReadFromJsonAsync<OrderDetailDTO>();
+                    var orders = await response.Content.ReadFromJsonAsync<OrderDetailDTO>();
 
-                        if (orders != null) return View(orders);
-                    }
-
-                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                    if (orders != null) return View(orders);
                 }
-            }
-            catch (HttpRequestException httpRequestException)
-            {
-                ViewBag.ErrorMessage = $"Error: {httpRequestException.Message}";
+
+                TempData["ErrorMessage"] = $"Error: {response.ReasonPhrase}";
             }
 
             return RedirectToAction(nameof(Index), "Home");

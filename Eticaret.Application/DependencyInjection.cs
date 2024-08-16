@@ -2,8 +2,6 @@
 using Eticaret.Application.Abstract;
 using Eticaret.Application.Concrete;
 using Eticaret.Application.Repositories;
-using Eticaret.Persistence.Ef;
-using Eticaret.Domain;
 
 namespace Eticaret.Application
 {

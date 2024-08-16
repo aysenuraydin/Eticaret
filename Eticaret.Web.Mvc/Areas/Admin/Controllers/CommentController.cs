@@ -16,46 +16,34 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 
         public async Task<IActionResult> List()
         {
-            try
+            if (TempData["ErrorMessage"] != null) ViewBag.ErrorMessage = TempData["ErrorMessage"];
+
+            var response = await _httpClient.GetAsync("AdminProductComment");
+
+            if (response.IsSuccessStatusCode)
             {
-                var response = await _httpClient.GetAsync("AdminProductComment");
+                var comments = await response.Content.ReadFromJsonAsync<List<AdminProductCommentListDTO>>() ?? new();
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var comments = await response.Content.ReadFromJsonAsync<List<AdminProductCommentListDTO>>() ?? new();
-
-                    return View(comments);
-                }
-
-                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-            }
-            catch (Exception ex)
-            {
-                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+                return View(comments);
             }
 
-            return View(new List<AdminProductCommentListDTO>());
+            ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+
+            return View();
         }
 
         public async Task<IActionResult> Approve(int id)
         {
-            try
+            var response = await _httpClient.GetAsync($"AdminProductComment/{id}");
+
+            if (response.IsSuccessStatusCode)
             {
-                var response = await _httpClient.GetAsync($"AdminProductComment/{id}");
+                AdminProductCommentListDTO comment = await response.Content.ReadFromJsonAsync<AdminProductCommentListDTO>() ?? new();
 
-                if (response.IsSuccessStatusCode)
-                {
-                    AdminProductCommentListDTO comment = await response.Content.ReadFromJsonAsync<AdminProductCommentListDTO>() ?? new();
-
-                    return View(comment);
-                }
-
-                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                return View(comment);
             }
-            catch (Exception ex)
-            {
-                ViewBag.ErrorMessage = $"Error: {ex.Message}";
-            }
+
+            ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
 
             return View();
 
@@ -65,53 +53,38 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Approve(AdminProductCommentListDTO comment)
         {
-            try
+            AdminProductCommentUpdateDTO c = new()
             {
-                AdminProductCommentUpdateDTO c = new()
-                {
-                    Id = comment.Id,
-                    IsConfirmed = comment.IsConfirmed
+                Id = comment.Id,
+                IsConfirmed = comment.IsConfirmed
 
-                };
+            };
 
-                var response = await _httpClient.PutAsJsonAsync($"AdminProductComment/{comment.Id}", c);
+            var response = await _httpClient.PutAsJsonAsync($"AdminProductComment/{comment.Id}", c);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    return RedirectToAction(nameof(List));
-                }
-
-                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-                ModelState.AddModelError("", "Güncelleme sırasında bir hata oluştu.");
-            }
-            catch (Exception ex)
+            if (response.IsSuccessStatusCode)
             {
-                ModelState.AddModelError("", $"Hata Oluştu: {ex.Message}");
-                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+                return RedirectToAction(nameof(List));
             }
+
+            ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+            ModelState.AddModelError("", "Güncelleme sırasında bir hata oluştu.");
 
             return View(comment);
         }
 
         public async Task<IActionResult> Delete(int id)
         {
-            try
+            using (var response = await _httpClient.GetAsync($"AdminProductComment/{id}"))
             {
-                using (var response = await _httpClient.GetAsync($"AdminProductComment/{id}"))
+                if (response.IsSuccessStatusCode)
                 {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        AdminProductCommentListDTO product = await response.Content.ReadFromJsonAsync<AdminProductCommentListDTO>() ?? new();
+                    AdminProductCommentListDTO product = await response.Content.ReadFromJsonAsync<AdminProductCommentListDTO>() ?? new();
 
-                        return View(product);
-                    }
-
-                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                    return View(product);
                 }
-            }
-            catch (Exception ex)
-            {
-                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+
+                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
             }
 
             return View();
@@ -121,19 +94,11 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id, AdminProductCommentListDTO? comment)
         {
-            try
-            {
-                var response = await _httpClient.DeleteAsync($"AdminProductComment/{id}");
+            var response = await _httpClient.DeleteAsync($"AdminProductComment/{id}");
 
-                if (response.IsSuccessStatusCode) return RedirectToAction(nameof(List));
+            if (response.IsSuccessStatusCode) return RedirectToAction(nameof(List));
 
-                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-            }
-            catch (Exception ex)
-            {
-                ViewBag.ErrorMessage = $"Error: {ex.Message}";
-            }
-
+            TempData["ErrorMessage"] = $"Error: {response.ReasonPhrase}";
             return RedirectToAction(nameof(List));
         }
     }

@@ -58,16 +58,7 @@
         </tr>
     </thead>
     <tbody>
-        @if (!Model.Any())
-        {
-            <tr>
-                <td class="alert alert-secondary p-4" colspan="12" role="alert">
-                    <i class="fa-solid fa-exclamation"></i>
-                    Görsterilecek ürününüz yok!
-                </td>
-            </tr>
-        }
-        else
+        @if (Model != null && Model.Any())
         {
             @foreach (var item in Model)
             {
@@ -130,6 +121,16 @@
                     </td>
                 </tr>
             }
+        }
+        else
+        {
+            <tr>
+                <td class="alert alert-secondary p-4" colspan="12" role="alert">
+                    <i class="fa-solid fa-exclamation"></i>
+                    Görsterilecek ürününüz yok!
+                </td>
+            </tr>
+        }
         }
     </tbody>
 </table>

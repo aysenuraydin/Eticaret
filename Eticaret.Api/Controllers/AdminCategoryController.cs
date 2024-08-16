@@ -35,9 +35,9 @@ namespace Eticaret.Api.Controllers
             if (id == null) return NotFound();
 
             var product = (await _categoryRepo.GetIdAllIncludeFilterAsync(
-                                       i => i.Id == id,
-                                       i => i.Products
-                                      )).FirstOrDefault();
+                                        i => i.Id == id,
+                                        i => i.Products
+                                        )).FirstOrDefault();
 
 
             if (product == null) return NotFound();
@@ -49,16 +49,10 @@ namespace Eticaret.Api.Controllers
         {
             if (entity == null) return BadRequest();
 
-            try
-            {
-                var p = CategoriesCreateToDTO(entity);
-                await _categoryRepo.AddAsync(p);
-                return CreatedAtAction(nameof(GetCategory), new { id = p.Id }, p);
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
+            var p = CategoriesCreateToDTO(entity);
+            await _categoryRepo.AddAsync(p);
+
+            return CreatedAtAction(nameof(GetCategory), new { id = p.Id }, p);
         }
 
         [HttpPut("{id}")]
@@ -70,14 +64,7 @@ namespace Eticaret.Api.Controllers
 
             if (ctgry == null) return NotFound();
 
-            try
-            {
-                await _categoryRepo.UpdateAsync(CategoriesUpdateToDTO(category, ctgry));
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
+            await _categoryRepo.UpdateAsync(CategoriesUpdateToDTO(category, ctgry));
 
             return Ok(ctgry);
         }
@@ -91,14 +78,7 @@ namespace Eticaret.Api.Controllers
 
             if (prd == null) return NotFound();
 
-            try
-            {
-                await _categoryRepo.DeleteAsync(prd);
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
+            await _categoryRepo.DeleteAsync(prd);
 
             return NoContent();
         }

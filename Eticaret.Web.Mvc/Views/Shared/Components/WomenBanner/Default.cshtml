@@ -21,9 +21,12 @@
                     </ul>
                 </div>
                 <div class="product-slider owl-carousel">
-                    @foreach (var item in Model)
+                    @if (Model != null && Model.Any())
                     {
-                        @await Html.PartialAsync("_ProductListItem", item)
+                        @foreach (var item in Model)
+                        {
+                            @await Html.PartialAsync("_ProductListItem", item)
+                        }
                     }
                 </div>
             </div>

@@ -19,32 +19,27 @@ namespace Eticaret.Web.Mvc.Controllers
 
         public async Task<IActionResult> Index()
         {
-            try
+            if (TempData["ErrorMessage"] != null) ViewBag.ErrorMessage = TempData["ErrorMessage"];
+
+            var response = await _httpClient.GetAsync($"SellerProduct");
+
+            if (response.IsSuccessStatusCode)
             {
-                var response = await _httpClient.GetAsync($"SellerProduct");
+                var products = await response.Content.ReadFromJsonAsync<List<AdminProductListDTO>>() ?? new();
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var products = await response.Content.ReadFromJsonAsync<List<AdminProductListDTO>>() ?? new();
-
-                    return View(products);
-                }
-
-                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-            }
-            catch (Exception ex)
-            {
-                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+                return View(products);
             }
 
-            return View(new List<AdminProductListDTO>());
+            ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+
+            return View();
         }
 
         public async Task<IActionResult> Create()
         {
             ViewBag.Category = new SelectList(await GetCategories(), "Id", "Name");
 
-            return View(new SellerProductCreateDTO());
+            return View();
         }
 
         [HttpPost]
@@ -53,25 +48,17 @@ namespace Eticaret.Web.Mvc.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
+                var prd = await CreateImage(product, ImageList);
+
+                var response = await _httpClient.PostAsJsonAsync("SellerProduct", prd);
+
+                if (response.IsSuccessStatusCode)
                 {
-                    var prd = await CreateImage(product, ImageList);
-
-                    var response = await _httpClient.PostAsJsonAsync("SellerProduct", prd);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return RedirectToAction(nameof(Index));
-                    }
-
-                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-                    ModelState.AddModelError("", "Güncelleme sırasında bir hata oluştu.");
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", "Hata Oluştu!");
-                    ViewBag.ErrorMessage = $"Error: {ex.Message}";
-                }
+
+                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                ModelState.AddModelError("", "Güncelleme sırasında bir hata oluştu.");
             }
 
             ModelState.AddModelError("", "Eksik veri girdiniz!");
@@ -84,20 +71,13 @@ namespace Eticaret.Web.Mvc.Controllers
         {
             ViewBag.Category = new SelectList(await GetCategories(), "Id", "Name");
 
-            try
+            using (var response = await _httpClient.GetAsync($"SellerProduct/{id}"))
             {
-                using (var response = await _httpClient.GetAsync($"SellerProduct/{id}"))
-                {
-                    SellerProductUpdateDTO product = await response.Content.ReadFromJsonAsync<SellerProductUpdateDTO>() ?? new();
+                SellerProductUpdateDTO product = await response.Content.ReadFromJsonAsync<SellerProductUpdateDTO>() ?? new();
 
-                    if (response.IsSuccessStatusCode) return View(product);
+                if (response.IsSuccessStatusCode) return View(product);
 
-                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-                }
-            }
-            catch (Exception ex)
-            {
-                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
             }
 
             return View();
@@ -109,67 +89,53 @@ namespace Eticaret.Web.Mvc.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
+                var resp = await _httpClient.GetAsync($"SellerProduct/{product.Id}");
+
+                if (resp.IsSuccessStatusCode)
                 {
-                    var resp = await _httpClient.GetAsync($"SellerProduct/{product.Id}");
+                    SellerProductUpdateDTO p = await resp.Content.ReadFromJsonAsync<SellerProductUpdateDTO>() ?? new();
 
-                    if (resp.IsSuccessStatusCode)
+                    if (ImgList.Count > 0)
                     {
-                        SellerProductUpdateDTO p = await resp.Content.ReadFromJsonAsync<SellerProductUpdateDTO>() ?? new();
+                        var images = p.ImageList;
 
-                        if (ImgList.Count > 0)
+                        foreach (var item in images)
                         {
-                            var images = p.ImageList;
-
-                            foreach (var item in images)
-                            {
-                                await RemoveImg(item);
-                            }
+                            await RemoveImg(item);
                         }
-
-                        var transformProduct = TransformProduct(product);
-                        var prd = await CreateImage(transformProduct, ImgList);
-
-                        var response = await _httpClient.PutAsJsonAsync($"SellerProduct/{product.Id}", prd);
-
-                        if (response.IsSuccessStatusCode)
-                        {
-                            return RedirectToAction(nameof(Index));
-                        }
-
-                        ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
                     }
 
-                    ViewBag.ErrorMessage = $"Error: {resp.ReasonPhrase}";
+                    var transformProduct = TransformProduct(product);
+                    var prd = await CreateImage(transformProduct, ImgList);
+
+                    var response = await _httpClient.PutAsJsonAsync($"SellerProduct/{product.Id}", prd);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+
+                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
                 }
-                catch (Exception ex)
-                {
-                    ViewBag.ErrorMessage = $"Error: {ex.Message}";
-                    ModelState.AddModelError("", "Hata Oluştu!");
-                }
+
+                ViewBag.ErrorMessage = $"Error: {resp.ReasonPhrase}";
             }
 
             ModelState.AddModelError("", "Hata Oluştu!");
-
             return View(product);
         }
 
         public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
-                using (var response = await _httpClient.GetAsync($"SellerProduct/{id}"))
-                {
-                    var product = await response.Content.ReadFromJsonAsync<SellerProductUpdateDTO>() ?? new();
+            if (TempData["ErrorMessage"] != null) ViewBag.ErrorMessage = TempData["ErrorMessage"];
 
-                    if (response.IsSuccessStatusCode) return View(product);
-
-                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-                }
-            }
-            catch (Exception ex)
+            using (var response = await _httpClient.GetAsync($"SellerProduct/{id}"))
             {
-                ViewBag.ErrorMessage = $"Error: {ex.Message}";
+                var product = await response.Content.ReadFromJsonAsync<SellerProductUpdateDTO>() ?? new();
+
+                if (response.IsSuccessStatusCode) return View(product);
+
+                TempData["ErrorMessage"] = $"Error: {response.ReasonPhrase}";
             }
 
             return RedirectToAction(nameof(Index));
@@ -179,35 +145,28 @@ namespace Eticaret.Web.Mvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id, SellerProductUpdateDTO? p)
         {
-            try
+            var resp = await _httpClient.GetAsync($"SellerProduct/{id}");
+
+            if (resp.IsSuccessStatusCode)
             {
-                var resp = await _httpClient.GetAsync($"SellerProduct/{id}");
+                SellerProductUpdateDTO product = await resp.Content.ReadFromJsonAsync<SellerProductUpdateDTO>() ?? new();
 
-                if (resp.IsSuccessStatusCode)
+                var response = await _httpClient.DeleteAsync($"SellerProduct/{id}");
+
+                if (response.IsSuccessStatusCode)
                 {
-                    SellerProductUpdateDTO product = await resp.Content.ReadFromJsonAsync<SellerProductUpdateDTO>() ?? new();
-
-                    var response = await _httpClient.DeleteAsync($"SellerProduct/{id}");
-
-                    if (response.IsSuccessStatusCode)
+                    foreach (var item in product.ImageList)
                     {
-                        foreach (var item in product.ImageList)
-                        {
-                            await RemoveImg(item);
-                        }
-
-                        return RedirectToAction(nameof(Index));
+                        await RemoveImg(item);
                     }
 
-                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                    return RedirectToAction(nameof(Index));
                 }
 
-                ViewBag.ErrorMessage = $"Error: {resp.ReasonPhrase}";
+                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
             }
-            catch (Exception ex)
-            {
-                ViewBag.ErrorMessage = ex.Message;
-            }
+
+            TempData["ErrorMessage"] = $"Error: {resp.ReasonPhrase}";
 
             return RedirectToAction(nameof(Delete), new { id = id });
         }
@@ -221,26 +180,18 @@ namespace Eticaret.Web.Mvc.Controllers
 
             if (StarCount != 0 && Text != null && ProductId != 0)
             {
-                try
+                ProductCommentCreateDTO cmnt = new()
                 {
-                    ProductCommentCreateDTO cmnt = new()
-                    {
-                        Text = Text,
-                        StarCount = StarCount,
-                        ProductId = ProductId
-                    };
+                    Text = Text,
+                    StarCount = StarCount,
+                    ProductId = ProductId
+                };
 
-                    var response = await _httpClient.PostAsJsonAsync("ProductComment", cmnt);
+                var response = await _httpClient.PostAsJsonAsync("ProductComment", cmnt);
 
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-                    }
-                }
-                catch (Exception ex)
+                if (!response.IsSuccessStatusCode)
                 {
-                    ViewBag.ErrorMessage = $"Error: {ex.Message}";
-                    ModelState.AddModelError("", "Hata Oluştu!");
+                    TempData["Message"] = $"Error: {response.ReasonPhrase}";
                 }
             }
             else TempData["Message"] = $"Error: Hata oluştu! Eksik bilgi girdiniz.";
@@ -293,44 +244,30 @@ namespace Eticaret.Web.Mvc.Controllers
 
         public async Task<string> AddImg(IFormFile ImageList)
         {
-            try
+            var formData = new MultipartFormDataContent();
+            formData.Add(new StreamContent(ImageList.OpenReadStream()), "file", ImageList.FileName);
+
+            var response = await _httpClientFile.PostAsync("File", formData);
+
+            if (response.IsSuccessStatusCode)
             {
-                var formData = new MultipartFormDataContent();
-                formData.Add(new StreamContent(ImageList.OpenReadStream()), "file", ImageList.FileName);
+                var imgUrl = await response.Content.ReadFromJsonAsync<FileDto>();
 
-                var response = await _httpClientFile.PostAsync("File", formData);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var imgUrl = await response.Content.ReadFromJsonAsync<FileDto>();
-
-                    if (imgUrl != null) return imgUrl.Name!;
-                }
-
-                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                if (imgUrl != null) return imgUrl.Name!;
             }
-            catch (Exception ex)
-            {
-                ViewBag.ErrorMessage = ex.Message;
-            }
+
+            ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
 
             return "";
         }
 
         public async Task<bool> RemoveImg(string url)
         {
-            try
-            {
-                var response = await _httpClientFile.DeleteAsync($"File/{url}");
+            var response = await _httpClientFile.DeleteAsync($"File/{url}");
 
-                if (response.IsSuccessStatusCode) return true;
+            if (response.IsSuccessStatusCode) return true;
 
-                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-            }
-            catch (Exception ex)
-            {
-                ViewBag.ErrorMessage = ex.Message;
-            }
+            ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
 
             return false;
         }

@@ -24,8 +24,9 @@
 aria-label="Search">
 </form>
 </div>*@
-
-@foreach (var item in Model)
+@if (Model != null && Model.Any())
+{
+@foreach (var item in Model) 
 {
     <div class="row border ">
     <div class="col-2 border p-2 bg-secondary text-white text-rotate" style="max-width: 160px !important;">
@@ -81,28 +82,5 @@ aria-label="Search">
         </div>
     </div>
 }
+}
 
-@* 
-@section Script {
-    <Script>
-        $(document).ready(function () {
-            $('.changeRole').each(function () {
-                var roleId = $(this).attr("data-role-id");
-                $(this).find('option[value="' + roleId + '"]').prop('selected', true);
-            });
-        });
-    $(document).ready(function () {
-        $('.roleNameInput').on('input', function () {
-            var form = $(this).closest('form');
-            var editButton = form.find('.editButton');
-            var roleName = $(this).val().trim();
-            if (roleName.length > 0) {
-                editButton.removeAttr('disabled');
-            } else {
-                editButton.attr('disabled', true);
-            }
-        });
-    });
-
-    </Script>
-}  *@

@@ -14,14 +14,14 @@ namespace Eticaret.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AuthController : ControllerBase
+    public class AccountController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<Role> _roleManager;
         private readonly IConfiguration _configuration;
 
-        public AuthController(
+        public AccountController(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             RoleManager<Role> roleManager,

@@ -44,42 +44,35 @@ namespace Eticaret.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOrder(OrderDTO entity)
         {
-            try
+            if (int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId))
             {
-                if (int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId))
+                var cartitems = await _cartItemService.GetIdAllIncludeFilterAsync(
+                                            c => c.UserId == userId,
+                                            c => c.ProductFk!
+                                            );
+                List<OrderItem> orderList = new();
+                Order order = new()
                 {
-                    var cartitems = await _cartItemService.GetIdAllIncludeFilterAsync(
-                                                c => c.UserId == userId,
-                                                c => c.ProductFk!
-                                                );
-                    List<OrderItem> orderList = new();
-                    Order order = new()
+                    Address = entity.Address,
+                    UserId = userId
+                };
+                await _orderService.AddAsync(order);
+                foreach (var cart in cartitems)
+                {
+                    OrderItem orderItem = new()
                     {
-                        Address = entity.Address,
-                        UserId = userId
+                        Quantity = cart.Quantity,
+                        UnitPrice = cart.ProductFk!.Price,
+                        ProductId = cart.ProductId,
+                        OrderId = order.Id,
+                        UserId = cart.ProductFk.UserId
                     };
-                    await _orderService.AddAsync(order);
-                    foreach (var cart in cartitems)
-                    {
-                        OrderItem orderItem = new()
-                        {
-                            Quantity = cart.Quantity,
-                            UnitPrice = cart.ProductFk!.Price,
-                            ProductId = cart.ProductId,
-                            OrderId = order.Id,
-                            UserId = cart.ProductFk.UserId
-                        };
-                        await _orderItemService.AddAsync(orderItem);
-                        await _cartItemService.DeleteAsync(cart);
-                    }
-                    return Ok(new { order.OrderCode });
+                    await _orderItemService.AddAsync(orderItem);
+                    await _cartItemService.DeleteAsync(cart);
                 }
-                return NotFound();
+                return Ok(new { order.OrderCode });
             }
-            catch (Exception)
-            {
-                return NotFound();
-            }
+            return NotFound();
         }
         private static OrderDetailDTO OrderListToDTO(Order o)
         {

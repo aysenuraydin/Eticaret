@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Eticaret.Domain;
+using FluentValidation;
 
 namespace Eticaret.Dto
 {
@@ -7,12 +8,13 @@ namespace Eticaret.Dto
     {
         public string? Address { get; set; } = null!;
     }
-    public class OrderDetailDTO
+    public class OrderDTOValidator : AbstractValidator<OrderDTO>
     {
-        public string? Address { get; set; }
-        public List<CartItemListDTO> OrderItems { get; set; } = new();
-        public string? OrderCode { get; set; }
-        public DateTime CreatedAt { get; set; }
-
+        public OrderDTOValidator()
+        {
+            RuleFor(x => x.Address)
+                .NotEmpty().WithMessage("Adres alanı gereklidir.")
+                .MaximumLength(250).WithMessage("Adres en fazla 250 karakter uzunluğunda olmalıdır.");
+        }
     }
 }

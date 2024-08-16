@@ -1,61 +1,86 @@
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
+using FluentValidation;
 
 namespace Eticaret.Dto
 {
     public class AdminProductListDTO
     {
-        [Required(ErrorMessage = "Ürün ID'si gereklidir.")]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Ürün adı alanı gereklidir.")]
-        [MaxLength(100, ErrorMessage = "Ürün adı en fazla 100 karakter uzunluğunda olmalıdır.")]
         public string Name { get; set; } = null!;
 
-        [Required(ErrorMessage = "Ürün fiyatı alanı gereklidir.")]
-        [Range(0.01, double.MaxValue, ErrorMessage = "Geçersiz ürün fiyatı.")]
         public decimal Price { get; set; }
 
-        [Required(ErrorMessage = "Ürün resim URL listesi alanı gereklidir.")]
         public List<string?> ImageUrlList { get; set; } = new List<string?>();
 
-        [Required(ErrorMessage = "Ürün detayları alanı gereklidir.")]
         public string Details { get; set; } = null!;
 
-        [Required(ErrorMessage = "Stok miktarı alanı gereklidir.")]
-        [Range(0, 255, ErrorMessage = "Geçersiz stok miktarı.")]
         public byte StockAmount { get; set; }
 
         public string? CategoryName { get; set; }
         public string? CategoryColor { get; set; }
 
-        [Required(ErrorMessage = "Oluşturma tarihi alanı gereklidir.")]
         public string? CreatedAt { get; set; }
 
         public bool Enabled { get; set; }
         public bool IsConfirmed { get; set; }
 
-        [Required(ErrorMessage = "Satıcı adı alanı gereklidir.")]
         public string? SellerName { get; set; }
 
-        [Required(ErrorMessage = "Yorum sayısı alanı gereklidir.")]
-        [Range(0, int.MaxValue, ErrorMessage = "Geçersiz yorum sayısı.")]
         public int CommentCount { get; set; }
 
-        [Required(ErrorMessage = "Sipariş sayısı alanı gereklidir.")]
-        [Range(0, int.MaxValue, ErrorMessage = "Geçersiz sipariş sayısı.")]
         public int OrderCount { get; set; }
 
-        [Required(ErrorMessage = "Sepet sayısı alanı gereklidir.")]
-        [Range(0, int.MaxValue, ErrorMessage = "Geçersiz sepet sayısı.")]
         public int CartCount { get; set; }
     }
-
-    public class AdminProductUpdateDTO
+    public class AdminProductListDTOValidator : AbstractValidator<AdminProductListDTO>
     {
-        [Required(ErrorMessage = "Ürün ID'si gereklidir.")]
-        public int Id { get; set; }
+        public AdminProductListDTOValidator()
+        {
+            RuleFor(x => x.Id)
+                .NotEmpty().WithMessage("Ürün ID'si gereklidir.");
 
-        public bool IsConfirmed { get; set; }
+            RuleFor(x => x.Name)
+                .NotEmpty().WithMessage("Ürün adı alanı gereklidir.")
+                .Length(1, 100).WithMessage("Ürün adı en fazla 100 karakter uzunluğunda olmalıdır.");
+
+            RuleFor(x => x.Price)
+                .GreaterThan(0).WithMessage("Geçersiz ürün fiyatı.");
+
+            RuleFor(x => x.ImageUrlList)
+                .NotNull().WithMessage("Ürün resim URL listesi alanı gereklidir.")
+                .Must(list => list != null && list.All(url => !string.IsNullOrWhiteSpace(url)))
+                .WithMessage("Geçersiz resim URL'leri.");
+
+            RuleFor(x => x.Details)
+                .NotEmpty().WithMessage("Ürün detayları alanı gereklidir.");
+
+            RuleFor(x => x.StockAmount)
+            .Custom((value, context) =>
+            {
+                int starCount = value; // byte'dan int'e dönüştür
+                if (starCount < 1 || starCount > 255)
+                {
+                    context.AddFailure("Geçersiz stok miktarı.");
+                }
+            });
+
+            RuleFor(x => x.CreatedAt)
+                .NotEmpty().WithMessage("Oluşturma tarihi alanı gereklidir.");
+
+            RuleFor(x => x.SellerName)
+                .NotEmpty().WithMessage("Satıcı adı alanı gereklidir.");
+
+            RuleFor(x => x.CommentCount)
+                .InclusiveBetween(0, int.MaxValue).WithMessage("Geçersiz yorum sayısı.");
+
+            RuleFor(x => x.OrderCount)
+                .InclusiveBetween(0, int.MaxValue).WithMessage("Geçersiz sipariş sayısı.");
+
+            RuleFor(x => x.CartCount)
+            .InclusiveBetween(0, int.MaxValue).WithMessage("Geçersiz sepet sayısı.");
+
+        }
     }
 }

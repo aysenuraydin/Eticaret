@@ -64,18 +64,11 @@ namespace Eticaret.Api.Controllers
                 user.UserName = user.Email?.Split("@")[0];
             }
 
-            try
-            {
-                var result = await _userManager.UpdateAsync(user);
+            var result = await _userManager.UpdateAsync(user);
 
-                if (!result.Succeeded)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Failed to update user role." });
-                }
-            }
-            catch (Exception ex)
+            if (!result.Succeeded)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Failed to update user role." });
             }
 
             return Ok(user);
@@ -93,14 +86,7 @@ namespace Eticaret.Api.Controllers
 
             r.Name = role.Name;
 
-            try
-            {
-                var result = await _roleManager.UpdateAsync(r);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
-            }
+            var result = await _roleManager.UpdateAsync(r);
 
             return Ok(r);
         }
@@ -114,10 +100,7 @@ namespace Eticaret.Api.Controllers
 
             var result = await _roleManager.CreateAsync(r);
 
-            if (result.Succeeded)
-            {
-                return StatusCode(201);
-            }
+            if (result.Succeeded) return StatusCode(201);
 
             return BadRequest(result.Errors);
         }
@@ -136,8 +119,8 @@ namespace Eticaret.Api.Controllers
 
             // Kullanıcıların rolünü güncelle
             var usersWithRole = await _userManager.Users
-                                       .Where(x => x.RoleId == id)
-                                       .ToListAsync();
+                                    .Where(x => x.RoleId == id)
+                                    .ToListAsync();
 
             foreach (var user in usersWithRole)
             {
@@ -145,14 +128,7 @@ namespace Eticaret.Api.Controllers
                 await _userManager.UpdateAsync(user);
             }
 
-            try
-            {
-                await _roleManager.DeleteAsync(role);
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
+            await _roleManager.DeleteAsync(role);
 
             return NoContent();
         }

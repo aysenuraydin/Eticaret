@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using FluentValidation;
 
 namespace Eticaret.Dto
 {
@@ -51,42 +52,51 @@ namespace Eticaret.Dto
         [Display(Name = "Ürün Görselleri")]
         public List<Images> ProductImagesUrl { get; set; } = new();
     }
-
-    public class Comment
+    public class ProductDetailDTOValidator : AbstractValidator<ProductDetailDTO>
     {
-        [Display(Name = "Yorum ID")]
-        [Required(ErrorMessage = "Yorum ID alanı gereklidir.")]
-        public int Id { get; set; }
+        public ProductDetailDTOValidator()
+        {
+            RuleFor(x => x.Id)
+                .GreaterThan(0).WithMessage("Ürün ID alanı gereklidir.");
 
-        [Display(Name = "Yorum Metni")]
-        [MaxLength(500, ErrorMessage = "Yorum metni en fazla 500 karakter uzunluğunda olmalıdır.")]
-        public string? Text { get; set; }
+            RuleFor(x => x.Name)
+                .NotEmpty().WithMessage("Ürün adı alanı gereklidir.")
+                .Length(2, 100).WithMessage("Ürün adı en az 2 ve en fazla 100 karakter uzunluğunda olmalıdır.");
 
-        [Display(Name = "Yıldız Sayısı")]
-        [Range(1, 5, ErrorMessage = "Yıldız sayısı 1 ile 5 arasında olmalıdır.")]
-        public byte StarCount { get; set; }
+            RuleFor(x => x.Price)
+                .GreaterThan(0).WithMessage("Ürün ücreti alanı gereklidir.")
+                .InclusiveBetween(1, 1000000).WithMessage("Ürün ücreti 1 ile 1,000,000 arasında olmalıdır.");
 
-        [Display(Name = "Onaylı Mı?")]
-        public bool IsConfirmed { get; set; } = false;
+            RuleFor(x => x.Details)
+            .NotEmpty().WithMessage("Ürün açıklaması alanı gereklidir.")
+            .Length(2, 500).WithMessage("Ürün açıklaması en az 2 ve en fazla 500 karakter uzunluğunda olmalıdır.");
 
-        [Display(Name = "Oluşturma Tarihi")]
-        [Required(ErrorMessage = "Oluşturma tarihi alanı gereklidir.")]
-        public string CreatedAt { get; set; } = string.Empty;
+            RuleFor(x => x.StockAmount)
+            .Custom((value, context) =>
+            {
+                int starCount = value; // byte'dan int'e dönüştür
+                if (starCount < 1 || starCount > 5)
+                {
+                    context.AddFailure("Yıldız sayısı 1 ile 255 arasında olmalıdır.");
+                }
+            });
 
-        [Display(Name = "Kullanıcı Adı")]
-        [MaxLength(100, ErrorMessage = "Kullanıcı adı en fazla 100 karakter uzunluğunda olmalıdır.")]
-        public string? UserName { get; set; }
-    }
+            RuleFor(x => x.CategoryId)
+                .GreaterThan(0).WithMessage("Kategori ID alanı gereklidir.");
 
-    public class Images
-    {
-        [Display(Name = "Görsel ID")]
-        [Required(ErrorMessage = "Görsel ID alanı gereklidir.")]
-        public int Id { get; set; }
+            RuleFor(x => x.CategoryName)
+                .NotEmpty().WithMessage("Kategori adı alanı gereklidir.")
+                .Length(1, 100).WithMessage("Kategori adı en fazla 100 karakter uzunluğunda olmalıdır.");
 
-        [Display(Name = "Görsel URL'si")]
-        [Required(ErrorMessage = "Görsel URL'si alanı gereklidir.")]
-        [Url(ErrorMessage = "Geçersiz URL formatı.")]
-        public string? Url { get; set; }
+            RuleFor(x => x.SellerName)
+                .NotEmpty().WithMessage("Satıcı adı alanı gereklidir.")
+                .Length(1, 100).WithMessage("Satıcı adı en fazla 100 karakter uzunluğunda olmalıdır.");
+
+            RuleFor(x => x.ProductComments)
+                .NotNull().WithMessage("Ürün yorumları boş olamaz.");
+
+            RuleFor(x => x.ProductImagesUrl)
+                .NotNull().WithMessage("Ürün görselleri boş olamaz.");
+        }
     }
 }

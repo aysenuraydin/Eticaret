@@ -29,11 +29,11 @@ namespace Eticaret.Api.Controllers
             if (int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId))
             {
                 var user = await _userManager.Users
-                                   .Include(p => p.RoleFk)
-                                   .Include(p => p.CartItems)
-                                   .Include(p => p.ProductComments)
-                                   .Include(p => p.Orders)
-                                   .FirstOrDefaultAsync(p => p.Id == userId);
+                                .Include(p => p.RoleFk)
+                                .Include(p => p.CartItems)
+                                .Include(p => p.ProductComments)
+                                .Include(p => p.Orders)
+                                .FirstOrDefaultAsync(p => p.Id == userId);
 
                 if (user == null) return NotFound();
 
@@ -52,46 +52,39 @@ namespace Eticaret.Api.Controllers
                 var user = await _userManager.FindByIdAsync(userId.ToString());
 
                 if (user == null) return NotFound();
-                try
+                User updatedUser = UserUpdateToDTO(p, user);
+                IdentityResult? validPass = null;
+
+                if (!string.IsNullOrEmpty(p.Password)) //parolaya güncelleme yapılmış mı?
                 {
-                    User updatedUser = UserUpdateToDTO(p, user);
-                    IdentityResult? validPass = null;
+                    //parola validate işlemine uygun mu
+                    validPass = await _passwordValidator.ValidateAsync(_userManager, updatedUser, p.Password);
 
-                    if (!string.IsNullOrEmpty(p.Password)) //parolaya güncelleme yapılmış mı?
+                    if (validPass.Succeeded)//uygunsa parolayı güncelle
                     {
-                        //parola validate işlemine uygun mu
-                        validPass = await _passwordValidator.ValidateAsync(_userManager, updatedUser, p.Password);
-
-                        if (validPass.Succeeded)//uygunsa parolayı güncelle
-                        {
-                            updatedUser.PasswordHash = _passwordHasher.HashPassword(updatedUser, p.Password);
-                        }
-                        else
-                        {
-                            foreach (var item in validPass.Errors)
-                            {
-                                ModelState.AddModelError("", item.Description);
-                            }
-                        }
+                        updatedUser.PasswordHash = _passwordHasher.HashPassword(updatedUser, p.Password);
                     }
-
-                    if (validPass!.Succeeded)//diğer inputlar güncellemeye uygun mu
+                    else
                     {
-                        var result = await _userManager.UpdateAsync(updatedUser);
-
-                        if (result.Succeeded) return Ok(p);
-                        else
+                        foreach (var item in validPass.Errors)
                         {
-                            foreach (var item in result.Errors)
-                            {
-                                ModelState.AddModelError("", item.Description);
-                            }
+                            ModelState.AddModelError("", item.Description);
                         }
                     }
                 }
-                catch (Exception)
+
+                if (validPass!.Succeeded)//diğer inputlar güncellemeye uygun mu
                 {
-                    return StatusCode(StatusCodes.Status500InternalServerError);
+                    var result = await _userManager.UpdateAsync(updatedUser);
+
+                    if (result.Succeeded) return Ok(p);
+                    else
+                    {
+                        foreach (var item in result.Errors)
+                        {
+                            ModelState.AddModelError("", item.Description);
+                        }
+                    }
                 }
             }
             return StatusCode(StatusCodes.Status500InternalServerError);

@@ -25,7 +25,7 @@
                 <td class="pdg-3">@Model.OrderCode</td>
                 <td class="pdg-3">@Model.Address</td>
                 <td class="pdg-3">@Model.CreatedAt</td>
-                <td class="pdg-3">@Model.OrderItems.Sum(o => o.Quantity)</td>
+                <td class="pdg-3">@Model.OrderItems?.Sum(o => o.Quantity)</td>
             </tr>
         </tbody>
     </table>
@@ -41,36 +41,39 @@
             </tr>
         </thead>
         <tbody class="table-group-divider tableCss">
-            @foreach (var order in Model.OrderItems)
+            @if (Model.OrderItems != null && Model.OrderItems.Any())
             {
+                @foreach (var order in Model.OrderItems)
+                {
+                    <tr>
+                        <td>
+                            @if (order.ProductImages == null || order.ProductImages.Length == 0)
+                            {
+                                <img src="https://via.placeholder.com/100x100" alt="Ürun resmi">
+                            }
+                            else
+                            {
+                                <img src="/UploadedFiles/@order.ProductImages" width="80px;">
+                            }
+                        </td>
+                        <td>
+                            <a asp-controller="Home" asp-action="ProductDetail" asp-route-id="@order.ProductId">
+                                @order.ProductName
+                            </a>
+                        </td>
+                        <td>Seller Name?</td>
+                        <td>@order.Quantity</td>
+                        <td>@order.ProductPrice ₺</td>
+                    </tr>
+                }
                 <tr>
-                    <td>
-                        @if (order.ProductImages == null || order.ProductImages.Length == 0)
-                        {
-                            <img src="https://via.placeholder.com/100x100" alt="Ürun resmi">
-                        }
-                        else
-                        {
-                            <img src="/UploadedFiles/@order.ProductImages" width="80px;">
-                        }
-                    </td>
-                    <td>
-                        <a asp-controller="Home" asp-action="ProductDetail" asp-route-id="@order.ProductId">
-                            @order.ProductName
-                        </a>
-                    </td>
-                    <td>Seller Name?</td>
-                    <td>@order.Quantity</td>
-                    <td>@order.ProductPrice ₺</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td> <b>Toplam : </b> </td>
+                    <td>@Model.OrderItems.Sum(o => o.Quantity * o.ProductPrice) ₺</td>
                 </tr>
             }
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td> <b>Toplam : </b> </td>
-                <td>@Model.OrderItems.Sum(o => o.Quantity * o.ProductPrice) ₺</td>
-            </tr>
         </tbody>
     </table>
 </div>

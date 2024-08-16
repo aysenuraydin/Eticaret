@@ -75,26 +75,19 @@ namespace Eticaret.Api.Controllers
         {
             if (entity == null) return NotFound(entity);
 
-            try
+            bool Id = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int sellerId);
+            entity.SellerId = sellerId;
+
+            var p = ProductCreateToDTO(entity);
+            await _productRepo.AddAsync(p);
+
+            var img = ProductImagesCreateToDTO(entity, p);
+            foreach (var item in img)
             {
-                bool Id = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int sellerId);
-                entity.SellerId = sellerId;
-
-                var p = ProductCreateToDTO(entity);
-                await _productRepo.AddAsync(p);
-
-                var img = ProductImagesCreateToDTO(entity, p);
-                foreach (var item in img)
-                {
-                    await _productImageRepo.AddAsync(item);
-                }
-
-                return CreatedAtAction(nameof(GetProduct), new { id = p.Id }, entity);
+                await _productImageRepo.AddAsync(item);
             }
-            catch (Exception)
-            {
-                return NotFound();
-            }
+
+            return CreatedAtAction(nameof(GetProduct), new { id = p.Id }, entity);
         }
 
         [HttpPut("{id}")]
@@ -110,29 +103,22 @@ namespace Eticaret.Api.Controllers
 
             if (prd == null) return NotFound();
 
-            try
-            {
-                var p = ProductUpdateToDTO(product, prd);
-                await _productRepo.UpdateAsync(p);
+            var p = ProductUpdateToDTO(product, prd);
+            await _productRepo.UpdateAsync(p);
 
-                if (product.ImageList.Count > 0)
+            if (product.ImageList.Count > 0)
+            {
+                var imagesToDelete = prd.ProductImages.ToList();
+                foreach (var item in imagesToDelete)
                 {
-                    var imagesToDelete = prd.ProductImages.ToList();
-                    foreach (var item in imagesToDelete)
-                    {
-                        await _productImageRepo.DeleteAsync(item);
-                    }
-
-                    var img = ProductImagesUpdateToDTO(product, p);
-                    foreach (var item in img)
-                    {
-                        await _productImageRepo.AddAsync(item);
-                    }
+                    await _productImageRepo.DeleteAsync(item);
                 }
-            }
-            catch (Exception)
-            {
-                return NotFound();
+
+                var img = ProductImagesUpdateToDTO(product, p);
+                foreach (var item in img)
+                {
+                    await _productImageRepo.AddAsync(item);
+                }
             }
 
             return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product); //değiştir
@@ -151,28 +137,20 @@ namespace Eticaret.Api.Controllers
 
             if (prd == null) return NotFound();
 
-            try
+            var imagesToDelete = prd.ProductImages.ToList();
+            foreach (var image in imagesToDelete)
             {
-                var imagesToDelete = prd.ProductImages.ToList();
-                foreach (var image in imagesToDelete)
-                {
-                    await _productImageRepo.DeleteAsync(image);
-                }
-
-                // ProductComments koleksiyonunun bir kopyasını oluşturun
-                var commentsToDelete = prd.ProductComments.ToList();
-                foreach (var comment in commentsToDelete)
-                {
-                    await _commentRepo.DeleteAsync(comment);
-                }
-
-                await _productRepo.DeleteAsync(prd);
+                await _productImageRepo.DeleteAsync(image);
             }
-            catch (Exception ex)
+
+            // ProductComments koleksiyonunun bir kopyasını oluşturun
+            var commentsToDelete = prd.ProductComments.ToList();
+            foreach (var comment in commentsToDelete)
             {
-                // Hata mesajını loglayın veya geri döndürün
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                await _commentRepo.DeleteAsync(comment);
             }
+
+            await _productRepo.DeleteAsync(prd);
 
             return NoContent();
         }

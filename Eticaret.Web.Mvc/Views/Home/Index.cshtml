@@ -429,12 +429,15 @@
 		</div>
 
 		<div class="row isotope-grid">
-			@foreach (var item in Model)
+			@if (Model != null && Model.Any())
 			{
-				<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 d-flex align-items-stretch isotope-item">
-					<!-- Block2 -->
-					@await Html.PartialAsync("_ProductListItem", item)
-				</div>
+				@foreach (var item in Model)
+				{
+					<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 d-flex align-items-stretch isotope-item">
+						<!-- Block2 -->
+						@await Html.PartialAsync("_ProductListItem", item)
+					</div>
+				}
 			}
 		</div>
 
