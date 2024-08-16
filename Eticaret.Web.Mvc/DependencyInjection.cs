@@ -42,11 +42,8 @@ namespace Eticaret.Web.Mvc
 
             services.AddHttpClient("api", (provider, client) =>
             {
-                // client.BaseAddress = new Uri("https://localhost:7083/api");
                 client.BaseAddress = new Uri("http://localhost:5177/api/");
-                // client.DefaultRequestHeaders.Clear();
 
-                // client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
                 IHttpContextAccessor contextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
                 var context = contextAccessor.HttpContext;
                 var token = context?.Items["jwt"]?.ToString();
