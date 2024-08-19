@@ -1,8 +1,6 @@
-
-using Microsoft.Extensions.FileProviders;
-using Eticaret.Web.Mvc;
 using Eticaret.Application;
 using Eticaret.Persistence.Ef;
+using Eticaret.Web.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,14 +20,14 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
-var rootPath = Path.Combine(Directory.GetCurrentDirectory(), "/Users/aysenuraydin/Documents/GitHub/Eticaret/Eticaret.File/UploadedFiles");//!dinamik hale getir
-var fileProvider = new PhysicalFileProvider(rootPath);
+//var rootPath = Path.Combine(Directory.GetCurrentDirectory(), "/Users/aysenuraydin/Documents/GitHub/Eticaret/Eticaret.File/UploadedFiles");//!dinamik hale getir
+//var fileProvider = new PhysicalFileProvider(rootPath);
 
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = fileProvider,
-    RequestPath = "/UploadedFiles"
-});
+//app.UseStaticFiles(new StaticFileOptions
+//{
+//    FileProvider = fileProvider,
+//    RequestPath = "/UploadedFiles"
+//});
 
 app.UseRouting();
 

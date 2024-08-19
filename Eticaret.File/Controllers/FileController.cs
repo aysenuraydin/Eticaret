@@ -1,43 +1,37 @@
-
+using Eticaret.Application.Abstract;
 using Eticaret.Dto;
-using Eticaret.File.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eticaret.File.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class FileController : ControllerBase
+    public class FileController(IFileService fileServices) : ControllerBase
     {
-        private readonly IFileServices _fileServices;
-
-        public FileController(IFileServices fileServices)
-        {
-            _fileServices = fileServices;
-        }
         [HttpPost]
         public async Task<IActionResult> UploadImages(IFormFile file)
         {
             if (file == null || file.Length == 0)
                 return BadRequest("Dosya boş veya mevcut değil.");
 
-            var fileDto = new FileDto();
-            await using (var memoryStream = new MemoryStream())
-            {
-                await file.CopyToAsync(memoryStream);
-                fileDto.Data = memoryStream.ToArray();
-                fileDto.ContentType = file.ContentType;
-                fileDto.Name = file.FileName;
-            }
+            var fileName = await fileServices.UploadFileAsync(file);
+            return CreatedAtAction(nameof(DownloadImages), new { fileName }, fileName);
+        }
 
-            FileEntity fileName = await _fileServices.UploadFileAsync(fileDto);
-            return Ok(fileName);
+        [HttpGet("{fileName}")]
+        public async Task<IActionResult> DownloadImages(string fileName)
+        {
+            FileDto? file = await fileServices.DownloadFileAsync(fileName);
+            if (file == null)
+                return NotFound("Dosya mevcut değil.");
+
+            return File(file.Data, file.ContentType, file.Name);
         }
 
         [HttpDelete("{fileName}")]
         public async Task<IActionResult> DeleteImages(string fileName)
         {
-            bool result = await _fileServices.DeleteFileAsync(fileName);
+            bool result = await fileServices.DeleteFileAsync(fileName);
             if (result)
                 return Ok("Dosya başarıyla silindi.");
             else

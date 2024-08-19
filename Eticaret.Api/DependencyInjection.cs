@@ -1,14 +1,12 @@
-using System.Text;
 using Eticaret.Domain;
 using Eticaret.Persistence.Ef;
-using FluentValidation.AspNetCore;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using System.Text;
 
 namespace Eticaret.Api
 {
@@ -27,7 +25,7 @@ namespace Eticaret.Api
                 .Enrich.FromLogContext()
                 .CreateLogger();
 
-            var key = Encoding.ASCII.GetBytes(configuration["AppSettings:Secret"]!);
+            var key = Encoding.ASCII.GetBytes(configuration[ApplicationSettings.CONFIG_SECRET_KEY]!);
 
             services.AddAuthentication(options =>
             {
@@ -132,7 +130,7 @@ namespace Eticaret.Api
 
             services.AddCors(options =>
             {
-                options.AddPolicy("_myAllowOrigins",
+                options.AddPolicy(ApplicationSettings.CORS_KEY,
                     builder =>
                     {
                         builder//.WithOrigins("http://127.0.0.1:5177") //!yanlış //mvc adresi olmalıydı

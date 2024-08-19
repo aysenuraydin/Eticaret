@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Eticaret.Application.Abstract;
+﻿using Eticaret.Application.Abstract;
 using Eticaret.Application.Concrete;
 using Eticaret.Application.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Eticaret.Application
 {

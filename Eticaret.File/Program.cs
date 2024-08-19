@@ -1,7 +1,7 @@
 
 
+using Eticaret.Application.Abstract;
 using Eticaret.File;
-using Eticaret.File.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 
@@ -11,7 +11,7 @@ builder.Services.AddDbContext<FileDbContext>(opt =>
 {
     opt.UseSqlite(builder.Configuration.GetConnectionString("DbConnection"), b => b.MigrationsAssembly("Eticaret.File"));
 });
-builder.Services.AddScoped<IFileServices, FileServices>();
+builder.Services.AddScoped<IFileService, FileServices>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

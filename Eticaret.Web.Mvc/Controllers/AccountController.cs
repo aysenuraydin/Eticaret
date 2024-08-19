@@ -1,7 +1,7 @@
+using Eticaret.Dto;
 using Eticaret.Web.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Eticaret.Dto;
 using System.Text.Json;
 
 namespace Eticaret.Web.Mvc.Controllers
@@ -10,11 +10,18 @@ namespace Eticaret.Web.Mvc.Controllers
     public class AccountController : Controller
     {
         private readonly HttpClient _httpClient;
+        //private readonly DataApiAccessConfigModel? _dataApiOptions;
 
         public AccountController(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient("api");
+            _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
         }
+
+        //public AccountController(IHttpClientFactory httpClientFactory, IOptions<DataApiAccessConfigModel> dataApiOptions)
+        //{
+        //    _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
+        //    _dataApiOptions = dataApiOptions?.Value ?? throw new ArgumentNullException(nameof(dataApiOptions));
+        //}
 
         [AllowAnonymous]
         public IActionResult Register()

@@ -16,7 +16,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("_myAllowOrigins");
+app.UseCors(ApplicationSettings.CORS_KEY);
 //app.UseHttpsRedirection();
 app.UseRouting();
 app.UseMiddleware<RequestLoggingMiddleware>();

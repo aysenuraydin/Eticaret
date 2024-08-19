@@ -1,3 +1,4 @@
+using Eticaret.Application.Abstract;
 using Eticaret.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,16 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace Eticaret.Web.Mvc.Controllers
 {
     [Authorize(Roles = "seller")]
-    public class ProductController : Controller
+    public class ProductController(IHttpClientFactory httpClientFactory, IFileService fileService) : Controller
     {
-        private HttpClient _httpClient;
-        private HttpClient _httpClientFile;
-
-        public ProductController(IHttpClientFactory httpClientFactory)
-        {
-            _httpClient = httpClientFactory.CreateClient("api");
-            _httpClientFile = httpClientFactory.CreateClient("fileApi");
-        }
+        private HttpClient _httpClient = httpClientFactory.CreateClient("api");
 
         public async Task<IActionResult> Index()
         {
@@ -242,24 +236,7 @@ namespace Eticaret.Web.Mvc.Controllers
             }
         }
 
-        public async Task<string> AddImg(IFormFile ImageList)
-        {
-            var formData = new MultipartFormDataContent();
-            formData.Add(new StreamContent(ImageList.OpenReadStream()), "file", ImageList.FileName);
-
-            var response = await _httpClientFile.PostAsync("File", formData);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var imgUrl = await response.Content.ReadFromJsonAsync<FileDto>();
-
-                if (imgUrl != null) return imgUrl.Name!;
-            }
-
-            ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-
-            return "";
-        }
+        public async Task<string> AddImg(IFormFile image) => await fileService.UploadFileAsync(image) ?? string.Empty;
 
         public async Task<bool> RemoveImg(string url)
         {

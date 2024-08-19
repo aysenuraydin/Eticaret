@@ -1,11 +1,13 @@
-
-using System.Reflection;
+using Eticaret.Application.Abstract;
 using Eticaret.Dto;
+using Eticaret.Web.Mvc.Models.ConfigModels;
+using Eticaret.Web.Mvc.Services;
 using FluentValidation.AspNetCore;
 using IdentityModel;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 
@@ -40,22 +42,52 @@ namespace Eticaret.Web.Mvc
 
             services.AddHttpContextAccessor();
 
-            services.AddHttpClient("api", (provider, client) =>
-            {
-                client.BaseAddress = new Uri("http://localhost:5177/api/");
+            services.AddOptions<FileApiAccessConfigModel>()
+                .Bind(configuration.GetSection("ExternalApis:FileApi"))
+                .ValidateDataAnnotations();
 
-                IHttpContextAccessor contextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
-                var context = contextAccessor.HttpContext;
-                var token = context?.Items["jwt"]?.ToString();
-                if (!string.IsNullOrEmpty(token))
+            services.AddOptions<DataApiAccessConfigModel>()
+                .Bind(configuration.GetSection("ExternalApis:DataApi"))
+                .ValidateDataAnnotations();
+
+            services.AddHttpClient(ApplicationSettings.DATA_API_CLIENT, (provider, client) =>
+            {
+                var dataApiConfig = provider.GetRequiredService<IOptions<DataApiAccessConfigModel>>().Value;
+                ArgumentNullException.ThrowIfNull(dataApiConfig);
+
+                client.BaseAddress = new Uri(dataApiConfig.BaseUrl);
+                client.Timeout = TimeSpan.FromSeconds(dataApiConfig.TimeoutSeconds);
+
+                if (dataApiConfig.UseJwt)
                 {
-                    client.SetBearerToken(token);
+                    IHttpContextAccessor contextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+                    var context = contextAccessor.HttpContext;
+                    var token = context?.Items["jwt"]?.ToString();
+                    if (!string.IsNullOrEmpty(token))
+                    {
+                        client.SetBearerToken(token);
+                    }
                 }
             });
 
-            services.AddHttpClient("fileApi", (provider, client) =>
+            services.AddHttpClient(ApplicationSettings.FILE_API_CLIENT, (provider, client) =>
             {
-                client.BaseAddress = new Uri("http://localhost:7044/api/");
+                var fileApiConfig = provider.GetRequiredService<IOptions<FileApiAccessConfigModel>>().Value;
+                ArgumentNullException.ThrowIfNull(fileApiConfig);
+
+                client.BaseAddress = new Uri(fileApiConfig.BaseUrl);
+                client.Timeout = TimeSpan.FromSeconds(fileApiConfig.TimeoutSeconds);
+
+                if (fileApiConfig.UseJwt)
+                {
+                    IHttpContextAccessor contextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+                    var context = contextAccessor.HttpContext;
+                    var token = context?.Items["jwt"]?.ToString();
+                    if (!string.IsNullOrEmpty(token))
+                    {
+                        client.SetBearerToken(token);
+                    }
+                }
             });
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -78,6 +110,8 @@ namespace Eticaret.Web.Mvc
                 });
 
             services.AddAuthorization();
+
+            services.AddScoped<IFileService, ApiFileService>();
 
             return services;
         }

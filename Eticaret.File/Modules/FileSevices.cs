@@ -1,14 +1,10 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using Eticaret.File.Data;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Hosting;
+using Eticaret.Application.Abstract;
 using Eticaret.Dto;
+using Eticaret.File.Data;
 
 namespace Eticaret.File
 {
-    public class FileServices : IFileServices
+    public class FileServices : IFileService
     {
         private readonly IConfiguration _config;
         private readonly IWebHostEnvironment _env;
@@ -21,16 +17,22 @@ namespace Eticaret.File
             _dbContext = dbContext;
         }
 
-        public async Task<FileEntity> UploadFileAsync(FileDto file)
+        public async Task<string?> UploadFileAsync(IFormFile file)
         {
-            if (file == null)
+            var fileDto = new FileDto();
+            await using (var memoryStream = new MemoryStream())
             {
-                throw new ArgumentNullException(nameof(file), "File is required");
+                await file.CopyToAsync(memoryStream);
+                fileDto.Data = memoryStream.ToArray();
+                fileDto.ContentType = file.ContentType;
+                fileDto.Name = file.FileName;
             }
 
-            var localName = $"{Guid.NewGuid().ToString("n")}.{Path.GetExtension(file.Name).TrimStart('.')}";
-            var extension = Path.GetExtension(file.Name).TrimStart('.');
-            var originalName = Path.GetFileNameWithoutExtension(file.Name);
+            ArgumentNullException.ThrowIfNull(file);
+
+            var localName = $"{Guid.NewGuid().ToString("n")}.{Path.GetExtension(fileDto.Name).TrimStart('.')}";
+            var extension = Path.GetExtension(fileDto.Name).TrimStart('.');
+            var originalName = Path.GetFileNameWithoutExtension(fileDto.Name);
 
             var fileSaveLocation = _config["FileSaveLocation"]
                 ?? throw new InvalidOperationException("FileSaveLocation is required in the appsettings.json file.");
@@ -44,25 +46,23 @@ namespace Eticaret.File
 
             var filePath = Path.Combine(fileSaveLocation, localName);
 
-            await System.IO.File.WriteAllBytesAsync(filePath, file.Data);
+            await System.IO.File.WriteAllBytesAsync(filePath, fileDto.Data);
 
             var fileEntity = new FileEntity
             {
                 OriginalName = originalName,
                 LocalName = localName,
-                ContentType = file.ContentType,
+                ContentType = fileDto.ContentType,
                 Extension = extension,
-                Size = file.Data.Length,
+                Size = fileDto.Data.Length,
                 FilePath = filePath,
                 CreatedAt = DateTime.UtcNow
             };
 
             await _dbContext.Files.AddAsync(fileEntity);
             int saveResult = await _dbContext.SaveChangesAsync();
-            if (saveResult > 0)
-                return fileEntity;
-            else
-                return new();
+
+            return saveResult > 0 ? localName : null;
         }
         public async Task<bool> DeleteFileAsync(string fileName)
         {
@@ -100,6 +100,32 @@ namespace Eticaret.File
             {
                 return false;
             }
+        }
+
+        public async Task<FileDto?> DownloadFileAsync(string fileName)
+        {
+            var fileSaveLocation = _config["FileSaveLocation"]
+                ?? throw new InvalidOperationException("FileSaveLocation is required in the appsettings.json file.");
+
+            fileSaveLocation = Path.Combine(_env.ContentRootPath, fileSaveLocation);
+            var filePath = Path.Combine(fileSaveLocation, fileName);
+
+            if (!System.IO.File.Exists(filePath))
+            {
+                return null;
+            }
+
+            var fileEntity = _dbContext.Files.FirstOrDefault(i => i.LocalName == fileName);
+            if (fileEntity is null) return null;
+
+            ArgumentNullException.ThrowIfNull(fileEntity.ContentType);
+
+            return new FileDto
+            {
+                Data = await System.IO.File.ReadAllBytesAsync(filePath),
+                ContentType = fileEntity.ContentType,
+                Name = fileEntity.OriginalName
+            };
         }
     }
 }
