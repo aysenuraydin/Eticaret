@@ -1,13 +1,9 @@
-
 using Microsoft.Extensions.FileProviders;
 using Eticaret.Web.Mvc;
-using Eticaret.Application;
-using Eticaret.Persistence.Ef;
+using Eticaret.Web.Mvc.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddPersistenceServices(builder.Configuration);
-builder.Services.AddApplicationServices();
 builder.Services.AddWebMvcServices(builder.Configuration);
 
 var app = builder.Build();
@@ -22,20 +18,19 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
-var rootPath = Path.Combine(Directory.GetCurrentDirectory(), "/Users/aysenuraydin/Documents/GitHub/Eticaret/Eticaret.File/UploadedFiles");//!dinamik hale getir
-var fileProvider = new PhysicalFileProvider(rootPath);
+var rootPath = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles");
+var provider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "../Eticaret.File/UploadedFiles"));
+
 
 app.UseStaticFiles(new StaticFileOptions
 {
-    FileProvider = fileProvider,
+    FileProvider = provider,
     RequestPath = "/UploadedFiles"
 });
 
 app.UseRouting();
 
 app.UseMiddleware<CustomMiddleware>();
-app.UseMiddleware<RequestLoggingMiddleware>();
-app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseAuthentication(); // login için 
 

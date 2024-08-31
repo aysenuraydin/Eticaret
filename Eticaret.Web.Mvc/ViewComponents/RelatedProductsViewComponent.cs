@@ -1,11 +1,5 @@
-using Eticaret.Application.Abstract;
 using Eticaret.Dto;
-using Eticaret.Persistence.Ef;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ticaret.Web.Mvc.ViewComponents
 {

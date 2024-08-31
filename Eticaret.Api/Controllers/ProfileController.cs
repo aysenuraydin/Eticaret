@@ -52,39 +52,46 @@ namespace Eticaret.Api.Controllers
                 var user = await _userManager.FindByIdAsync(userId.ToString());
 
                 if (user == null) return NotFound();
-                User updatedUser = UserUpdateToDTO(p, user);
-                IdentityResult? validPass = null;
-
-                if (!string.IsNullOrEmpty(p.Password)) //parolaya güncelleme yapılmış mı?
+                try
                 {
-                    //parola validate işlemine uygun mu
-                    validPass = await _passwordValidator.ValidateAsync(_userManager, updatedUser, p.Password);
+                    User updatedUser = UserUpdateToDTO(p, user);
+                    IdentityResult? validPass = null;
 
-                    if (validPass.Succeeded)//uygunsa parolayı güncelle
+                    if (!string.IsNullOrEmpty(p.Password)) //parolaya güncelleme yapılmış mı?
                     {
-                        updatedUser.PasswordHash = _passwordHasher.HashPassword(updatedUser, p.Password);
-                    }
-                    else
-                    {
-                        foreach (var item in validPass.Errors)
+                        //parola validate işlemine uygun mu
+                        validPass = await _passwordValidator.ValidateAsync(_userManager, updatedUser, p.Password);
+
+                        if (validPass.Succeeded)//uygunsa parolayı güncelle
                         {
-                            ModelState.AddModelError("", item.Description);
+                            updatedUser.PasswordHash = _passwordHasher.HashPassword(updatedUser, p.Password);
+                        }
+                        else
+                        {
+                            foreach (var item in validPass.Errors)
+                            {
+                                ModelState.AddModelError("", item.Description);
+                            }
+                        }
+                    }
+
+                    if (validPass!.Succeeded)//diğer inputlar güncellemeye uygun mu
+                    {
+                        var result = await _userManager.UpdateAsync(updatedUser);
+
+                        if (result.Succeeded) return Ok(p);
+                        else
+                        {
+                            foreach (var item in result.Errors)
+                            {
+                                ModelState.AddModelError("", item.Description);
+                            }
                         }
                     }
                 }
-
-                if (validPass!.Succeeded)//diğer inputlar güncellemeye uygun mu
+                catch (Exception)
                 {
-                    var result = await _userManager.UpdateAsync(updatedUser);
-
-                    if (result.Succeeded) return Ok(p);
-                    else
-                    {
-                        foreach (var item in result.Errors)
-                        {
-                            ModelState.AddModelError("", item.Description);
-                        }
-                    }
+                    return StatusCode(StatusCodes.Status500InternalServerError);
                 }
             }
             return StatusCode(StatusCodes.Status500InternalServerError);

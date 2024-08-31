@@ -1,5 +1,4 @@
 using Eticaret.Domain.Abstract;
-using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Eticaret.Domain

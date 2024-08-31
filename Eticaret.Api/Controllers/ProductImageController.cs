@@ -19,11 +19,11 @@ namespace Eticaret.Api.Controllers
         public async Task<IActionResult> GetAllImages()
         {
             var images = (await _productImageRepo.GetAllIncludeAsync(
-                          p => p.UserFk
-                         ))
-                         .OrderByDescending(p => p.CreatedAt)
-                         .Select(p => ProductImageListToDTO(p))
-                         .ToList();
+                        p => p.UserFk
+                        ))
+                        .OrderByDescending(p => p.CreatedAt)
+                        .Select(p => ProductImageListToDTO(p))
+                        .ToList();
 
             if (images == null) return NotFound();
 
@@ -35,12 +35,12 @@ namespace Eticaret.Api.Controllers
             if (id == null) return NotFound();
 
             var images = (await _productImageRepo.GetIdAllIncludeFilterAsync(
-                          p => p.ProductId == id,
-                          p => p.UserFk
-                         ))
-                         .OrderByDescending(p => p.CreatedAt)
-                         .Select(p => ProductImageListToDTO(p))
-                         .ToList();
+                        p => p.ProductId == id,
+                        p => p.UserFk
+                        ))
+                        .OrderByDescending(p => p.CreatedAt)
+                        .Select(p => ProductImageListToDTO(p))
+                        .ToList();
 
             if (images == null) return NotFound();
 
@@ -53,10 +53,17 @@ namespace Eticaret.Api.Controllers
         {
             if (image == null) return NotFound();
 
-            var img = ProductImageCreateToDTO(image);
-            await _productImageRepo.AddAsync(img);
+            try
+            {
+                var img = ProductImageCreateToDTO(image);
+                await _productImageRepo.AddAsync(img);
 
-            return CreatedAtAction(nameof(GetImages), new { id = img.ProductId }, img);
+                return CreatedAtAction(nameof(GetImages), new { id = img.ProductId }, img);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
         }
 
         [HttpDelete("{id}")]
@@ -69,10 +76,17 @@ namespace Eticaret.Api.Controllers
 
             if (prd == null || !prd.Any()) return NotFound();
 
-            var deleteTasks = prd
+            try
+            {
+                var deleteTasks = prd
                                 .Where(i => i != null)
                                 .Select(i => _productImageRepo.DeleteAsync(i!));
-            await Task.WhenAll(deleteTasks);
+                await Task.WhenAll(deleteTasks);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
 
             return NoContent();
         }

@@ -1,5 +1,4 @@
 
-using System.Reflection;
 using Eticaret.Dto;
 using FluentValidation.AspNetCore;
 using IdentityModel;
@@ -55,7 +54,7 @@ namespace Eticaret.Web.Mvc
 
             services.AddHttpClient("fileApi", (provider, client) =>
             {
-                client.BaseAddress = new Uri("http://localhost:7044/api/");
+                client.BaseAddress = new Uri("http://localhost:5112/api/");
             });
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

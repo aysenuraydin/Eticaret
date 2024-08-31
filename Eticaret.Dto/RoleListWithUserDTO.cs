@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using Eticaret.Domain;
 using FluentValidation;
 
 namespace Eticaret.Dto

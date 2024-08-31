@@ -1,5 +1,3 @@
-
-
 namespace Eticaret.File.Data
 {
     public class FileEntity

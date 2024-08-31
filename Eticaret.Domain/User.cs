@@ -1,5 +1,3 @@
-
-
 using System.ComponentModel.DataAnnotations;
 using Eticaret.Domain.Abstract;
 using Microsoft.AspNetCore.Identity;

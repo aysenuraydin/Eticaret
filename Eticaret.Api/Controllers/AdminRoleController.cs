@@ -64,11 +64,18 @@ namespace Eticaret.Api.Controllers
                 user.UserName = user.Email?.Split("@")[0];
             }
 
-            var result = await _userManager.UpdateAsync(user);
-
-            if (!result.Succeeded)
+            try
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Failed to update user role." });
+                var result = await _userManager.UpdateAsync(user);
+
+                if (!result.Succeeded)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Failed to update user role." });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
 
             return Ok(user);
@@ -86,7 +93,14 @@ namespace Eticaret.Api.Controllers
 
             r.Name = role.Name;
 
-            var result = await _roleManager.UpdateAsync(r);
+            try
+            {
+                var result = await _roleManager.UpdateAsync(r);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+            }
 
             return Ok(r);
         }
@@ -100,7 +114,10 @@ namespace Eticaret.Api.Controllers
 
             var result = await _roleManager.CreateAsync(r);
 
-            if (result.Succeeded) return StatusCode(201);
+            if (result.Succeeded)
+            {
+                return StatusCode(201);
+            }
 
             return BadRequest(result.Errors);
         }
@@ -128,7 +145,14 @@ namespace Eticaret.Api.Controllers
                 await _userManager.UpdateAsync(user);
             }
 
-            await _roleManager.DeleteAsync(role);
+            try
+            {
+                await _roleManager.DeleteAsync(role);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
 
             return NoContent();
         }

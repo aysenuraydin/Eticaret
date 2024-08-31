@@ -19,8 +19,8 @@ namespace Eticaret.Api.Controllers
         public async Task<IActionResult> GetProducts()
         {
             var products = (await _categoryRepo.GetAllAsync())
-                                 .Select(p => CategoriesListToDTO(p))
-                                 .ToList();
+                                .Select(p => CategoriesListToDTO(p))
+                                .ToList();
 
             return Ok(products);
         }

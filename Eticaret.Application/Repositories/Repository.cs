@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using Eticaret.Domain.Abstract;

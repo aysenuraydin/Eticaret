@@ -26,11 +26,11 @@ namespace Eticaret.Api.Controllers
             if (int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId))
             {
                 var products = (await _cartItemRepo.GetIdAllIncludeFilterAsync(
-                                      i => i.UserId == userId,
-                                      i => i.ProductFk!
-                                      ))
-                                      .Select(p => CartsToDTO(p))
-                                      .ToList();
+                                    i => i.UserId == userId,
+                                    i => i.ProductFk!
+                                    ))
+                                    .Select(p => CartsToDTO(p))
+                                    .ToList();
 
                 foreach (var product in products)
                 {
@@ -50,10 +50,10 @@ namespace Eticaret.Api.Controllers
             if (int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId))
             {
                 var product = (await _cartItemRepo.GetIdAllIncludeFilterAsync(
-                                      i => i.UserId == userId && i.ProductId == productId,
-                                      i => i.ProductFk!
-                                      ))
-                                      .FirstOrDefault();
+                                    i => i.UserId == userId && i.ProductId == productId,
+                                    i => i.ProductFk!
+                                    ))
+                                    .FirstOrDefault();
 
                 if (product == null) NotFound();
 
@@ -72,8 +72,9 @@ namespace Eticaret.Api.Controllers
             if (int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId))
             {
                 var cartItem = (await _cartItemRepo.GetIdAllIncludeFilterAsync(
-                                      c => c.ProductId == id && c.UserId == userId
-                                     )).FirstOrDefault();
+                                    c => c.ProductId == id && c.UserId == userId
+                                    ))
+                                    .FirstOrDefault();
 
                 if (cartItem == null)
                 {
@@ -102,17 +103,24 @@ namespace Eticaret.Api.Controllers
         {
             if (id != item.Id) return BadRequest();
 
-            var cartItem = await _cartItemRepo.FindAsync(item.Id);
-
-            if (cartItem != null)
+            try
             {
-                cartItem.Quantity = item.Quantity;
-                await _cartItemRepo.UpdateAsync(cartItem);
+                var cartItem = await _cartItemRepo.FindAsync(item.Id);
 
-                return NoContent();
+                if (cartItem != null)
+                {
+                    cartItem.Quantity = item.Quantity;
+                    await _cartItemRepo.UpdateAsync(cartItem);
+
+                    return NoContent();
+                }
+
+                return NotFound();
             }
-
-            return NotFound();
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Hata Oluştu: {ex.Message}");
+            }
         }
 
         [HttpDelete("{id}")]
@@ -124,7 +132,14 @@ namespace Eticaret.Api.Controllers
 
             if (prd == null) return NotFound();
 
-            await _cartItemRepo.DeleteAsync(prd);
+            try
+            {
+                await _cartItemRepo.DeleteAsync(prd);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
 
             return NoContent();
         }

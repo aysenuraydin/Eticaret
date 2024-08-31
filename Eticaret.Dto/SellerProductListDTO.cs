@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using FluentValidation;
 
 namespace Eticaret.Dto
@@ -17,5 +16,8 @@ namespace Eticaret.Dto
                 .NotEmpty().WithMessage("Kategori alanı gereklidir.");
         }
     }
-
 }
+
+
+
+

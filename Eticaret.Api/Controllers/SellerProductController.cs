@@ -2,7 +2,6 @@
 using Eticaret.Application.Abstract;
 using Eticaret.Domain;
 using Eticaret.Dto;
-using IdentityModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,17 +32,17 @@ namespace Eticaret.Api.Controllers
             bool result = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int sellerId);
 
             var products = (await _productRepo.GetIdAllIncludeFilterAsync(
-                               p => p.UserId == sellerId,
-                               p => p.ProductImages,
-                               p => p.ProductComments,
-                               p => p.UserFk!,
-                               p => p.CategoryFk!,
-                               p => p.OrderItems,
-                               p => p.CartItems
-                              ))
-                              .OrderByDescending(p => p.CreatedAt)
-                              .Select(p => ProductListToDTO(p))
-                             .ToList();
+                            p => p.UserId == sellerId,
+                            p => p.ProductImages,
+                            p => p.ProductComments,
+                            p => p.UserFk!,
+                            p => p.CategoryFk!,
+                            p => p.OrderItems,
+                            p => p.CartItems
+                            ))
+                            .OrderByDescending(p => p.CreatedAt)
+                            .Select(p => ProductListToDTO(p))
+                            .ToList();
 
             return Ok(products);
         }
@@ -56,14 +55,14 @@ namespace Eticaret.Api.Controllers
             if (id == null) return NotFound();
 
             var product = (await _productRepo.GetIdAllIncludeFilterAsync(
-                          p => p.Id == id && p.UserId == sellerId,
-                          p => p.ProductImages,
-                          p => p.ProductComments,
-                          p => p.UserFk!,
-                          p => p.CategoryFk!,
-                          p => p.OrderItems,
-                          p => p.CartItems
-                         )).FirstOrDefault();
+                            p => p.Id == id && p.UserId == sellerId,
+                            p => p.ProductImages,
+                            p => p.ProductComments,
+                            p => p.UserFk!,
+                            p => p.CategoryFk!,
+                            p => p.OrderItems,
+                            p => p.CartItems
+                            )).FirstOrDefault();
 
             if (product == null) return NotFound();
 
@@ -71,54 +70,68 @@ namespace Eticaret.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct(SellerProductCreateDTO entity)
+        public async Task<IActionResult> CreateProduct(SellerProductCreateOrUpdateDTO entity)
         {
             if (entity == null) return NotFound(entity);
 
-            bool Id = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int sellerId);
-            entity.SellerId = sellerId;
-
-            var p = ProductCreateToDTO(entity);
-            await _productRepo.AddAsync(p);
-
-            var img = ProductImagesCreateToDTO(entity, p);
-            foreach (var item in img)
+            try
             {
-                await _productImageRepo.AddAsync(item);
-            }
+                bool Id = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int sellerId);
+                entity.SellerId = sellerId;
 
-            return CreatedAtAction(nameof(GetProduct), new { id = p.Id }, entity);
+                var p = ProductCreateToDTO(entity);
+                await _productRepo.AddAsync(p);
+
+                foreach (var item in ProductImagesCreateToDTO(entity, p))
+                {
+                    await _productImageRepo.AddAsync(item);
+                }
+
+                return CreatedAtAction(nameof(GetProduct), new { id = p.Id }, entity);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(SellerProductCreateDTO product)
+        public async Task<IActionResult> UpdateProduct(int id, SellerProductCreateOrUpdateDTO product)
         {
-            if (product == null) return NotFound();
+            if (product == null || product?.Id != id) return NotFound();
 
             bool Id = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int sellerId);
 
             var prd = (await _productRepo.GetIdAllIncludeFilterAsync(
-                i => i.Id == product.Id && i.UserId == sellerId,
-                i => i.ProductImages)).FirstOrDefault();
+                i => i.Id == product!.Id && i.UserId == sellerId,
+                i => i.ProductImages))
+                .FirstOrDefault();
 
             if (prd == null) return NotFound();
 
-            var p = ProductUpdateToDTO(product, prd);
-            await _productRepo.UpdateAsync(p);
-
-            if (product.ImageList.Count > 0)
+            try
             {
-                var imagesToDelete = prd.ProductImages.ToList();
-                foreach (var item in imagesToDelete)
-                {
-                    await _productImageRepo.DeleteAsync(item);
-                }
+                var p = ProductUpdateToDTO(product!, prd);
+                await _productRepo.UpdateAsync(p);
 
-                var img = ProductImagesUpdateToDTO(product, p);
-                foreach (var item in img)
+                if (product!.ImageList.Count > 0)
                 {
-                    await _productImageRepo.AddAsync(item);
+                    var imagesToDelete = prd.ProductImages.ToList();
+                    foreach (var item in imagesToDelete)
+                    {
+                        await _productImageRepo.DeleteAsync(item);
+                    }
+
+                    var img = ProductImagesUpdateToDTO(product, p);
+                    foreach (var item in img)
+                    {
+                        await _productImageRepo.AddAsync(item);
+                    }
                 }
+            }
+            catch (Exception)
+            {
+                return NotFound();
             }
 
             return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product); //değiştir
@@ -130,27 +143,35 @@ namespace Eticaret.Api.Controllers
             if (id == null) return NotFound();
 
             var prd = (await _productRepo.GetIdAllIncludeFilterAsync(
-                             i => i.Id == id,
-                             i => i.ProductImages,
-                             i => i.ProductComments
-                             )).FirstOrDefault();
+                        i => i.Id == id,
+                        i => i.ProductImages,
+                        i => i.ProductComments
+                        )).FirstOrDefault();
 
             if (prd == null) return NotFound();
 
-            var imagesToDelete = prd.ProductImages.ToList();
-            foreach (var image in imagesToDelete)
+            try
             {
-                await _productImageRepo.DeleteAsync(image);
-            }
+                var imagesToDelete = prd.ProductImages.ToList();
+                foreach (var image in imagesToDelete)
+                {
+                    await _productImageRepo.DeleteAsync(image);
+                }
 
-            // ProductComments koleksiyonunun bir kopyasını oluşturun
-            var commentsToDelete = prd.ProductComments.ToList();
-            foreach (var comment in commentsToDelete)
+                // ProductComments koleksiyonunun bir kopyasını oluşturun
+                var commentsToDelete = prd.ProductComments.ToList();
+                foreach (var comment in commentsToDelete)
+                {
+                    await _commentRepo.DeleteAsync(comment);
+                }
+
+                await _productRepo.DeleteAsync(prd);
+            }
+            catch (Exception ex)
             {
-                await _commentRepo.DeleteAsync(comment);
+                // Hata mesajını loglayın veya geri döndürün
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
-
-            await _productRepo.DeleteAsync(prd);
 
             return NoContent();
         }
@@ -178,7 +199,7 @@ namespace Eticaret.Api.Controllers
             };
         }
 
-        private static Product ProductUpdateToDTO(SellerProductCreateDTO p, Product prd)
+        private static Product ProductUpdateToDTO(SellerProductCreateOrUpdateDTO p, Product prd)
         {
             prd.Id = p.Id;
             prd.Name = p.Name;
@@ -192,20 +213,19 @@ namespace Eticaret.Api.Controllers
             {
                 prd.ProductImages.Clear();
                 prd.ProductImages = p.ImageList.Select(i =>
-                                     new ProductImage()
-                                     {
-                                         Url = i.Url,
-                                         ProductId = i.ProductId,
-                                         UserId = i.SellerId
-                                     }
-
-                                    ).ToList();
+                                    new ProductImage()
+                                    {
+                                        Url = i,
+                                        ProductId = prd.Id,
+                                        UserId = prd.UserId
+                                    }
+                                ).ToList();
             }
 
             return prd;
         }
 
-        private List<ProductImage> ProductImagesUpdateToDTO(SellerProductCreateDTO p, Product prd)
+        private List<ProductImage> ProductImagesUpdateToDTO(SellerProductCreateOrUpdateDTO p, Product prd)
         {
             if (p.ImageList.Count > 0)
             {
@@ -213,7 +233,7 @@ namespace Eticaret.Api.Controllers
                 prd.ProductImages = p.ImageList.Select(i =>
                     new ProductImage()
                     {
-                        Url = i.Url,
+                        Url = i,
                         ProductId = p.Id,
                         UserId = p.SellerId
                     }
@@ -223,9 +243,9 @@ namespace Eticaret.Api.Controllers
 
         }
 
-        private static SellerProductUpdateDTO ProductDetailToDTO(Product product, int sellerId)
+        private static SellerProductCreateOrUpdateDTO ProductDetailToDTO(Product product, int sellerId)
         {
-            return new SellerProductUpdateDTO()
+            return new SellerProductCreateOrUpdateDTO()
             {
                 Id = product.Id,
                 Name = product.Name,
@@ -239,7 +259,7 @@ namespace Eticaret.Api.Controllers
             };
         }
 
-        private static Product ProductCreateToDTO(SellerProductCreateDTO p)
+        private static Product ProductCreateToDTO(SellerProductCreateOrUpdateDTO p)
         {
             var prd = new Product();
 
@@ -254,12 +274,12 @@ namespace Eticaret.Api.Controllers
             return prd;
         }
 
-        private List<ProductImage> ProductImagesCreateToDTO(SellerProductCreateDTO p, Product product)
+        private List<ProductImage> ProductImagesCreateToDTO(SellerProductCreateOrUpdateDTO p, Product product)
         {
             var imgList = p.ImageList.Select(i =>
                     new ProductImage()
                     {
-                        Url = i.Url,
+                        Url = i,
                         ProductId = product.Id,
                         UserId = product.UserId
                     }).ToList();

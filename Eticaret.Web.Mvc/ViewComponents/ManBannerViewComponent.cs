@@ -1,7 +1,5 @@
-﻿using Eticaret.Application.Abstract;
-using Eticaret.Dto;
+﻿using Eticaret.Dto;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ticaret.Web.Mvc.ViewComponents
 {

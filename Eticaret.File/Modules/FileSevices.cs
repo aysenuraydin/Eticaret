@@ -1,105 +1,89 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
 using Eticaret.File.Data;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Hosting;
-using Eticaret.Dto;
 
 namespace Eticaret.File
 {
-    public class FileServices : IFileServices
+    public class FileService : IFileService
     {
+        private readonly string _storagePath = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles");
         private readonly IConfiguration _config;
         private readonly IWebHostEnvironment _env;
         private readonly FileDbContext _dbContext;
 
-        public FileServices(FileDbContext dbContext, IConfiguration config, IWebHostEnvironment env)
+        public FileService(FileDbContext dbContext, IConfiguration config, IWebHostEnvironment env)
         {
             _config = config;
             _env = env;
             _dbContext = dbContext;
+
+            if (!Directory.Exists(_storagePath))
+                Directory.CreateDirectory(_storagePath);
         }
-
-        public async Task<FileEntity> UploadFileAsync(FileDto file)
+        public async Task<string> UploadFileAsync(IFormFile file)
         {
-            if (file == null)
+            FileEntity fileEntity;
+            await using (var memoryStream = new MemoryStream())
             {
-                throw new ArgumentNullException(nameof(file), "File is required");
+                await file.CopyToAsync(memoryStream);
+
+                var localName = $"{Guid.NewGuid().ToString("n")}.{Path.GetExtension(file.FileName).TrimStart('.')}";
+                var extension = Path.GetExtension(file.FileName).TrimStart('.');
+                var originalName = Path.GetFileNameWithoutExtension(file.FileName);
+                var fileSaveLocation = Path.Combine(_env.ContentRootPath, _config["FileSaveLocation"]!);
+                var filePath = Path.Combine(fileSaveLocation, localName);
+
+                await System.IO.File.WriteAllBytesAsync(filePath, memoryStream.ToArray());
+
+                fileEntity = new()
+                {
+                    OriginalName = originalName,
+                    LocalName = localName,
+                    ContentType = file.ContentType,
+                    Extension = extension,
+                    Size = memoryStream.ToArray().Length,
+                    FilePath = filePath,
+                    CreatedAt = DateTime.UtcNow
+                };
             }
-
-            var localName = $"{Guid.NewGuid().ToString("n")}.{Path.GetExtension(file.Name).TrimStart('.')}";
-            var extension = Path.GetExtension(file.Name).TrimStart('.');
-            var originalName = Path.GetFileNameWithoutExtension(file.Name);
-
-            var fileSaveLocation = _config["FileSaveLocation"]
-                ?? throw new InvalidOperationException("FileSaveLocation is required in the appsettings.json file.");
-
-            fileSaveLocation = Path.Combine(_env.ContentRootPath, fileSaveLocation);
-
-            if (!Directory.Exists(fileSaveLocation))
-            {
-                Directory.CreateDirectory(fileSaveLocation);
-            }
-
-            var filePath = Path.Combine(fileSaveLocation, localName);
-
-            await System.IO.File.WriteAllBytesAsync(filePath, file.Data);
-
-            var fileEntity = new FileEntity
-            {
-                OriginalName = originalName,
-                LocalName = localName,
-                ContentType = file.ContentType,
-                Extension = extension,
-                Size = file.Data.Length,
-                FilePath = filePath,
-                CreatedAt = DateTime.UtcNow
-            };
 
             await _dbContext.Files.AddAsync(fileEntity);
             int saveResult = await _dbContext.SaveChangesAsync();
+
             if (saveResult > 0)
-                return fileEntity;
-            else
-                return new();
+                return fileEntity.LocalName;
+            else throw new Exception("File upload failed");
+
+        }
+        public async Task<byte[]> DownloadFileAsync(string fileName)
+        {
+            var filePath = Path.Combine(_storagePath, fileName);
+
+            if (System.IO.File.Exists(filePath))
+            {
+                return await System.IO.File.ReadAllBytesAsync(filePath);
+            }
+
+            return null;
         }
         public async Task<bool> DeleteFileAsync(string fileName)
         {
 
-            if (string.IsNullOrEmpty(fileName))
-            {
-                return false;
-            }
+            if (string.IsNullOrEmpty(fileName)) return false;
+
             string directory = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles", fileName);
 
-            if (System.IO.File.Exists(directory))
-            {
-                try
-                {
-                    System.IO.File.Delete(directory);
+            System.IO.File.Delete(directory);
 
-                    var fileEntity = _dbContext.Files.FirstOrDefault(i => i.LocalName == fileName);
+            var fileEntity = _dbContext.Files.FirstOrDefault(i => i.LocalName == fileName);
 
-                    if (fileEntity == null) return false;
+            if (fileEntity == null) return false;
 
 
-                    _dbContext.Files.Remove(fileEntity);
-                    var IsSuccess = await _dbContext.SaveChangesAsync();
+            _dbContext.Files.Remove(fileEntity);
+            var IsSuccess = await _dbContext.SaveChangesAsync();
 
-                    if (IsSuccess > 0) return true; //başarı ile silindiyse
-                    else return false;
-
-                }
-                catch (Exception)
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
-            }
+            if (IsSuccess > 0) return true; //başarı ile silindiyse
+            return false;
         }
     }
 }
+

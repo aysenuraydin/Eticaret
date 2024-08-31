@@ -1,5 +1,6 @@
 using Eticaret.Api;
 using Eticaret.Application;
+using Eticaret.Application.Middlewares;
 using Eticaret.Persistence.Ef;
 
 var builder = WebApplication.CreateBuilder(args);

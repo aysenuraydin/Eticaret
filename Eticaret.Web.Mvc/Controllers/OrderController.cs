@@ -62,7 +62,6 @@ namespace Eticaret.Web.Mvc.Controllers
 
                 TempData["ErrorMessage"] = $"Error: {response.ReasonPhrase}";
             }
-
             return RedirectToAction(nameof(Index), "Home");
         }
     }

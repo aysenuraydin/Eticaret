@@ -38,18 +38,26 @@ namespace Eticaret.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateProductComment(ProductCommentCreateDTO entity)
         {
-            if (int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId))
+            if (entity == null) return NotFound();
+            try
             {
-                var p = ProductCreatToDTO(entity);
+                if (int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId))
+                {
+                    var p = ProductCreatToDTO(entity);
 
-                p.UserId = userId;
+                    p.UserId = userId;
 
-                await _productCommentRepo.AddAsync(p);
+                    await _productCommentRepo.AddAsync(p);
 
-                return CreatedAtAction(nameof(GetProductComment), new { id = p.Id }, p);
+                    return CreatedAtAction(nameof(GetProductComment), new { id = p.Id }, p);
+                }
+
+                return NotFound();
             }
-
-            return NotFound();
+            catch (Exception)
+            {
+                return NotFound();
+            }
         }
 
         private static ProductCommentListDTO ProductCommentListToDTO(ProductComment p)

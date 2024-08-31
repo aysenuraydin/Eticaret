@@ -37,7 +37,6 @@ namespace Eticaret.Web.Mvc.Controllers
                 Password = user.Password
             };
 
-            //! bunun gibi
             var response = await _httpClient.PostAsJsonAsync("Account/register", userAccount);
 
             if (response.IsSuccessStatusCode)
@@ -97,7 +96,6 @@ namespace Eticaret.Web.Mvc.Controllers
             return View();
         }
 
-        // public async Task<IActionResult> Logout()
         public IActionResult Logout()
         {
             if (!User.Identity!.IsAuthenticated)
@@ -106,7 +104,7 @@ namespace Eticaret.Web.Mvc.Controllers
             }
 
             Response.Cookies.Delete("token");
-            //await _httpClient.PostAsync("Auth/logout", null); //! buna gerek yok
+            //await _httpClient.PostAsync("Auth/logout", null);
 
             return RedirectToAction(nameof(Login));
         }
@@ -125,7 +123,7 @@ namespace Eticaret.Web.Mvc.Controllers
 
             if (token != null)
             {
-                Response.Cookies.Append("token", token, cookieOptions);//!
+                Response.Cookies.Append("token", token, cookieOptions);
             }
         }
     }

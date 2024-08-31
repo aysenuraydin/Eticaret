@@ -1,11 +1,9 @@
 using System.Text;
 using Eticaret.Domain;
 using Eticaret.Persistence.Ef;
-using FluentValidation.AspNetCore;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;

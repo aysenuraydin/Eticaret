@@ -13,8 +13,7 @@ public class EticaretDbContext : IdentityDbContext<User, Role, int>
 {
     public EticaretDbContext(DbContextOptions<EticaretDbContext> options) : base(options)
     {
-        // Eğer veritabanı oluşturulurken test verilerini eklemek istiyorsanız:
-        // Database.EnsureCreated();
+
     }
     public DbSet<CartItem> CartItems { get; set; }
     public DbSet<Category> Categories { get; set; }

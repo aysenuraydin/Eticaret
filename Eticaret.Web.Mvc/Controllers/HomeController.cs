@@ -48,8 +48,9 @@ namespace Eticaret.Web.Mvc.Controllers
             if (!string.IsNullOrWhiteSpace(q))
             {
                 TempData["search"] = q;
-                productList = productList.Where(s => s.Name!.ToLower().Contains(q.ToLower()))
-                                                            .ToList();
+                productList = productList
+                                .Where(s => s.Name!.ToLower().Contains(q.ToLower()))
+                                .ToList();
             }
             else
             {

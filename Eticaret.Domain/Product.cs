@@ -1,6 +1,4 @@
 using Eticaret.Domain.Abstract;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Eticaret.Domain

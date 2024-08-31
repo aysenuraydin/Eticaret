@@ -12,9 +12,12 @@
     <PackageReference Include="IdentityModel" Version="7.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Eticaret.Application\Eticaret.Application.csproj" />
-    <ProjectReference Include="..\Eticaret.Dto\Eticaret.Dto.csproj" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Eticaret.Dto\Eticaret.Dto.csproj" />
+    <ProjectReference Include="..\Eticaret.Application\Eticaret.Application.csproj" />
+    <!-- <ProjectReference Include="..\Eticaret.Persistence.Ef\Eticaret.Persistence.Ef.csproj" /> -->
   </ItemGroup>
 </Project>

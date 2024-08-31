@@ -1,6 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using Eticaret.Domain;
-
 namespace Eticaret.Dto
 {
     public class OrderDetailDTO

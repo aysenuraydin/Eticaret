@@ -22,13 +22,13 @@ namespace Eticaret.Api.Controllers
         public async Task<IActionResult> GetUsers()
         {
             var users = await _userManager.Users
-                               .Include(p => p.RoleFk)
-                               .Include(p => p.CartItems)
-                               .Include(p => p.ProductComments)
-                               .Include(p => p.Orders)
-                               .OrderByDescending(p => p.CreatedAt)
-                               .Select(p => UserListToDTO(p))
-                               .ToListAsync();
+                            .Include(p => p.RoleFk)
+                            .Include(p => p.CartItems)
+                            .Include(p => p.ProductComments)
+                            .Include(p => p.Orders)
+                            .OrderByDescending(p => p.CreatedAt)
+                            .Select(p => UserListToDTO(p))
+                            .ToListAsync();
 
             return Ok(users);
         }
@@ -39,11 +39,11 @@ namespace Eticaret.Api.Controllers
             if (id == null) return BadRequest(new { message = "UserId is required." });
 
             var user = await _userManager.Users
-                               .Include(p => p.RoleFk)
-                               .Include(p => p.CartItems)
-                               .Include(p => p.ProductComments)
-                               .Include(p => p.Orders)
-                               .FirstOrDefaultAsync(p => p.Id == id);
+                            .Include(p => p.RoleFk)
+                            .Include(p => p.CartItems)
+                            .Include(p => p.ProductComments)
+                            .Include(p => p.Orders)
+                            .FirstOrDefaultAsync(p => p.Id == id);
 
             if (user == null) return NotFound(new { message = "User is not found." });
 
@@ -59,7 +59,14 @@ namespace Eticaret.Api.Controllers
 
             if (user == null) return NotFound(new { message = "User is not found." });
 
-            await _userManager.UpdateAsync(UserApproveToDTO(p, user));
+            try
+            {
+                await _userManager.UpdateAsync(UserApproveToDTO(p, user));
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
 
             return Ok(user);
         }
@@ -73,7 +80,14 @@ namespace Eticaret.Api.Controllers
 
             if (user == null) return NotFound();
 
-            await _userManager.DeleteAsync(user);
+            try
+            {
+                await _userManager.DeleteAsync(user);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
 
             return NoContent();
         }

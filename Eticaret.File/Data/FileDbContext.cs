@@ -1,5 +1,4 @@
-﻿
-using Eticaret.File.Data;
+﻿using Eticaret.File.Data;
 using Microsoft.EntityFrameworkCore;
 
 public class FileDbContext : DbContext

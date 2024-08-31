@@ -19,8 +19,6 @@ namespace Eticaret.Web.Mvc.Controllers
 
         public async Task<IActionResult> Index()
         {
-            if (TempData["ErrorMessage"] != null) ViewBag.ErrorMessage = TempData["ErrorMessage"];
-
             var response = await _httpClient.GetAsync($"SellerProduct");
 
             if (response.IsSuccessStatusCode)
@@ -32,36 +30,44 @@ namespace Eticaret.Web.Mvc.Controllers
 
             ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
 
-            return View();
+            return View(new List<AdminProductListDTO>());
         }
 
         public async Task<IActionResult> Create()
         {
             ViewBag.Category = new SelectList(await GetCategories(), "Id", "Name");
 
-            return View();
+            return View(new SellerProductCreateOrUpdateDTO());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(SellerProductCreateDTO product, List<IFormFile> ImageList)
+        public async Task<IActionResult> Create(SellerProductCreateOrUpdateDTO product, List<IFormFile> ImageList)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var prd = await CreateImage(product, ImageList);
+                ModelState.AddModelError("", "Eksik veri girdiniz!");
+                ViewBag.Category = new SelectList(await GetCategories(), "Id", "Name");
 
-                var response = await _httpClient.PostAsJsonAsync("SellerProduct", prd);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-
-                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-                ModelState.AddModelError("", "Güncelleme sırasında bir hata oluştu.");
+                return View(product);
             }
 
-            ModelState.AddModelError("", "Eksik veri girdiniz!");
+            for (int i = 0; i < ImageList.Count; i++)
+            {
+                var Url = await AddImg(ImageList[i]);
+                product.ImageList.Add(Url);
+            }
+
+            var response = await _httpClient.PostAsJsonAsync("SellerProduct", product);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+            ModelState.AddModelError("", "Güncelleme sırasında bir hata oluştu.");
+
             ViewBag.Category = new SelectList(await GetCategories(), "Id", "Name");
 
             return View(product);
@@ -73,7 +79,7 @@ namespace Eticaret.Web.Mvc.Controllers
 
             using (var response = await _httpClient.GetAsync($"SellerProduct/{id}"))
             {
-                SellerProductUpdateDTO product = await response.Content.ReadFromJsonAsync<SellerProductUpdateDTO>() ?? new();
+                SellerProductCreateOrUpdateDTO product = await response.Content.ReadFromJsonAsync<SellerProductCreateOrUpdateDTO>() ?? new();
 
                 if (response.IsSuccessStatusCode) return View(product);
 
@@ -85,57 +91,49 @@ namespace Eticaret.Web.Mvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(SellerProductUpdateDTO product, List<IFormFile> ImgList)
+        public async Task<IActionResult> Edit(SellerProductCreateOrUpdateDTO product, List<IFormFile> ImgList)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var resp = await _httpClient.GetAsync($"SellerProduct/{product.Id}");
-
-                if (resp.IsSuccessStatusCode)
-                {
-                    SellerProductUpdateDTO p = await resp.Content.ReadFromJsonAsync<SellerProductUpdateDTO>() ?? new();
-
-                    if (ImgList.Count > 0)
-                    {
-                        var images = p.ImageList;
-
-                        foreach (var item in images)
-                        {
-                            await RemoveImg(item);
-                        }
-                    }
-
-                    var transformProduct = TransformProduct(product);
-                    var prd = await CreateImage(transformProduct, ImgList);
-
-                    var response = await _httpClient.PutAsJsonAsync($"SellerProduct/{product.Id}", prd);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return RedirectToAction(nameof(Index));
-                    }
-
-                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-                }
-
-                ViewBag.ErrorMessage = $"Error: {resp.ReasonPhrase}";
+                ModelState.AddModelError("", "Hata Oluştu!");
+                return View(product);
             }
 
-            ModelState.AddModelError("", "Hata Oluştu!");
-            return View(product);
+            var resp = await _httpClient.GetAsync($"SellerProduct/{product.Id}");
+
+            if (!resp.IsSuccessStatusCode) return View(product);
+
+            SellerProductCreateOrUpdateDTO prd = await resp.Content.ReadFromJsonAsync<SellerProductCreateOrUpdateDTO>() ?? new();
+
+            foreach (var item in prd.ImageList)
+            {
+                await _httpClientFile.DeleteAsync($"File/{item}");
+            }
+
+            product.ImageList.Clear();
+
+            for (int i = 0; i < ImgList.Count; i++)
+            {
+                product.ImageList.Add(await AddImg(ImgList[i]));
+            }
+
+            var response = await _httpClient.PutAsJsonAsync($"SellerProduct/{product.Id}", product);
+
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index));
+
         }
 
         public async Task<IActionResult> Delete(int id)
         {
-            if (TempData["ErrorMessage"] != null) ViewBag.ErrorMessage = TempData["ErrorMessage"];
-
             using (var response = await _httpClient.GetAsync($"SellerProduct/{id}"))
             {
-                var product = await response.Content.ReadFromJsonAsync<SellerProductUpdateDTO>() ?? new();
+                var product = await response.Content.ReadFromJsonAsync<SellerProductCreateOrUpdateDTO>() ?? new();
 
                 if (response.IsSuccessStatusCode) return View(product);
 
-                TempData["ErrorMessage"] = $"Error: {response.ReasonPhrase}";
+                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
             }
 
             return RedirectToAction(nameof(Index));
@@ -143,32 +141,31 @@ namespace Eticaret.Web.Mvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id, SellerProductUpdateDTO? p)
+        public async Task<IActionResult> Delete(int id, SellerProductCreateOrUpdateDTO? p)
         {
             var resp = await _httpClient.GetAsync($"SellerProduct/{id}");
 
-            if (resp.IsSuccessStatusCode)
+            if (!resp.IsSuccessStatusCode)
             {
-                SellerProductUpdateDTO product = await resp.Content.ReadFromJsonAsync<SellerProductUpdateDTO>() ?? new();
+                ViewBag.ErrorMessage = $"Error: {resp.ReasonPhrase}";
+                return RedirectToAction(nameof(Delete), new { id = id });
+            }
+            SellerProductCreateOrUpdateDTO product = await resp.Content.ReadFromJsonAsync<SellerProductCreateOrUpdateDTO>() ?? new();
 
-                var response = await _httpClient.DeleteAsync($"SellerProduct/{id}");
+            var response = await _httpClient.DeleteAsync($"SellerProduct/{id}");
 
-                if (response.IsSuccessStatusCode)
-                {
-                    foreach (var item in product.ImageList)
-                    {
-                        await RemoveImg(item);
-                    }
-
-                    return RedirectToAction(nameof(Index));
-                }
-
+            if (response.IsSuccessStatusCode)
+            {
                 ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                return RedirectToAction(nameof(Delete), new { id = id });
             }
 
-            TempData["ErrorMessage"] = $"Error: {resp.ReasonPhrase}";
+            foreach (var item in product.ImageList)
+            {
+                await _httpClientFile.DeleteAsync($"File/{item}");
+            }
 
-            return RedirectToAction(nameof(Delete), new { id = id });
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
@@ -191,7 +188,7 @@ namespace Eticaret.Web.Mvc.Controllers
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    TempData["Message"] = $"Error: {response.ReasonPhrase}";
+                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
                 }
             }
             else TempData["Message"] = $"Error: Hata oluştu! Eksik bilgi girdiniz.";
@@ -202,34 +199,6 @@ namespace Eticaret.Web.Mvc.Controllers
                 controller = "Home",
                 id = ProductId
             });
-        }
-
-        public SellerProductCreateDTO TransformProduct(SellerProductUpdateDTO product)
-        {
-            var p = new SellerProductCreateDTO();
-
-            p.Id = product.Id;
-            p.Name = product.Name;
-            p.Price = product.Price;
-            p.Details = product.Details;
-
-            foreach (var item in product.ImageList)
-            {
-                UpdateImage img = new()
-                {
-                    Url = item,
-                    ProductId = product.Id,
-                    SellerId = product.SellerId
-                };
-                p.ImageList.Add(img);
-            }
-
-            p.StockAmount = product.StockAmount;
-            p.CategoryId = product.CategoryId;
-            p.SellerId = product.SellerId;
-            p.Enabled = product.Enabled;
-
-            return p;
         }
 
         public async Task<List<CategoryListDTO>> GetCategories()
@@ -249,51 +218,13 @@ namespace Eticaret.Web.Mvc.Controllers
 
             var response = await _httpClientFile.PostAsync("File", formData);
 
-            if (response.IsSuccessStatusCode)
-            {
-                var imgUrl = await response.Content.ReadFromJsonAsync<FileDto>();
+            if (response.IsSuccessStatusCode) return await response.Content.ReadAsStringAsync();
 
-                if (imgUrl != null) return imgUrl.Name!;
-            }
-
-            ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-
-            return "";
-        }
-
-        public async Task<bool> RemoveImg(string url)
-        {
-            var response = await _httpClientFile.DeleteAsync($"File/{url}");
-
-            if (response.IsSuccessStatusCode) return true;
-
-            ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
-
-            return false;
-        }
-
-
-        public async Task<SellerProductCreateDTO> CreateImage(SellerProductCreateDTO product, List<IFormFile> imageList)
-        {
-            if (imageList.Count > 0)
-            {
-                product.ImageList.Clear();
-
-                for (int i = 0; i < imageList.Count; i++)
-                {
-                    var Url = await AddImg(imageList[i]);
-                    var x = new UpdateImage()
-                    {
-                        Url = Url,
-                        ProductId = product.Id,
-                        SellerId = product.SellerId
-                    };
-
-                    product.ImageList.Add(x);
-                }
-            }
-
-            return product;
+            throw new Exception("File not upload");
         }
     }
 }
+
+//!!! listeleri foreach sız aktarma  addrange;?
+
+

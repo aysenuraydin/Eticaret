@@ -22,16 +22,16 @@ namespace Eticaret.Api.Controllers
         public async Task<IActionResult> GetProducts()
         {
             var products = (await _productRepo.GetAllIncludeAsync(
-                                   p => p.ProductImages,
-                                   p => p.ProductComments,
-                                   p => p.UserFk!,
-                                   p => p.CategoryFk!,
-                                   p => p.OrderItems,
-                                   p => p.CartItems
-                                  ))
-                                  .OrderByDescending(p => p.CreatedAt)
-                                  .Select(p => ProductListToDTO(p))
-                                  .ToList();
+                                p => p.ProductImages,
+                                p => p.ProductComments,
+                                p => p.UserFk!,
+                                p => p.CategoryFk!,
+                                p => p.OrderItems,
+                                p => p.CartItems
+                                ))
+                                .OrderByDescending(p => p.CreatedAt)
+                                .Select(p => ProductListToDTO(p))
+                                .ToList();
 
             return Ok(products);
         }
@@ -42,13 +42,13 @@ namespace Eticaret.Api.Controllers
             if (id == null) return NotFound();
 
             var product = (await _productRepo.GetIdAllIncludeFilterAsync(
-                                 p => p.Id == id,
-                                 p => p.ProductImages,
-                                 p => p.ProductComments,
-                                 p => p.UserFk!,
-                                 p => p.CategoryFk!,
-                                 p => p.OrderItems,
-                                 p => p.CartItems
+                                p => p.Id == id,
+                                p => p.ProductImages,
+                                p => p.ProductComments,
+                                p => p.UserFk!,
+                                p => p.CategoryFk!,
+                                p => p.OrderItems,
+                                p => p.CartItems
                                 )).FirstOrDefault();
 
             if (product == null) return NotFound();
@@ -65,7 +65,14 @@ namespace Eticaret.Api.Controllers
 
             if (prd == null) return NotFound();
 
-            await _productRepo.UpdateAsync(ProductApproveToDTO(p, prd));
+            try
+            {
+                await _productRepo.UpdateAsync(ProductApproveToDTO(p, prd));
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
 
             return Ok(prd);
         }
@@ -79,7 +86,14 @@ namespace Eticaret.Api.Controllers
 
             if (prd == null) return NotFound();
 
-            await _productRepo.DeleteAsync(prd);
+            try
+            {
+                await _productRepo.DeleteAsync(prd);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
 
             return NoContent();
         }

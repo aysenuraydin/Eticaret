@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using FluentValidation;
 
 namespace Eticaret.Dto
@@ -59,3 +58,4 @@ namespace Eticaret.Dto
     }
 
 }
+

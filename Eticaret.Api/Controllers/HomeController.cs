@@ -22,10 +22,10 @@ namespace Eticaret.Api.Controllers
             var products = (await _productRepo.GetIdAllIncludeFilterAsync(
                                         p => p.IsConfirmed && p.Enabled && p.StockAmount > 0,
                                         p => p.ProductImages
-                                       ))
-                                       .OrderByDescending(p => p.CreatedAt)
-                                       .Select(p => ProductListToDTO(p))
-                                       .ToList();
+                                        ))
+                                        .OrderByDescending(p => p.CreatedAt)
+                                        .Select(p => ProductListToDTO(p))
+                                        .ToList();
 
             return Ok(products);
         }
@@ -34,12 +34,12 @@ namespace Eticaret.Api.Controllers
         public async Task<IActionResult> GetProduct(int? id)
         {
             var productList = (await _productRepo.GetIdAllIncludeFilterAsync(
-                                       p => p.IsConfirmed && p.Enabled && p.StockAmount > 0 && p.CategoryId == id,
-                                       p => p.ProductImages
-                                      ))
-                                      .OrderByDescending(p => p.CreatedAt)
-                                      .Select(p => ProductListToDTO(p))
-                                      .ToList();
+                                        p => p.IsConfirmed && p.Enabled && p.StockAmount > 0 && p.CategoryId == id,
+                                        p => p.ProductImages
+                                        ))
+                                        .OrderByDescending(p => p.CreatedAt)
+                                        .Select(p => ProductListToDTO(p))
+                                        .ToList();
 
             return Ok(productList);
 

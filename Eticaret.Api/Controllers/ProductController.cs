@@ -22,7 +22,7 @@ namespace Eticaret.Api.Controllers
             var products = (await _productRepo.GetIdAllIncludeFilterAsync(
                             p => p.IsConfirmed && p.Enabled && p.StockAmount > 0,
                             p => p.ProductImages
-                           ))
+                            ))
                             .OrderByDescending(p => p.CreatedAt)
                             .Select(p => ProductListToDTO(p))
                             .ToList();
@@ -36,13 +36,13 @@ namespace Eticaret.Api.Controllers
             if (id == null) return NotFound();
 
             var product = (await _productRepo.GetIdAllIncludeFilterAsync(
-                                 p => p.Id == id,
-                                 p => p.CategoryFk!,
-                                 p => p.UserFk!,
-                                 p => p.ProductComments,
-                                 p => p.ProductImages
-                                )).FirstOrDefault();
-
+                            p => p.Id == id,
+                            p => p.CategoryFk!,
+                            p => p.UserFk!,
+                            p => p.ProductComments,
+                            p => p.ProductImages
+                            ))
+                            .FirstOrDefault();
 
             if (product == null) return NotFound();
 
@@ -74,12 +74,12 @@ namespace Eticaret.Api.Controllers
                 CategoryName = p.CategoryFk?.Name ?? string.Empty,
                 SellerName = $"{p.UserFk?.FirstName ?? string.Empty} {p.UserFk?.LastName ?? string.Empty}".Trim(),
                 ProductImagesUrl = p.ProductImages.Select(p =>
-                                   new Images
-                                   {
-                                       Id = p.Id,
-                                       Url = p.Url,
-                                   })
-                                   .ToList(),
+                                    new Images
+                                    {
+                                        Id = p.Id,
+                                        Url = p.Url,
+                                    })
+                                    .ToList(),
 
                 ProductComments = p.ProductComments.Select(p =>
                                     new Comment
