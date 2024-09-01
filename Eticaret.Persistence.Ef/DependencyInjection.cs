@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Eticaret.Persistence.Ef.Constants;
 
 namespace Eticaret.Persistence.Ef
 {
@@ -10,7 +11,7 @@ namespace Eticaret.Persistence.Ef
         {
             services.AddDbContext<EticaretDbContext>(opt =>
             {
-                opt.UseSqlite(configuration.GetConnectionString("DbConnection"), b => b.MigrationsAssembly("Eticaret.API"));
+                opt.UseSqlite(configuration.GetConnectionString(ConnectionSettings.DB_CONNECTION), b => b.MigrationsAssembly(ConnectionSettings.MİGRATİON_LAYER_NAME));
             });
             return services;
         }

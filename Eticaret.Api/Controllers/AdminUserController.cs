@@ -1,4 +1,5 @@
-﻿using Eticaret.Domain;
+﻿using Eticaret.Domain.Constants;
+using Eticaret.Domain;
 using Eticaret.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -7,10 +8,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Api.Controllers
 {
-    [Authorize(Roles = "admin")]
-    [ApiController]
-    [Route("api/[controller]")]
-    public class AdminUserController : ControllerBase
+    [Authorize(Roles = Roles.Admin)]
+    public class AdminUserController : AppController
     {
         private readonly UserManager<User> _userManager;
         public AdminUserController(UserManager<User> userManager)

@@ -21,8 +21,8 @@ namespace Eticaret.Persistence.Ef.Configurations
 
             //bunlar önemli !!!
             builder.HasMany(p => p.ProductComments)
-               .WithOne(c => c.ProductFk)
-               .HasForeignKey(c => c.ProductId);
+                .WithOne(c => c.ProductFk)
+                .HasForeignKey(c => c.ProductId);
 
             builder.HasMany(p => p.ProductImages)
                 .WithOne(i => i.ProductFk)

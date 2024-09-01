@@ -7,9 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Eticaret.Api.Controllers
 {
     [Authorize]
-    [ApiController]
-    [Route("api/[controller]")]
-    public class OrderController : ControllerBase
+    public class OrderController : AppController
     {
         private readonly IOrderRepository _orderService;
         private readonly IOrderItemRepository _orderItemService;

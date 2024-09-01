@@ -9,9 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Eticaret.Api.Controllers
 {
     [Authorize]
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ProfileController : ControllerBase
+    public class ProfileController : AppController
     {
         private readonly UserManager<User> _userManager;
         private IPasswordValidator<User> _passwordValidator;

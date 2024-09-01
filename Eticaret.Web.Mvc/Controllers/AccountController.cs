@@ -3,17 +3,18 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Eticaret.Dto;
 using System.Text.Json;
+using Eticaret.Web.Mvc.Constants;
 
 namespace Eticaret.Web.Mvc.Controllers
 {
     [Authorize]
-    public class AccountController : Controller
+    public class AccountController : AppController
     {
         private readonly HttpClient _httpClient;
 
         public AccountController(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient("api");
+            _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
         }
 
         [AllowAnonymous]
@@ -41,7 +42,7 @@ namespace Eticaret.Web.Mvc.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction(nameof(Index), "Home");
+                return RedirectToAction(nameof(Login));
             }
 
             return View(user);
@@ -98,12 +99,7 @@ namespace Eticaret.Web.Mvc.Controllers
 
         public IActionResult Logout()
         {
-            if (!User.Identity!.IsAuthenticated)
-            {
-                return RedirectToAction(nameof(Login), "Home");
-            }
-
-            Response.Cookies.Delete("token");
+            Response.Cookies.Delete(JWTSettings.TOKEN_NAME);
             //await _httpClient.PostAsync("Auth/logout", null);
 
             return RedirectToAction(nameof(Login));
@@ -112,7 +108,7 @@ namespace Eticaret.Web.Mvc.Controllers
         private void SetUserCookie(string tokenResponse)
         {
             var jsonDoc = JsonDocument.Parse(tokenResponse);
-            var token = jsonDoc.RootElement.GetProperty("token").GetString();
+            var token = jsonDoc.RootElement.GetProperty(JWTSettings.TOKEN_NAME).GetString();
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
@@ -123,7 +119,7 @@ namespace Eticaret.Web.Mvc.Controllers
 
             if (token != null)
             {
-                Response.Cookies.Append("token", token, cookieOptions);
+                Response.Cookies.Append(JWTSettings.TOKEN_NAME, token, cookieOptions);
             }
         }
     }

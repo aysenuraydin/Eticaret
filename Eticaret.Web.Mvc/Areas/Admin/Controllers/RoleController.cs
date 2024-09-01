@@ -1,21 +1,20 @@
 using Eticaret.Dto;
-using Microsoft.AspNetCore.Authorization;
+using Eticaret.Web.Mvc.Constants;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "admin")]
-    public class RoleController : Controller
+    public class RoleController : AppController
     {
         private readonly HttpClient _httpClient;
         public RoleController(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient("api");
+            _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
         }
         public async Task<IActionResult> Index()
         {
-            if (TempData["ErrorMessage"] != null) ViewBag.ErrorMessage = TempData["ErrorMessage"];
+            if (TempData["ErrorMessage"] != null) ViewBagMessage(TempData["ErrorMessage"].ToString());
 
             using (var response = await _httpClient.GetAsync("AdminRole/Users"))
             {
@@ -33,11 +32,9 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 
                         return View(roles);
                     }
-
-                    ViewBag.ErrorMessage = $"Error: {roleResponse.ReasonPhrase}";
                 }
 
-                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                ViewBagMessage(response.ReasonPhrase);
             }
 
             return View();
@@ -49,7 +46,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
         {
             if (string.IsNullOrWhiteSpace(roleName))
             {
-                ViewBag.ErrorMessage = $"Role adı boş bırakılamaz";
+                ViewBagMessage("Role adı boş bırakılamaz");
                 return View();
             }
 
@@ -62,7 +59,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index), "Role");
             }
 
-            TempData["ErrorMessage"] = $"Error: {response.ReasonPhrase}";
+            TempDataMessage(response.ReasonPhrase);
 
             return RedirectToAction(nameof(Index));
         }
@@ -75,7 +72,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 
             if (string.IsNullOrWhiteSpace(roleName))
             {
-                ViewBag.ErrorMessage = $"Role adı boş bırakılamaz";
+                ViewBagMessage("Role adı boş bırakılamaz");
                 return View();
             }
 
@@ -88,7 +85,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            TempData["ErrorMessage"] = $"Error: {response.ReasonPhrase}";
+            TempDataMessage(response.ReasonPhrase);
 
             return RedirectToAction(nameof(Index));
         }
@@ -108,7 +105,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            TempData["ErrorMessage"] = $"Error: {response.ReasonPhrase}";
+            TempDataMessage(response.ReasonPhrase);
 
             return RedirectToAction(nameof(Index));
         }
@@ -123,7 +120,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 
             if (response.IsSuccessStatusCode) return RedirectToAction(nameof(Index), "Role");
 
-            TempData["ErrorMessage"] = $"Error: {response.ReasonPhrase}";
+            TempDataMessage(response.ReasonPhrase);
 
             return RedirectToAction(nameof(Index));
         }

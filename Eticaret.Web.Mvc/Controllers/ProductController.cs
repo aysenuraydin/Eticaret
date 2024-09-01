@@ -1,20 +1,22 @@
+using Eticaret.Domain.Constants;
 using Eticaret.Dto;
+using Eticaret.Web.Mvc.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Eticaret.Web.Mvc.Controllers
 {
-    [Authorize(Roles = "seller")]
-    public class ProductController : Controller
+    [Authorize(Roles = Roles.Seller)]
+    public class ProductController : AppController
     {
         private HttpClient _httpClient;
         private HttpClient _httpClientFile;
 
         public ProductController(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient("api");
-            _httpClientFile = httpClientFactory.CreateClient("fileApi");
+            _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);//!!!
+            _httpClientFile = httpClientFactory.CreateClient(ApplicationSettings.FILE_API_CLIENT);//!!!
         }
 
         public async Task<IActionResult> Index()
@@ -28,16 +30,16 @@ namespace Eticaret.Web.Mvc.Controllers
                 return View(products);
             }
 
-            ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+            ViewBagMessage(response.ReasonPhrase);
 
-            return View(new List<AdminProductListDTO>());
+            return View();
         }
 
         public async Task<IActionResult> Create()
         {
             ViewBag.Category = new SelectList(await GetCategories(), "Id", "Name");
 
-            return View(new SellerProductCreateOrUpdateDTO());
+            return View();
         }
 
         [HttpPost]
@@ -64,8 +66,7 @@ namespace Eticaret.Web.Mvc.Controllers
             {
                 return RedirectToAction(nameof(Index));
             }
-
-            ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+            ViewBagMessage(response.ReasonPhrase);
             ModelState.AddModelError("", "Güncelleme sırasında bir hata oluştu.");
 
             ViewBag.Category = new SelectList(await GetCategories(), "Id", "Name");
@@ -83,12 +84,11 @@ namespace Eticaret.Web.Mvc.Controllers
 
                 if (response.IsSuccessStatusCode) return View(product);
 
-                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                ViewBagMessage(response.ReasonPhrase);
             }
 
             return View();
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(SellerProductCreateOrUpdateDTO product, List<IFormFile> ImgList)
@@ -133,7 +133,7 @@ namespace Eticaret.Web.Mvc.Controllers
 
                 if (response.IsSuccessStatusCode) return View(product);
 
-                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                ViewBagMessage(response.ReasonPhrase);
             }
 
             return RedirectToAction(nameof(Index));
@@ -147,7 +147,7 @@ namespace Eticaret.Web.Mvc.Controllers
 
             if (!resp.IsSuccessStatusCode)
             {
-                ViewBag.ErrorMessage = $"Error: {resp.ReasonPhrase}";
+                ViewBagMessage(resp.ReasonPhrase);
                 return RedirectToAction(nameof(Delete), new { id = id });
             }
             SellerProductCreateOrUpdateDTO product = await resp.Content.ReadFromJsonAsync<SellerProductCreateOrUpdateDTO>() ?? new();
@@ -156,7 +156,7 @@ namespace Eticaret.Web.Mvc.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                ViewBagMessage(response.ReasonPhrase);
                 return RedirectToAction(nameof(Delete), new { id = id });
             }
 
@@ -188,7 +188,7 @@ namespace Eticaret.Web.Mvc.Controllers
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                    ViewBagMessage(response.ReasonPhrase);
                 }
             }
             else TempData["Message"] = $"Error: Hata oluştu! Eksik bilgi girdiniz.";
@@ -210,7 +210,6 @@ namespace Eticaret.Web.Mvc.Controllers
                 return products;
             }
         }
-
         public async Task<string> AddImg(IFormFile ImageList)
         {
             var formData = new MultipartFormDataContent();
@@ -222,9 +221,9 @@ namespace Eticaret.Web.Mvc.Controllers
 
             throw new Exception("File not upload");
         }
+        //  public async Task<string> AddImg(IFormFile image) => await fileService.UploadFileAsync(image) ?? string.Empty; //!
     }
 }
-
 //!!! listeleri foreach sız aktarma  addrange;?
 
 

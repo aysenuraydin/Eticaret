@@ -1,12 +1,13 @@
 
 
 using Eticaret.File;
+using Eticaret.File.Constants;
 using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<FileDbContext>(opt =>
 {
-    opt.UseSqlite(builder.Configuration.GetConnectionString("DbConnection"), b => b.MigrationsAssembly("Eticaret.File"));
+    opt.UseSqlite(builder.Configuration.GetConnectionString(ConnectionSettings.DB_CONNECTION), b => b.MigrationsAssembly("Eticaret.File"));
 });
 builder.Services.AddScoped<IFileService, FileService>();
 

@@ -18,7 +18,7 @@
             <form asp-action="Create" enctype="multipart/form-data">
                 @Html.AntiForgeryToken()
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="Id" />
+                @* <input type="hidden" asp-for="Id" /> *@
                 <input type="hidden" asp-for="SellerId" value="@User.FindFirst(JwtClaimTypes.Subject)?.Value " />
                 <div class="form-group">
                     <label asp-for="Name" class="control-label"></label>

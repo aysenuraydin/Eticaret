@@ -1,22 +1,21 @@
 using Eticaret.Dto;
-using Microsoft.AspNetCore.Authorization;
+using Eticaret.Web.Mvc.Constants;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "admin")]
-    public class CommentController : Controller
+    public class CommentController : AppController
     {
         private readonly HttpClient _httpClient;
 
         public CommentController(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient("api");
+            _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
         }
 
         public async Task<IActionResult> List()
         {
-            if (TempData["ErrorMessage"] != null) ViewBag.ErrorMessage = TempData["ErrorMessage"];
+            if (TempData["ErrorMessage"] != null) ViewBagMessage(TempData["ErrorMessage"].ToString());
 
             var response = await _httpClient.GetAsync("AdminProductComment");
 
@@ -27,7 +26,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
                 return View(comments);
             }
 
-            ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+            ViewBagMessage(response.ReasonPhrase);
 
             return View();
         }
@@ -43,7 +42,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
                 return View(comment);
             }
 
-            ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+            ViewBagMessage(response.ReasonPhrase);
 
             return View();
 
@@ -67,7 +66,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
                 return RedirectToAction(nameof(List));
             }
 
-            ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+            ViewBagMessage(response.ReasonPhrase);
             ModelState.AddModelError("", "Güncelleme sırasında bir hata oluştu.");
 
             return View(comment);
@@ -84,7 +83,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
                     return View(product);
                 }
 
-                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                ViewBagMessage(response.ReasonPhrase);
             }
 
             return View();
@@ -98,7 +97,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 
             if (response.IsSuccessStatusCode) return RedirectToAction(nameof(List));
 
-            TempData["ErrorMessage"] = $"Error: {response.ReasonPhrase}";
+            TempDataMessage(response.ReasonPhrase);
             return RedirectToAction(nameof(List));
         }
     }

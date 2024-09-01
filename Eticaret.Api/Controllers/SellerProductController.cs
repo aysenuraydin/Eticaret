@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Eticaret.Domain.Constants;
 using Eticaret.Application.Abstract;
 using Eticaret.Domain;
 using Eticaret.Dto;
@@ -7,10 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Eticaret.Api.Controllers
 {
-    [ApiController]
-    [Authorize(Roles = "seller")]
-    [Route("api/[controller]")]
-    public class SellerProductController : ControllerBase
+    [Authorize(Roles = Roles.Seller)]
+    public class SellerProductController : AppController
     {
         private readonly IProductRepository _productRepo;
         private readonly IProductCommentRepository _commentRepo;
@@ -28,7 +27,6 @@ namespace Eticaret.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProducts()
         {
-            //bool Id = int.TryParse(User.FindFirstValue(JwtClaimTypes.Subject), out int sellerId);//!
             bool result = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int sellerId);
 
             var products = (await _productRepo.GetIdAllIncludeFilterAsync(
@@ -158,7 +156,6 @@ namespace Eticaret.Api.Controllers
                     await _productImageRepo.DeleteAsync(image);
                 }
 
-                // ProductComments koleksiyonunun bir kopyasını oluşturun
                 var commentsToDelete = prd.ProductComments.ToList();
                 foreach (var comment in commentsToDelete)
                 {

@@ -1,4 +1,5 @@
 using Eticaret.Dto;
+using Eticaret.Web.Mvc.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,13 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace Eticaret.Web.Mvc.Controllers
 {
     [Authorize]
-    public class CartController : Controller
+    public class CartController : AppController
     {
         private readonly HttpClient _httpClient;
 
         public CartController(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient("api");
+            _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
         }
 
         public async Task<IActionResult> AddProduct(int id)
@@ -24,14 +25,14 @@ namespace Eticaret.Web.Mvc.Controllers
                 return RedirectToAction(nameof(Edit));
             }
 
-            TempData["ErrorMessage"] = $"Error: {response.ReasonPhrase}";
+            TempDataMessage(response.ReasonPhrase);
 
             return RedirectToAction(nameof(Edit));
         }
 
         public async Task<IActionResult> Edit()
         {
-            if (TempData["ErrorMessage"] != null) ViewBag.ErrorMessage = TempData["ErrorMessage"];
+            if (TempData["ErrorMessage"] != null) ViewBagMessage(TempData["ErrorMessage"].ToString().ToString());
 
             using (var response = await _httpClient.GetAsync($"Cart"))
             {
@@ -42,7 +43,7 @@ namespace Eticaret.Web.Mvc.Controllers
                     return View(carts);
                 }
 
-                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                ViewBagMessage(response.ReasonPhrase);
             }
 
             return View();
@@ -63,7 +64,7 @@ namespace Eticaret.Web.Mvc.Controllers
                 return RedirectToAction(nameof(Edit));
             }
 
-            ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+            ViewBagMessage(response.ReasonPhrase);
             ModelState.AddModelError("", "Güncelleme sırasında bir hata oluştu.");
 
             return View(item);
@@ -77,7 +78,7 @@ namespace Eticaret.Web.Mvc.Controllers
 
             if (!response.IsSuccessStatusCode)
             {
-                TempData["ErrorMessage"] = $"Error: {response.ReasonPhrase}";
+                TempDataMessage(response.ReasonPhrase);
             }
 
             return RedirectToAction(nameof(Edit));

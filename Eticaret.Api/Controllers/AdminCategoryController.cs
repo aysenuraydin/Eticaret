@@ -1,4 +1,5 @@
-﻿using Eticaret.Application.Abstract;
+﻿using Eticaret.Domain.Constants;
+using Eticaret.Application.Abstract;
 using Eticaret.Domain;
 using Eticaret.Dto;
 using Microsoft.AspNetCore.Authorization;
@@ -6,10 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Eticaret.Api.Controllers
 {
-    [Authorize(Roles = "admin")]
-    [ApiController]
-    [Route("api/[controller]")]
-    public class AdminCategoryController : ControllerBase
+    [Authorize(Roles = Roles.Admin)]
+    public class AdminCategoryController : AppController
     {
         private readonly ICategoryRepository _categoryRepo;
         public AdminCategoryController(ICategoryRepository categoryRepo)

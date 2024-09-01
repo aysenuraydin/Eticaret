@@ -1,3 +1,5 @@
+using Eticaret.Web.Mvc.Constants;
+
 namespace Eticaret.Web.Mvc.Middlewares;
 public class CustomMiddleware
 {
@@ -7,14 +9,13 @@ public class CustomMiddleware
     {
         _next = next;
     }
-    //! hoca yaptı
     public async Task InvokeAsync(HttpContext context)
     {
-        var token = context.Request.Cookies["token"];
+        var token = context.Request.Cookies[JWTSettings.TOKEN_NAME];
         if (!string.IsNullOrEmpty(token))
         {
             context.Request.Headers.Append("Authorization", $"Bearer {token}");
-            context.Items.Add("jwt", token); //!
+            context.Items.Add(JWTSettings.JWT, token);
         }
         await _next(context);
     }

@@ -1,15 +1,15 @@
-﻿
-using Eticaret.Dto;
+﻿using Eticaret.Dto;
+using Eticaret.Web.Mvc.Constants;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ticaret.Web.Mvc.ViewComponents
+namespace Eticaret.Web.Mvc.ViewComponents
 {
     public class ProductRatingViewComponent : ViewComponent
     {
         private readonly HttpClient _httpClient;
         public ProductRatingViewComponent(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient("api");
+            _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
         }
 
         public async Task<IViewComponentResult> InvokeAsync(int id)

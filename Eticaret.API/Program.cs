@@ -1,12 +1,13 @@
 using Eticaret.Api;
+using Eticaret.Api.Constants;
 using Eticaret.Application;
-using Eticaret.Application.Middlewares;
 using Eticaret.Persistence.Ef;
+using Eticaret.WebApi.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddPersistenceServices(builder.Configuration);
-builder.Services.AddApplicationServices();
+builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddWebApiServices(builder.Configuration);
 
 var app = builder.Build();
@@ -17,8 +18,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("_myAllowOrigins");
-//app.UseHttpsRedirection();
+app.UseCors(ApplicationSettings.CORS_KEY); //!
 app.UseRouting();
 app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseMiddleware<ExceptionHandlingMiddleware>();

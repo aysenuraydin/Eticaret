@@ -5,9 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Eticaret.Api.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ProductController : ControllerBase
+    public class ProductController : AppController
     {
         private readonly IProductRepository _productRepo;
 

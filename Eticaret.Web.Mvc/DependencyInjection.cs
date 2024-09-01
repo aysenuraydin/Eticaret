@@ -1,10 +1,14 @@
 
 using Eticaret.Dto;
+using Eticaret.Web.Mvc.Constants;
+using Eticaret.Web.Mvc.Models.ConfigModels;
+using Eticaret.Web.Mvc.Services;
 using FluentValidation.AspNetCore;
 using IdentityModel;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 
@@ -20,16 +24,6 @@ namespace Eticaret.Web.Mvc
                 fv.RegisterValidatorsFromAssemblyContaining<AdminCategoryCreateDTOValidator>();
             });
 
-            var logFilePathFormat = configuration["Serilog:WriteTo:0:Args:pathFormat"] ?? "";
-            var logFilePath = logFilePathFormat.Replace("{Date}", DateTime.Now.ToString("yyyy-MM-dd"));
-
-            Log.Logger = new LoggerConfiguration()
-                .WriteTo.File(
-                    path: logFilePath,
-                    outputTemplate: configuration["Serilog:WriteTo:0:Args:outputTemplate"] ?? "")
-                .Enrich.FromLogContext()
-                .CreateLogger();
-
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
@@ -39,22 +33,52 @@ namespace Eticaret.Web.Mvc
 
             services.AddHttpContextAccessor();
 
-            services.AddHttpClient("api", (provider, client) =>
-            {
-                client.BaseAddress = new Uri("http://localhost:5177/api/");
+            services.AddOptions<DataApiAccessConfigModel>()
+                    .Bind(configuration.GetSection(ApplicationSettings.DATA_API_CONFİG))
+                    .ValidateDataAnnotations();
 
-                IHttpContextAccessor contextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
-                var context = contextAccessor.HttpContext;
-                var token = context?.Items["jwt"]?.ToString();
-                if (!string.IsNullOrEmpty(token))
+            services.AddOptions<FileApiAccessConfigModel>()
+                    .Bind(configuration.GetSection(ApplicationSettings.FILE_API_CONFİG))
+                    .ValidateDataAnnotations();
+
+            services.AddHttpClient(ApplicationSettings.DATA_API_CLIENT, (provider, client) =>
+            {
+                var dataApiConfig = provider.GetRequiredService<IOptions<DataApiAccessConfigModel>>().Value;
+                ArgumentNullException.ThrowIfNull(dataApiConfig);
+
+                client.BaseAddress = new Uri(dataApiConfig.BaseUrl);
+                client.Timeout = TimeSpan.FromSeconds(dataApiConfig.TimeoutSeconds);
+
+                if (dataApiConfig.UseJwt)
                 {
-                    client.SetBearerToken(token);
+                    var contextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+                    var context = contextAccessor.HttpContext;
+                    var token = context?.Items[JWTSettings.JWT]?.ToString();
+                    if (!string.IsNullOrEmpty(token))
+                    {
+                        client.SetBearerToken(token);
+                    }
                 }
             });
 
-            services.AddHttpClient("fileApi", (provider, client) =>
+            services.AddHttpClient(ApplicationSettings.FILE_API_CLIENT, (provider, client) =>
             {
-                client.BaseAddress = new Uri("http://localhost:5112/api/");
+                var fileApiConfig = provider.GetRequiredService<IOptions<FileApiAccessConfigModel>>().Value;
+                ArgumentNullException.ThrowIfNull(fileApiConfig);
+
+                client.BaseAddress = new Uri(fileApiConfig.BaseUrl);
+                client.Timeout = TimeSpan.FromSeconds(fileApiConfig.TimeoutSeconds);
+
+                if (fileApiConfig.UseJwt)
+                {
+                    var contextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+                    var context = contextAccessor.HttpContext;
+                    var token = context?.Items[JWTSettings.JWT]?.ToString();
+                    if (!string.IsNullOrEmpty(token))
+                    {
+                        client.SetBearerToken(token);
+                    }
+                }
             });
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -72,12 +96,12 @@ namespace Eticaret.Web.Mvc
                         ClockSkew = TimeSpan.Zero,
                         RequireSignedTokens = false,
                         ValidateIssuerSigningKey = false,
-                        SignatureValidator = (token, parameters) => new Microsoft.IdentityModel.JsonWebTokens.JsonWebToken(token) //!
+                        SignatureValidator = (token, parameters) => new Microsoft.IdentityModel.JsonWebTokens.JsonWebToken(token)
                     };
                 });
 
             services.AddAuthorization();
-
+            services.AddScoped<ApiFileService, ApiFileService>();
             return services;
         }
     }

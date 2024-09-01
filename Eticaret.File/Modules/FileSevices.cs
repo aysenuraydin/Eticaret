@@ -1,3 +1,4 @@
+using Eticaret.File.Constants;
 using Eticaret.File.Data;
 
 namespace Eticaret.File
@@ -28,7 +29,7 @@ namespace Eticaret.File
                 var localName = $"{Guid.NewGuid().ToString("n")}.{Path.GetExtension(file.FileName).TrimStart('.')}";
                 var extension = Path.GetExtension(file.FileName).TrimStart('.');
                 var originalName = Path.GetFileNameWithoutExtension(file.FileName);
-                var fileSaveLocation = Path.Combine(_env.ContentRootPath, _config["FileSaveLocation"]!);
+                var fileSaveLocation = Path.Combine(_env.ContentRootPath, _config[ApplicationSettings.FileSaveLocation]!);
                 var filePath = Path.Combine(fileSaveLocation, localName);
 
                 await System.IO.File.WriteAllBytesAsync(filePath, memoryStream.ToArray());

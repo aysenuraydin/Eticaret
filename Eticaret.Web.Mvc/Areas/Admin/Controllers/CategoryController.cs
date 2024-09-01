@@ -1,17 +1,16 @@
 using Eticaret.Dto;
-using Microsoft.AspNetCore.Authorization;
+using Eticaret.Web.Mvc.Constants;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "admin")]
-    public class CategoryController : Controller
+    public class CategoryController : AppController
     {
         private readonly HttpClient _httpClient;
 
         public CategoryController(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient("api");
+            _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
         }
 
         public IActionResult Create()
@@ -32,7 +31,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index), "Home");
             }
 
-            ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+            ViewBagMessage(response.ReasonPhrase);
 
             return View(category);
         }
@@ -56,7 +55,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
                     return View(p);
                 }
 
-                TempData["ErrorMessage"] = $"Error: {response.ReasonPhrase}";
+                TempDataMessage(response.ReasonPhrase);
             }
 
             return RedirectToAction(nameof(Index), "Home");
@@ -75,7 +74,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index), "Home");
             }
 
-            ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+            ViewBagMessage(response.ReasonPhrase);
             ModelState.AddModelError("", "Güncelleme sırasında bir hata oluştu.");
 
             return View(category);
@@ -92,7 +91,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
                 return View(product);
             }
 
-            TempData["ErrorMessage"] = $"Error: {response.ReasonPhrase}";
+            TempDataMessage(response.ReasonPhrase);
 
             return RedirectToAction("Index", "Home");
         }
@@ -105,7 +104,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 
             if (response.IsSuccessStatusCode) RedirectToAction("Index", "Home");
 
-            TempData["ErrorMessage"] = $"Error: {response.ReasonPhrase}";
+            TempDataMessage(response.ReasonPhrase);
 
             return RedirectToAction("Index", "Home");
         }

@@ -1,15 +1,16 @@
 using Eticaret.Dto;
+using Eticaret.Web.Mvc.Constants;
 using Eticaret.Web.Mvc.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eticaret.Web.Mvc.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : AppController
     {
         private readonly HttpClient _httpClient;
         public HomeController(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient("api");
+            _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
         }
         public async Task<IActionResult> Index()
         {
@@ -20,7 +21,7 @@ namespace Eticaret.Web.Mvc.Controllers
                     var products = await response.Content.ReadFromJsonAsync<List<ProductListDTO>>();
                     return View(products); ;
                 }
-                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                ViewBagMessage(response.ReasonPhrase);
             }
             return View();
         }
@@ -42,7 +43,7 @@ namespace Eticaret.Web.Mvc.Controllers
                 productList = await response.Content.ReadFromJsonAsync<List<ProductListDTO>>() ?? new();
                 if (!response.IsSuccessStatusCode)
                 {
-                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                    ViewBagMessage(response.ReasonPhrase);
                 }
             }
             if (!string.IsNullOrWhiteSpace(q))
@@ -52,17 +53,15 @@ namespace Eticaret.Web.Mvc.Controllers
                                 .Where(s => s.Name!.ToLower().Contains(q.ToLower()))
                                 .ToList();
             }
-            else
-            {
-                TempData["search"] = "";
-            }
+            else TempData["search"] = "";
+
             var categoriesList = new List<CategoryListDTO>();
             using (var response = await _httpClient.GetAsync("Categories"))
             {
                 categoriesList = await response.Content.ReadFromJsonAsync<List<CategoryListDTO>>() ?? new();
                 if (!response.IsSuccessStatusCode)
                 {
-                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                    ViewBagMessage(response.ReasonPhrase);
                 }
             }
             ProductListViewModel productAndSearch = new();
@@ -73,7 +72,7 @@ namespace Eticaret.Web.Mvc.Controllers
 
         public async Task<IActionResult> ProductDetail(int id)
         {
-            if (TempData["ErrorMessage"] != null) ViewBag.ErrorMessage = TempData["ErrorMessage"];
+            if (TempData["ErrorMessage"] != null) ViewBagMessage(TempData["ErrorMessage"].ToString());
 
             using (var response = await _httpClient.GetAsync($"Product/{id}"))
             {
@@ -81,15 +80,11 @@ namespace Eticaret.Web.Mvc.Controllers
                 {
                     var product = await response.Content.ReadFromJsonAsync<ProductDetailDTO>();
 
-                    if (TempData["Message"] != null) ViewBag.ErrorMessage = TempData["Message"];
-
                     return View(product); ;
                 }
 
-                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                ViewBagMessage(response.ReasonPhrase);
             }
-
-            if (TempData["Message"] != null) ViewBag.ErrorMessage = TempData["Message"];
 
             return View();
         }

@@ -5,9 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Eticaret.Api.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class CategoriesController : ControllerBase
+    public class CategoriesController : AppController
     {
         private readonly ICategoryRepository _categoryRepo;
         public CategoriesController(ICategoryRepository categoryRepo)

@@ -1,21 +1,20 @@
 ﻿using Eticaret.Dto;
-using Microsoft.AspNetCore.Authorization;
+using Eticaret.Web.Mvc.Constants;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "admin")]
-    public class HomeController : Controller
+    public class HomeController : AppController
     {
         private readonly HttpClient _httpClient;
 
         public HomeController(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient("api");
+            _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
         }
         public async Task<IActionResult> Index()
         {
-            if (TempData["ErrorMessage"] != null) ViewBag.ErrorMessage = TempData["ErrorMessage"];
+            if (TempData["ErrorMessage"] != null) ViewBagMessage(TempData["ErrorMessage"].ToString());
 
             using (var response = await _httpClient.GetAsync("AdminCategory"))
             {
@@ -24,11 +23,10 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
                     var products = await response.Content.ReadFromJsonAsync<List<AdminCategoryListDTO>>() ?? new List<AdminCategoryListDTO>();
                     return View(products);
                 }
-                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                ViewBagMessage(response.ReasonPhrase);
             }
             return View();
         }
-
     }
 }
 

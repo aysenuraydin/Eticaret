@@ -1,6 +1,8 @@
 using System.Text;
+using Eticaret.Api.Constants;
 using Eticaret.Domain;
 using Eticaret.Persistence.Ef;
+using Eticaret.WebApi.Models.ConfigModels;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -14,18 +16,28 @@ namespace Eticaret.Api
     {
         public static IServiceCollection AddWebApiServices(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddOptions<SerilogConfigModel>()
+            .Bind(configuration.GetSection(SerilogSettings.SERİLOG))
+            .ValidateDataAnnotations();
 
-            var logFilePathFormat = configuration["Serilog:WriteTo:0:Args:pathFormat"] ?? "";
+            var serilogConfig = configuration.GetSection(SerilogSettings.SERİLOG).Get<SerilogConfigModel>();
+
+            if (serilogConfig == null) throw new Exception("Serilog yapılandırması bulunamadı!");
+
+            var logFilePathFormat = serilogConfig.WriteTo[0].Args.PathFormat;
             var logFilePath = logFilePathFormat.Replace("{Date}", DateTime.Now.ToString("yyyy-MM-dd"));
+            var OutputTemplate = serilogConfig.WriteTo[0].Args.OutputTemplate;
 
             Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
                 .WriteTo.File(
                     path: logFilePath,
-                    outputTemplate: configuration["Serilog:WriteTo:0:Args:outputTemplate"] ?? "")
+                    outputTemplate: OutputTemplate)
                 .Enrich.FromLogContext()
                 .CreateLogger();
 
-            var key = Encoding.ASCII.GetBytes(configuration["AppSettings:Secret"]!);
+            //!
+            var key = Encoding.ASCII.GetBytes(configuration[ApplicationSettings.CONFIG_SECRET_KEY]!);
 
             services.AddAuthentication(options =>
             {
@@ -36,7 +48,7 @@ namespace Eticaret.Api
             {
                 options.MapInboundClaims = false;
                 options.RequireHttpsMetadata = false;
-                options.SaveToken = true;//? //!
+                options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
@@ -44,8 +56,8 @@ namespace Eticaret.Api
                     ValidateIssuer = false,
                     ValidateLifetime = true,
                     ValidateAudience = false,
-                    NameClaimType = JwtClaimTypes.Name,//!
-                    RoleClaimType = JwtClaimTypes.Role//!
+                    NameClaimType = JwtClaimTypes.Name,
+                    RoleClaimType = JwtClaimTypes.Role
                 };
                 options.Events = new JwtBearerEvents()
                 {
@@ -86,16 +98,6 @@ namespace Eticaret.Api
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
             });
 
-
-            // services.AddFluentValidation(fv =>
-            // {
-            //     fv.RegisterValidatorsFromAssemblyContaining<AdminCategoryCreateDTOValidator>();
-            // });
-
-            // services.Configure<ApiBehaviorOptions>(options =>
-            // {
-            //     options.SuppressModelStateInvalidFilter = true;
-            // });
             services.AddControllers();
 
             services.AddEndpointsApiExplorer();
@@ -130,14 +132,13 @@ namespace Eticaret.Api
 
             services.AddCors(options =>
             {
-                options.AddPolicy("_myAllowOrigins",
+                options.AddPolicy(ApplicationSettings.CORS_KEY,
                     builder =>
                     {
-                        builder//.WithOrigins("http://127.0.0.1:5177") //!yanlış //mvc adresi olmalıydı
-                            .AllowAnyOrigin()//ya yukarıdaki ya da bu satır.
+                        builder
+                            .AllowAnyOrigin()
                             .AllowAnyMethod()
                             .AllowAnyHeader();
-                        // .AllowCredentials();
                     });
             });
 

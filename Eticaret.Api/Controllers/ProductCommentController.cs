@@ -7,9 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Eticaret.Api.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ProductCommentController : ControllerBase
+    public class ProductCommentController : AppController
     {
         private readonly IProductCommentRepository _productCommentRepo;
         public ProductCommentController(

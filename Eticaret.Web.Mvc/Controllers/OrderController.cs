@@ -1,17 +1,18 @@
 using System.Text.Json;
 using Eticaret.Dto;
+using Eticaret.Web.Mvc.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace Eticaret.Web.Mvc.Controllers
 {
     [Authorize]
-    public class OrderController : Controller
+    public class OrderController : AppController
     {
         private HttpClient _httpClient;
 
         public OrderController(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient("api");
+            _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
         }
 
         [HttpPost]
@@ -37,7 +38,7 @@ namespace Eticaret.Web.Mvc.Controllers
                     });
                 }
 
-                TempData["ErrorMessage"] = $"Error: {response.ReasonPhrase}";
+                TempDataMessage(response.ReasonPhrase);
             }
 
             ModelState.AddModelError("", "Hata Oluştu!");
@@ -60,7 +61,7 @@ namespace Eticaret.Web.Mvc.Controllers
                     if (orders != null) return View(orders);
                 }
 
-                TempData["ErrorMessage"] = $"Error: {response.ReasonPhrase}";
+                TempDataMessage(response.ReasonPhrase);
             }
             return RedirectToAction(nameof(Index), "Home");
         }

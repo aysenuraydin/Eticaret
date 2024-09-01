@@ -8,9 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Eticaret.Api.Controllers
 {
     [Authorize]
-    [ApiController]
-    [Route("api/[controller]")]
-    public class CartController : ControllerBase
+    public class CartController : AppController
     {
         private readonly ICartItemRepository _cartItemRepo;
         private readonly IProductImageRepository _productImageRepo;

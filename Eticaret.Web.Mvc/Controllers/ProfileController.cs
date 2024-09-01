@@ -1,4 +1,5 @@
 using Eticaret.Dto;
+using Eticaret.Web.Mvc.Constants;
 using Eticaret.Web.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,13 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace Eticaret.Web.Mvc.Controllers
 {
     [Authorize]
-    public class ProfileController : Controller
+    public class ProfileController : AppController
     {
         private readonly HttpClient _httpClient;
 
         public ProfileController(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient("api");
+            _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
         }
 
         public async Task<IActionResult> Details()
@@ -26,7 +27,7 @@ namespace Eticaret.Web.Mvc.Controllers
                     return View(user);
                 }
 
-                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                ViewBagMessage(response.ReasonPhrase);
             }
 
             return View();
@@ -53,7 +54,7 @@ namespace Eticaret.Web.Mvc.Controllers
                     }
                 }
 
-                ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                ViewBagMessage(response.ReasonPhrase);
             }
 
             return View();
@@ -80,7 +81,7 @@ namespace Eticaret.Web.Mvc.Controllers
                 return RedirectToAction(nameof(Details));
             }
 
-            ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+            ViewBagMessage(response.ReasonPhrase);
 
             return View(user);
         }
@@ -95,7 +96,7 @@ namespace Eticaret.Web.Mvc.Controllers
 
                     if (orders != null) return View(orders);
 
-                    ViewBag.ErrorMessage = $"Error: {response.ReasonPhrase}";
+                    ViewBagMessage(response.ReasonPhrase);
                 }
             }
 

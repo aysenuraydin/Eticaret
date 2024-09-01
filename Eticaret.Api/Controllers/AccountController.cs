@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Eticaret.Api.Constants;
 using Eticaret.Domain;
 using Eticaret.Dto;
 using IdentityModel;
@@ -12,9 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Eticaret.Api.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class AccountController : ControllerBase
+    public class AccountController : AppController
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
@@ -124,7 +123,7 @@ namespace Eticaret.Api.Controllers
         private async Task<string> GenerateJwtToken(User user)
         {
             var userRoles = await _userManager.GetRolesAsync(user);
-            var secret = _configuration["AppSettings:Secret"]
+            var secret = _configuration[ApplicationSettings.CONFIG_SECRET_KEY] //!
                 ?? throw new Exception("AppSettings Secret key not found");
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(secret);

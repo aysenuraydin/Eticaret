@@ -1,4 +1,5 @@
-﻿using Eticaret.Application.Abstract;
+﻿using Eticaret.Domain.Constants;
+using Eticaret.Application.Abstract;
 using Eticaret.Domain;
 using Eticaret.Dto;
 using Microsoft.AspNetCore.Authorization;
@@ -6,9 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Eticaret.Api.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ProductImageController : ControllerBase
+    public class ProductImageController : AppController
     {
         private readonly IProductImageRepository _productImageRepo;
         public ProductImageController(IProductImageRepository productImageRepo)
@@ -48,7 +47,7 @@ namespace Eticaret.Api.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "seller")]
+        [Authorize(Roles = Roles.Seller)]
         public async Task<IActionResult> CreateProduct(ProductImageCreateDTO image)
         {
             if (image == null) return NotFound();
@@ -67,7 +66,7 @@ namespace Eticaret.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "seller")]
+        [Authorize(Roles = Roles.Seller)]
         public async Task<IActionResult> DeleteImages(int? id)
         {
             if (id == null) return NotFound();
