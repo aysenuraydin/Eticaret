@@ -1,4 +1,4 @@
-﻿@model Product
+﻿@model ProductDetailDTO
 @{
 	ViewData["Title"] = "Product Detail";
 }
@@ -11,7 +11,7 @@
 			<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
 		</a>
 		<a asp-action="Listing" asp-Controller="Home" asp-route-id="@Model.CategoryId">
-			@Model.CategoryFk!.Name
+			@Model.CategoryName
 			<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
 		</a>
 
@@ -24,6 +24,7 @@
 <!-- Product Detail -->
 <section class="sec-product-detail bg0 p-t-65 p-b-60">
 	<div class="container">
+		,:
 
 		@await Html.PartialAsync("_ProductDetailsItem", Model)
 
@@ -128,39 +129,7 @@
 								</div>
 								@if (Model.ProductComments.Count > 0)
 								{
-									@foreach (var comment in Model.ProductComments)
-									{
-										@if (comment.IsConfirmed)
-										{
-											<div class="flex-w flex-t p-b-68">
-												<div class="wrap-pic-s size-109 bor0 of-hidden m-r-18 m-t-6">
-													<img src="/assets/img/avatar-01.jpg" alt="AVATAR">
-												</div>
-
-												<div class="size-207">
-													<div class="flex-w flex-sb-m p-b-17">
-														<span class="mtext-107 cl2 p-r-20">
-															@comment.UserFk?.FirstName
-															@comment.UserFk?.LastName
-														</span>
-														<span class="wrap-rating fs-18 cl11 pointer">
-															@for (int i = 1; i <= 5; i++)
-															{
-																<i
-																	class="item-rating pointer zmdi @(i <= comment.StarCount ? "zmdi-star" : "zmdi-star-outline")"></i>
-															}
-															<input class="dis-none" type="number" name="rating"
-																value="@comment.StarCount">
-														</span>
-													</div>
-
-													<p class="stext-102 cl6">
-														@comment.Text
-													</p>
-												</div>
-											</div>
-										}
-									}
+									@await Component.InvokeAsync("Comment", Model.Id)
 								}
 								else
 								{

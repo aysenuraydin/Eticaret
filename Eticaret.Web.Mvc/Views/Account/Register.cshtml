@@ -1,0 +1,64 @@
+﻿@model RegisterViewModel
+@{
+    Layout = "_LayoutRegister";
+}
+
+<div class="AdminDiv card o-hidden border-0 shadow-lg my-5">
+    <div class="card-body p-0">
+        <!-- Nested Row within Card Body -->
+        <div class="row">
+            <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+            <div class="col-lg-7">
+                <div class="p-5">
+                    <div class="text-center">
+                        <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
+                    </div>
+                    <form asp-action="Register" class="user">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group row">
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                <input asp-for="FirstName" class="form-control form-control-user" placeholder="Ad">
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-6">
+                                <input asp-for="LastName" class="form-control form-control-user" placeholder="Soyadı">
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="Email" class="form-control form-control-user" placeholder="Email Adresi">
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                <input asp-for="Password" class="form-control form-control-user" placeholder="Parola">
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-6">
+                                <input asp-for="ConfirmPassword" class="form-control form-control-user"
+                                    id="exampleFirstName" placeholder="Parola">
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group my-3">
+                            <input type="submit" value="Kayıt Ol" class="btn btn-primary btn-user btn-block" />
+                        </div>
+                    </form>
+
+                    <hr>
+                    <div class="text-center">
+                        <a class="small" asp-controller="Account" asp-action="ForgotPassword">
+                            <span>Şifremi Unuttum? </span>
+                        </a>
+                    </div>
+                    <div class="text-center">
+                        <a class="small" asp-controller="Account" asp-action="Login">
+                            <span>Giriş Yap!</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

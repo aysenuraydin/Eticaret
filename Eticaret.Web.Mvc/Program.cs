@@ -1,20 +1,10 @@
-using Eticaret.Persistence.Ef;
-using Eticaret.Application;
-using Microsoft.AspNetCore.Authentication.Cookies;
-
-using Microsoft.EntityFrameworkCore;
-
+using Microsoft.Extensions.FileProviders;
+using Eticaret.Web.Mvc;
+using Eticaret.Web.Mvc.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddControllersWithViews();
 
-builder.Services.AddPersistenceServices(builder.Configuration);
-builder.Services.AddApplicationServices();
-
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(x =>
-{
-    x.LoginPath = "/Auth/Login";
-});
+builder.Services.AddWebMvcServices(builder.Configuration);
 
 var app = builder.Build();
 
@@ -25,11 +15,25 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
+
+var rootPath = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles");
+var provider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "../Eticaret.File/UploadedFiles"));
+
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = provider,
+    RequestPath = "/UploadedFiles"
+});
 
 app.UseRouting();
 
+app.UseMiddleware<CustomMiddleware>();
+
 app.UseAuthentication(); // login için 
+
 app.UseAuthorization(); //  yetkilendirme için
 
 app.MapControllerRoute(
@@ -40,10 +44,9 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}"
     );
+app.Run();
 
 // using var scope = ((IApplicationBuilder)app).ApplicationServices.CreateScope();
 // using var context = scope.ServiceProvider.GetService<EticaretDbContext>()!;
 // context.Database.EnsureDeleted();
 // context.Database.EnsureCreated();
-
-app.Run();

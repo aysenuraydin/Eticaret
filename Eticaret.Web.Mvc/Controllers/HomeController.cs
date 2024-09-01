@@ -1,92 +1,97 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Eticaret.Application.Abstract;
-using Eticaret.Domain;
+using Eticaret.Dto;
+using Eticaret.Web.Mvc.Constants;
 using Eticaret.Web.Mvc.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Eticaret.Web.Mvc.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : AppController
     {
-        private readonly ICategoryRepository _categoryService;
-        private readonly IProductRepository _productService;
-        private readonly IProductCommentRepository _productCommentService;
-
-        public HomeController(ICategoryRepository categoryService, IProductRepository productService, IProductCommentRepository productCommentService)
+        private readonly HttpClient _httpClient;
+        public HomeController(IHttpClientFactory httpClientFactory)
         {
-            _categoryService = categoryService;
-            _productService = productService;
-            _productCommentService = productCommentService;
+            _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
         }
-
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var produsts = _productService.GetDb()
-                                            .Where(p => p.IsConfirmed && p.Enabled)
-                                            .Include(p => p.ProductImages)
-                                            .Where(p => p.StockAmount > 0)
-                                            .OrderByDescending(p => p.CreatedAt)
-                                            .ToList();
-            return View(produsts);
+            using (var response = await _httpClient.GetAsync("Home"))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var products = await response.Content.ReadFromJsonAsync<List<ProductListDTO>>();
+                    return View(products); ;
+                }
+                ViewBagMessage(response.ReasonPhrase);
+            }
+            return View();
         }
         public IActionResult AboutUs()
         {
             return View();
         }
+
         public IActionResult Contact()
         {
             return View();
         }
         public async Task<IActionResult> Listing(int? id, string? q)
         {
-            var productList = await _productService.GetIdAllIncludeFilterAsync(
-                                        p => p.IsConfirmed && p.Enabled && p.StockAmount > 0,
-                                        p => p.ProductImages
-                                       );
-
-
-
-            if (id != null) productList = productList.Where(c => c.CategoryId == id)
-                                                        .ToList();
-
+            var productList = new List<ProductListDTO>();
+            var url = (id == null) ? $"Home" : $"Home/{id}";
+            using (var response = await _httpClient.GetAsync(url))
+            {
+                productList = await response.Content.ReadFromJsonAsync<List<ProductListDTO>>() ?? new();
+                if (!response.IsSuccessStatusCode)
+                {
+                    ViewBagMessage(response.ReasonPhrase);
+                }
+            }
             if (!string.IsNullOrWhiteSpace(q))
             {
                 TempData["search"] = q;
-
-                productList = productList.Where(s => s.Name!.ToLower().Contains(q.ToLower()))
-                                                            .ToList();
+                productList = productList
+                                .Where(s => s.Name!.ToLower().Contains(q.ToLower()))
+                                .ToList();
             }
-            else
+            else TempData["search"] = "";
+
+            var categoriesList = new List<CategoryListDTO>();
+            using (var response = await _httpClient.GetAsync("Categories"))
             {
-                TempData["search"] = "";
+                categoriesList = await response.Content.ReadFromJsonAsync<List<CategoryListDTO>>() ?? new();
+                if (!response.IsSuccessStatusCode)
+                {
+                    ViewBagMessage(response.ReasonPhrase);
+                }
             }
             ProductListViewModel productAndSearch = new();
-            productAndSearch.ProductList = productList.OrderByDescending(p => p.CreatedAt).ToList();
-            productAndSearch.Categories = _categoryService.GetAll();
-
+            productAndSearch.ProductList = productList;
+            productAndSearch.Categories = categoriesList;
             return View(productAndSearch);
         }
 
-        public IActionResult ProductDetail(int id)
+        public async Task<IActionResult> ProductDetail(int id)
         {
-            var product = _productService.GetDb()
-                                .Include(i => i.ProductComments)
-                                .ThenInclude(i => i.UserFk)
-                                .Include(p => p.ProductImages)
-                                .Include(p => p.CategoryFk)
-                                .FirstOrDefault(p => p.Id == id);
-            return View(product);
+            if (TempData["ErrorMessage"] != null) ViewBagMessage(TempData["ErrorMessage"].ToString());
+
+            using (var response = await _httpClient.GetAsync($"Product/{id}"))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var product = await response.Content.ReadFromJsonAsync<ProductDetailDTO>();
+
+                    return View(product); ;
+                }
+
+                ViewBagMessage(response.ReasonPhrase);
+            }
+
+            return View();
         }
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var errorMessage = HttpContext.Items["ExceptionMessage"]?.ToString();
+            return View(new ErrorViewModel { RequestId = errorMessage });
         }
     }
 }

@@ -1,127 +1,109 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Eticaret.Application.Abstract;
+using Eticaret.Dto;
+using Eticaret.Web.Mvc.Constants;
 using Eticaret.Web.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Eticaret.Web.Mvc.Controllers
 {
     [Authorize]
-    public class ProfileController : Controller
+    public class ProfileController : AppController
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IOrderRepository _orderService;
+        private readonly HttpClient _httpClient;
 
-        public ProfileController(
-            IUserRepository userRepository,
-            IOrderRepository orderService)
+        public ProfileController(IHttpClientFactory httpClientFactory)
         {
-            _userRepository = userRepository;
-            _orderService = orderService;
+            _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
         }
 
-        public IActionResult Details()
+        public async Task<IActionResult> Details()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId != null && int.TryParse(userId, out int Id))
+            using (var response = await _httpClient.GetAsync("Profile"))
             {
-                var user = _userRepository.GetDb()
-                                        .Include(u => u.RoleFk)
-                                        .Include(u => u.Orders)
-                                        .Include(u => u.CartItems)
-                                        .Include(u => u.ProductComments)
-                                        .FirstOrDefault();
-                if (user != null)
+                if (response.IsSuccessStatusCode)
                 {
+                    var user = await response.Content.ReadFromJsonAsync<AdminUserListDTO>() ?? new AdminUserListDTO() ?? new AdminUserListDTO();
+
                     return View(user);
                 }
+
+                ViewBagMessage(response.ReasonPhrase);
             }
+
             return View();
         }
 
-        public IActionResult Edit()
+        public async Task<IActionResult> Edit()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId != null && int.TryParse(userId, out int Id))
+            using (var response = await _httpClient.GetAsync("Profile"))
             {
-                var user = _userRepository.GetDb()
-                                        .Include(u => u.RoleFk)
-                                        .Include(u => u.Orders)
-                                        .Include(u => u.CartItems)
-                                        .Include(u => u.ProductComments)
-                                        .FirstOrDefault();
-                if (user != null)
+                if (response.IsSuccessStatusCode)
                 {
-                    RegisterViewModel editUser = new()
+                    var user = await response.Content.ReadFromJsonAsync<AdminUserListDTO>() ?? new AdminUserListDTO() ?? new AdminUserListDTO();
+
+                    if (user != null)
                     {
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        Email = user.Email,
-                        Password = user.Password,
-                        ConfirmPassword = user.Password
-                    };
-                    return View(editUser);
+                        RegisterViewModel editUser = new()
+                        {
+                            FirstName = user.FirstName!,
+                            LastName = user.LastName!,
+                            Email = user.Email!
+                        };
+
+                        return View(editUser);
+                    }
                 }
+
+                ViewBagMessage(response.ReasonPhrase);
             }
+
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(RegisterViewModel user)
+        public async Task<IActionResult> Edit(RegisterViewModel user)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid) return View(user);
+
+            var u = new UserUpdateDTO()
             {
-                try
-                {
-                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    var editUser = _userRepository.Find(int.Parse(userId!));
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Password = user.Password,
+                Email = user.Email,
+            };
 
-                    editUser.FirstName = user.FirstName;
-                    editUser.LastName = user.LastName;
-                    editUser.Email = user.Email;
-                    editUser.Password = user.Password;
+            var response = await _httpClient.PutAsJsonAsync($"Profile", u);
 
-                    _userRepository.Update(editUser);
-                    return RedirectToAction(nameof(Details));
-                }
-                catch
-                {
-                    ModelState.AddModelError("", "Hata Oluştu!");
-                }
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Details));
             }
+
+            ViewBagMessage(response.ReasonPhrase);
+
             return View(user);
         }
-        public IActionResult MyOrders()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId != null && int.TryParse(userId, out int Id))
-            {
-                try
-                {
-                    var order = _orderService.GetDb()
-                            .Include(o => o.OrderItems)
-                            .ThenInclude(o => o.ProductFk)
-                            .ThenInclude(o => o.ProductImages)
-                            .ThenInclude(o => o.SellerFk)
-                            .Where(o => o.UserId == Id)
-                            .OrderByDescending(o => o.CreatedAt)
-                            .ToList();
 
-                    return View(order);
-                }
-                catch
+        public async Task<IActionResult> MyOrders()
+        {
+            using (var response = await _httpClient.GetAsync($"Order"))
+            {
+                if (response.IsSuccessStatusCode)
                 {
-                    ModelState.AddModelError("", "Hata Oluştu!");
+                    var orders = await response.Content.ReadFromJsonAsync<List<OrderDetailDTO>>();
+
+                    if (orders != null) return View(orders);
+
+                    ViewBagMessage(response.ReasonPhrase);
                 }
             }
+
             return View();
         }
     }
 }
+
+
+

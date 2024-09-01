@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Product>
+﻿@model IEnumerable<ProductListDTO>
 
 <section class="man-banner spad me-0 pe-0">
 
@@ -6,7 +6,7 @@
         <div class="row">
 
             <div class="col-lg-3">
-                <div class="product-large set-bg" data-setbg="/assets/img/products/women-large.jpg">
+                <div class="product-large set-bg" data-setbg="/UploadedFiles/products/women-large.jpg">
                     <h2>Women’s</h2>
                     <a href="#">Discover More</a>
                 </div>
@@ -21,9 +21,12 @@
                     </ul>
                 </div>
                 <div class="product-slider owl-carousel">
-                    @foreach (var item in Model)
+                    @if (Model != null && Model.Any())
                     {
-                        @await Html.PartialAsync("_ProductListItem", item)
+                        @foreach (var item in Model)
+                        {
+                            @await Html.PartialAsync("_ProductListItem", item)
+                        }
                     }
                 </div>
             </div>

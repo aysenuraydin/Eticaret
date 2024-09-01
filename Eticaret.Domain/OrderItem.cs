@@ -1,5 +1,4 @@
 using Eticaret.Domain.Abstract;
-using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Eticaret.Domain
@@ -31,12 +30,12 @@ namespace Eticaret.Domain
         [Display(Name = "Satıcı")]
         [Required(ErrorMessage = "Satıcı alanı gereklidir.")]
 
-        public int SellerId { get; set; }
+        public int UserId { get; set; }
 
         #region Navigation Properties
         public Product ProductFk { get; set; } = null!;
         public Order OrderFk { get; set; } = null!;
-        public Seller SellerFk { get; set; } = null!;
+        public User UserFk { get; set; } = null!;
         #endregion
     }
 

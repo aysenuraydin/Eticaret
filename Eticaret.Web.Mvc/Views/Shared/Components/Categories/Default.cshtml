@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Category>
+﻿@model IEnumerable<CategoryListDTO>
 
 
 
@@ -7,11 +7,14 @@
         Kategoriler
     </a>
     <div class="dropdown-menu">
-        @foreach (var anaKategori in Model)
+        @if (Model != null && Model.Any())
         {
-            <a class="dropdown-item" asp-controller="Home" asp-action="Listing" asp-route-id="@anaKategori.Id">
-                <span>@anaKategori.Name</span>
-            </a>
+            @foreach (var anaKategori in Model)
+            {
+                <a class="dropdown-item" asp-controller="Home" asp-action="Listing" asp-route-id="@anaKategori.Id">
+                    <span>@anaKategori.Name</span>
+                </a>
+            }
         }
     </div>
 </li>

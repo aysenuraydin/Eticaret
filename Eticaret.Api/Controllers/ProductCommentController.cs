@@ -1,119 +1,81 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Security.Claims;
 using Eticaret.Application.Abstract;
 using Eticaret.Domain;
-using Eticaret.Models.DTO;
+using Eticaret.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Api.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ProductCommentController : ControllerBase
+    public class ProductCommentController : AppController
     {
-        private readonly IProductCommentRepository _productCommentService;
-
-        public ProductCommentController(IProductCommentRepository productCommentService)
+        private readonly IProductCommentRepository _productCommentRepo;
+        public ProductCommentController(
+            IProductCommentRepository productCommentRepo
+            )
         {
-            _productCommentService = productCommentService;
-        }
-        [HttpGet]
-        public async Task<IActionResult> GetAllProduct()
-        {
-            var products = await _productCommentService.GetAllAsync();
-
-            var ProductCommentsDTO = new List<ProductCommentDTO>();
-
-            foreach (var item in products)
-            {
-                ProductCommentsDTO.Add(ProductCommentToDTO(item));
-            }
-
-            return Ok(ProductCommentsDTO);
-
+            _productCommentRepo = productCommentRepo;
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProduct(int id)
+        public async Task<IActionResult> GetProductComment(int? id)
         {
-            var comment = await _productCommentService.FindAsync(id);
+            if (id == null) return NotFound();
 
-            if (comment == null)
-            {
-                return NotFound(); // 404
-            }
-            return Ok(ProductCommentToDTO(comment)); // 200
+            var comment = (await _productCommentRepo.GetIdAllIncludeFilterAsync(
+                                p => p.ProductId == id && p.IsConfirmed == true,
+                                p => p.UserFk!
+                                ))
+                                .OrderByDescending(p => p.CreatedAt)
+                                .Select(p => ProductCommentListToDTO(p))
+                                .ToList();
+
+            return Ok(comment);
         }
 
+        [Authorize]
         [HttpPost]
-        public async Task<IActionResult> CreateProduct(ProductComment productComment)
+        public async Task<IActionResult> CreateProductComment(ProductCommentCreateDTO entity)
         {
-            await _productCommentService.AddAsync(productComment);
-            return CreatedAtAction(nameof(GetProduct), new { id = productComment.Id }, ProductCommentToDTO(productComment));
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> EditProduct(int id, ProductComment productComment)
-        {
-            if (id != productComment.Id)
+            if (entity == null) return NotFound();
+            try
             {
-                return BadRequest();
+                if (int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId))
+                {
+                    var p = ProductCreatToDTO(entity);
+
+                    p.UserId = userId;
+
+                    await _productCommentRepo.AddAsync(p);
+
+                    return CreatedAtAction(nameof(GetProductComment), new { id = p.Id }, p);
+                }
+
+                return NotFound();
             }
-
-            var item = await _productCommentService.FindAsync(id);
-
-            if (item == null)
+            catch (Exception)
             {
                 return NotFound();
             }
-
-            await _productCommentService.UpdateAsync(item);
-            return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id, ProductComment productComment)
+        private static ProductCommentListDTO ProductCommentListToDTO(ProductComment p)
         {
-            if (id != productComment.Id)
+            return new ProductCommentListDTO
             {
-                return BadRequest();
-            }
-
-            var item = await _productCommentService.FindAsync(id);
-
-            if (item == null)
-            {
-                return NotFound();
-            }
-
-            await _productCommentService.DeleteAsync(item);
-            return NoContent();
+                Text = p.Text,
+                StarCount = p.StarCount,
+                UserName = $"{p.UserFk?.FirstName ?? string.Empty} {p.UserFk?.LastName ?? string.Empty}".Trim(),
+            };
         }
-        private static ProductCommentDTO ProductCommentToDTO(ProductComment comment)
+
+        private static ProductComment ProductCreatToDTO(ProductCommentCreateDTO p)
         {
-            return new ProductCommentDTO
+            return new ProductComment
             {
-                Id = comment.Id,
-                Text = comment.Text,
-                StarCount = comment.StarCount,
-                IsConfirmed = comment.IsConfirmed,
-                CreatedAt = comment.CreatedAt,
-                UserId = comment.UserId,
-                ProductId = comment.ProductId
+                Text = p.Text,
+                StarCount = p.StarCount,
+                ProductId = p.ProductId
             };
         }
     }
 }
-
-
-
-
-
-
-

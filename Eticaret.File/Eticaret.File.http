@@ -1,4 +1,4 @@
-@Eticaret.File_HostAddress = http://localhost:5018
+@Eticaret.File_HostAddress = http://localhost:5112
 
 GET {{Eticaret.File_HostAddress}}/weatherforecast/
 Accept: application/json

@@ -94,7 +94,7 @@
             </li>
             <hr class="sidebar-divider my-0">
             <li class="nav-item">
-                <a class="nav-link" asp-controller="Auth" asp-action="Logout" asp-area="default">
+                <a class="nav-link" asp-controller="Account" asp-action="Logout" asp-area="default">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Güvenli Çıkış</span>
 
@@ -111,7 +111,7 @@
 
             <!-- Sidebar Message -->
             <div class="sidebar-card d-none d-lg-flex">
-                <img class="sidebar-card-illustration mb-2" src="~/assets/img/undraw_rocket.svg" alt="...">
+                <img class="sidebar-card-illustration mb-2" src="/UploadedFiles/undraw_rocket.svg" alt="...">
                 <p class="text-center mb-2"><strong>SB Admin Pro</strong> is packed with premium features,
                     components,
                     and more!</p>
@@ -244,7 +244,8 @@
                                 </h6>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="~/assets/img/undraw_profile_1.svg" alt="...">
+                                        <img class="rounded-circle" src="~/UploadedFiles/undraw_profile_1.svg"
+                                            alt="...">
                                         <div class="status-indicator bg-success"></div>
                                     </div>
                                     <div class="font-weight-bold">
@@ -255,7 +256,8 @@
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="~/assets/img/undraw_profile_2.svg" alt="...">
+                                        <img class="rounded-circle" src="~/UploadedFiles/undraw_profile_2.svg"
+                                            alt="...">
                                         <div class="status-indicator"></div>
                                     </div>
                                     <div>
@@ -266,7 +268,8 @@
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="~/assets/img/undraw_profile_3.svg" alt="...">
+                                        <img class="rounded-circle" src="~/UploadedFiles/undraw_profile_3.svg"
+                                            alt="...">
                                         <div class="status-indicator bg-warning"></div>
                                     </div>
                                     <div>
@@ -298,7 +301,8 @@
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small"> @User.Identity?.Name <span>
-                                        <img class="img-profile rounded-circle" src="~/assets/img/undraw_profile.svg">
+                                        <img class="img-profile rounded-circle"
+                                            src="~/UploadedFiles/undraw_profile.svg">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -330,8 +334,22 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+                    @if (ViewBag.ErrorMessage != null)
+                    {
+                        <div id="alertMessages" style="z-index: 3 !important;">
+                            <div class="show w-25">
+                                <div class="alert alert-primary alert-dismissible p-4">
+                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">
+                                        <h3 class="text-primary">&times;</h3>
+                                    </a>
+                                    <h5 class="text-primary"> <strong>@ViewBag.ErrorMessage</strong> Hata Oluştu!</h5>
+                                </div>
+                            </div>
+                        </div>
+                    }
                     @RenderBody()
                 </div>
+
                 <!-- /.container-fluid -->
 
             </div>
@@ -377,6 +395,9 @@
             </div>
         </div>
     </div>
+    @RenderSection("Styles", required: false)
+    @RenderSection("Scripts", required: false)
+
 
     <!-- Bootstrap core JavaScript-->
     <script src="~/assets/vendor/jquery/jquery.min.js"></script>
@@ -404,37 +425,6 @@
                 console.error(error);
             });
     </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     <script src="~/assets/vendor/jquery/jquery-3.2.1.min.js"></script>
@@ -473,7 +463,37 @@
             });
         });
     </script>
-    @RenderSection("Styles", false);
+    <Script>
+        $(document).ready(function () {
+            $('.changeRole').each(function () {
+                var roleId = $(this).attr("data-role-id");
+                $(this).find('option[value="' + roleId + '"]').prop('selected', true);
+            });
+        });
+    </Script>
+    <script>
+        $(document).ready(function () {
+            $('.roleNameInput').on('input', function () {
+                var form = $(this).closest('form');
+                var editButton = form.find('.editButton');
+                var roleName = $(this).val().trim();
+                if (roleName.length > 0) {
+                    editButton.removeAttr('disabled');
+                } else {
+                    editButton.attr('disabled', true);
+                }
+            });
+        });
+    </script>
+    <script>
+        // Sayfa yüklendikten 5 saniye sonra uyarıyı kapatır
+        setTimeout(function () {
+            var alertMessage = document.getElementById('alertMessages');
+            if (alertMessage != null) {
+                alertMessage.style.display = 'none';
+            }
+        }, 5000); // 5000 milisaniye = 5 saniye
+    </script>
 </body>
 
 </html>

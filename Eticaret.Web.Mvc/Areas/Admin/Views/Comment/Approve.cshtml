@@ -1,4 +1,4 @@
-﻿@model ProductComment
+﻿@model AdminProductCommentListDTO
 @{
     ViewData["Title"] = "Products Approve";
 }
@@ -44,28 +44,23 @@
     </dl>
     <dl class="row">
         <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.UserFk!.Email)
+            @Html.DisplayNameFor(model => model.UserName)
         </dt>
         <dt class="col-sm-9">
-            @Html.DisplayFor(model => model.UserFk!.Email)
+            @Html.DisplayFor(model => model.UserName)
         </dt>
     </dl>
     <dl class="row">
         <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.ProductFk!.Name)
+            @Html.DisplayNameFor(model => model.ProductName)
         </dt>
         <dt class="col-sm-9">
-            @Html.DisplayFor(model => model.ProductFk!.Name)
+            @Html.DisplayFor(model => model.ProductName)
         </dt>
     </dl>
     <form asp-action="Approve" asp-Controller="Comment">
         @Html.AntiForgeryToken()
         <input type="hidden" asp-for="Id" />
-        <input type="hidden" asp-for="Text" />
-        <input type="hidden" asp-for="StarCount" />
-        <input type="hidden" asp-for="CreatedAt" />
-        <input type="hidden" asp-for="UserId" />
-        <input type="hidden" asp-for="ProductId" />
 
         <div class="form-group">
             <div class="row">

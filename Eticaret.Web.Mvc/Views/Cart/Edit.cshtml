@@ -1,4 +1,4 @@
-﻿@model OrderViewModel
+﻿@model IEnumerable<CartItemListDTO>
 @{
     ViewData["Title"] = "Card Items";
 }
@@ -35,66 +35,61 @@
                                 <th></th>
                             </tr>
 
-                            @if (Model.CartItems != null && Model.CartItems!.Count() != 0)
+                            @if (Model != null && Model.Count() != 0)
                             {
-                                @foreach (var item in Model.CartItems)
+                                @foreach (var item in Model)
                                 {
                                     <tr class="table_row">
                                         <td class="column-1">
                                             <div class="how-itemcart1 mx-4">
-                                                @if (!item.ProductFk!.ProductImages.Any())
+                                                @if (item.ProductImages == null || item.ProductImages.Length == 0)
                                                 {
                                                     <img src="https://via.placeholder.com/100x100" alt="Ürun resmi">
                                                 }
                                                 else
                                                 {
-                                                    <img src="/assets/img/@item.ProductFk.ProductImages[0].Url" width="80px;">
+                                                    <img src="/UploadedFiles/@item.ProductImages" width="80px;">
                                                 }
                                             </div>
                                         </td>
-                                        @if (item.ProductFk != null)
-                                        {
-                                            <td class="column-2">
-                                                <a asp-action="ProductDetail" asp-Controller="Home"
-                                                    asp-route-id="@item.                                ProductId">
-                                                    @item.ProductFk.Name
-                                                </a>
-                                            </td>
-                                            <td class="column-3">@item.ProductFk.Price ₺</td>
-                                        }
+
+                                        <td class="column-2">
+                                            <a asp-action="ProductDetail" asp-Controller="Home" asp-route-id="@item.ProductId">
+                                                @item.ProductName
+                                            </a>
+                                        </td>
+                                        <td class="column-3">@item.ProductPrice ₺</td>
+
                                         <td class="column-4">
                                             <form asp-action="Edit" asp-Controller="Cart" method="post" class="quantityForms">
                                                 @Html.AntiForgeryToken()
-                                                <input type="hidden" asp-for="@item.Id" />
                                                 <input type="hidden" asp-for="@item.ProductId" />
-                                                <input type="hidden" asp-for="@item.UserId" />
-
+                                                <input type="hidden" asp-for="@item.Id" />
                                                 <div class="wrap-num-product flex-w m-l-auto m-r-0">
                                                     <div
-                                                        class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m                                 minusButton">
+                                                        class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m minusButton">
                                                         <a> <i class="fs-16 zmdi zmdi-minus"></i></a>
                                                     </div>
                                                     <input asp-for="@item.Quantity" value="@item.Quantity"
-                                                        id="quantity_@item.                              Id"
+                                                        id="quantity_@item.Id"
                                                         class="mtext-104 cl3 txt-center num-product Quantity" />
 
                                                     <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m plusButton"
-                                                        data-item-id="@item.Id">
+                                                        data-item-id="@item.Id" id="@item.Id">
                                                         <a><i class="fs-16 zmdi zmdi-plus"></i> </a>
                                                     </div>
                                                 </div>
                                             </form>
                                         </td>
 
-                                        @if (item.ProductFk != null)
-                                        {
-                                            <td class="column-5 text-center">@(item.ProductFk.Price * item.Quantity) ₺</td>
-                                        }
+
+                                        <td class="column-5 text-center">@(item.ProductPrice * item.Quantity) ₺</td>
+
                                         <td>
-                                            <form asp-action="Delete" asp-Controller="Cart" method="post">
+                                            <form asp-action="Delete" asp-controller="Cart" method="post">
                                                 @Html.AntiForgeryToken()
-                                                <input type="hidden" asp-for="@item.Id" />
-                                                <input type="submit" value="X" class="btn btn-outline-danger p-3  mx-4" />
+                                                <input type="hidden" name="id" value="@item.Id" />
+                                                <button class="btn btn-outline-danger p-3 mx-4" type="submit">X</button>
                                             </form>
                                         </td>
                                     </tr>
@@ -128,9 +123,9 @@
 
                         <div class="size-209">
                             <span class="mtext-110 cl2">
-                                @if (Model.CartItems != null)
+                                @if (Model != null)
                                 {
-                                    @Model.CartItems.Sum(cart => cart.Quantity * cart.ProductFk!.Price)
+                                    @Model.Sum(cart => cart.Quantity * cart.ProductPrice)
                                 }
                                 ₺
                             </span>
@@ -140,7 +135,7 @@
                         @Html.AntiForgeryToken()
                         <div class="flex-w flex-t bor12 p-t-15 p-b-30">
                             <div class="form-group" style="width: 100% !important;">
-                                <label asp-for="Address" class="control-label"></label>
+                                <label id="Address" name="Address" class="control-label"></label>
                                 <textarea id="Address" name="Address" class="form-control"
                                     style="min-height:100px !important;"></textarea>
                                 <span id="addressError" class="text-danger"></span>
@@ -153,9 +148,9 @@
                             </div>
                             <div class="size-209 p-t-1">
                                 <span class="mtext-110 cl2">
-                                    @if (Model.CartItems != null)
+                                    @if (Model != null)
                                     {
-                                        @Model.CartItems.Sum(cart => cart.Quantity * cart.ProductFk!.Price)
+                                        @Model.Sum(cart => cart.Quantity * cart.ProductPrice)
                                     }
                                     ₺
                                 </span>
@@ -187,15 +182,6 @@
                     $(this).closest('.quantityForms').find('.Quantity').val(currentValue);
                 }
                 $(this).closest('form').submit();
-            });
-            $(document).on('submit', '#orderForm', function (event) {
-                var address = $("#Address").val();
-                if ($.trim(address) === "") {
-                    $("#addressError").text("Adres alanı boş bırakılamaz.");
-                    event.preventDefault(); // Formun gönderilmesini engelle
-                } else {
-                    $("#addressError").text("");
-                }
             });
         });
     </script>

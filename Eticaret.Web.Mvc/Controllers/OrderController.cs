@@ -1,94 +1,69 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Eticaret.Application.Abstract;
-using Eticaret.Domain;
-using Eticaret.Web.Mvc.Models;
+using System.Text.Json;
+using Eticaret.Dto;
+using Eticaret.Web.Mvc.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-
 namespace Eticaret.Web.Mvc.Controllers
 {
     [Authorize]
-    public class OrderController : Controller
+    public class OrderController : AppController
     {
-        private readonly IOrderRepository _orderService;
-        private readonly IOrderItemRepository _orderItemService;
-        private readonly ICartItemRepository _cartItemService;
+        private HttpClient _httpClient;
 
-        public OrderController(IOrderRepository orderService,
-                            IOrderItemRepository orderItemService,
-                            ICartItemRepository cartItemService)
+        public OrderController(IHttpClientFactory httpClientFactory)
         {
-            _orderService = orderService;
-            _orderItemService = orderItemService;
-            _cartItemService = cartItemService;
+            _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(OrderViewModel item)
+        public async Task<IActionResult> Create(string Address)
         {
-            if (!string.IsNullOrEmpty(item.Address))
+            if (ModelState.IsValid)
             {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                if (userId != null && int.TryParse(userId, out int Id))
+                OrderDTO order = new() { Address = Address };
+
+                var response = await _httpClient.PostAsJsonAsync("Order", order);
+
+                if (response.IsSuccessStatusCode)
                 {
-                    var cartitems = _cartItemService.GetDb()
-                                                .Where(c => c.UserId == Id)
-                                                .Include(c => c.ProductFk)
-                                                .ToList();
-                    List<OrderItem> orderList = new();
-                    Order order = new()
-                    {
-                        Address = item.Address,
-                        UserId = Id
-                    };
-                    _orderService.Add(order);
-                    foreach (var cart in cartitems)
-                    {
-                        OrderItem orderItem = new()
-                        {
-                            Quantity = cart.Quantity,
-                            UnitPrice = cart.ProductFk!.Price,
-                            ProductId = cart.ProductId,
-                            OrderId = order.Id,
-                            SellerId = cart.ProductFk.SellerId
-                        };
-                        _orderItemService.Add(orderItem);
-                        _cartItemService.Delete(cart);
-                    }
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    var responseData = JsonSerializer.Deserialize<Dictionary<string, string>>(responseBody);
+                    var orderCode = responseData?["orderCode"];
+
                     return RedirectToRoute(new
                     {
                         action = nameof(Details),
-                        orderCode = order.OrderCode
+                        orderCode = orderCode ?? ""
                     });
                 }
 
+                TempDataMessage(response.ReasonPhrase);
             }
-            return RedirectToAction(nameof(CartController.Edit), nameof(CartController).Replace("Controller", string.Empty));
+
+            ModelState.AddModelError("", "Hata Oluştu!");
+
+            return RedirectToRoute(new
+            {
+                action = nameof(CartController.Edit),
+                controller = nameof(CartController).Replace("Controller", string.Empty)
+            });
         }
 
-        public IActionResult Details(string orderCode)
+        public async Task<IActionResult> Details(string orderCode)
         {
-            var order = _orderService.GetDb()
-                            .Include(o => o.OrderItems)
-                            .ThenInclude(o => o.ProductFk)
-                            .ThenInclude(o => o.ProductImages)
-                            .ThenInclude(o => o.SellerFk)
-                            .FirstOrDefault(o => o.OrderCode == orderCode);
-
-            if (order != null)
+            using (var response = await _httpClient.GetAsync($"Order/{orderCode}"))
             {
-                return View(order);
+                if (response.IsSuccessStatusCode)
+                {
+                    var orders = await response.Content.ReadFromJsonAsync<OrderDetailDTO>();
+
+                    if (orders != null) return View(orders);
+                }
+
+                TempDataMessage(response.ReasonPhrase);
             }
             return RedirectToAction(nameof(Index), "Home");
         }
-
     }
 }

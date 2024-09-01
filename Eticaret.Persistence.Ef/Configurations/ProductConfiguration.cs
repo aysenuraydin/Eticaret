@@ -16,8 +16,18 @@ namespace Eticaret.Persistence.Ef.Configurations
             builder.Property(u => u.CreatedAt).IsRequired();
             builder.Property(u => u.IsConfirmed).IsRequired();
             builder.Property(u => u.Enabled).IsRequired();
-            builder.Property(u => u.SellerId).IsRequired();
+            builder.Property(u => u.UserId).IsRequired();
             builder.Property(u => u.CategoryId).IsRequired();
+
+            //bunlar önemli !!!
+            builder.HasMany(p => p.ProductComments)
+                .WithOne(c => c.ProductFk)
+                .HasForeignKey(c => c.ProductId);
+
+            builder.HasMany(p => p.ProductImages)
+                .WithOne(i => i.ProductFk)
+                .HasForeignKey(i => i.ProductId);
+
         }
     }
 }

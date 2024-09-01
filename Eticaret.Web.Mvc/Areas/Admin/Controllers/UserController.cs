@@ -1,99 +1,99 @@
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Eticaret.Application.Abstract;
 using Eticaret.Domain;
-using Microsoft.AspNetCore.Authorization;
+using Eticaret.Dto;
+using Eticaret.Web.Mvc.Constants;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "admin")]
-    public class UserController : Controller
+    public class UserController : AppController
     {
-        private readonly IUserRepository _userService;
-        private readonly IRoleRepository _roleService;
-        private readonly ISellerRepository _sellerService;
+        private readonly HttpClient _httpClient;
 
-        public UserController(IUserRepository userService, IRoleRepository roleService, ISellerRepository sellerervice)
+        public UserController(IHttpClientFactory httpClientFactory)
         {
-            _userService = userService;
-            _roleService = roleService;
-            _sellerService = sellerervice;
+            _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
         }
 
-        public IActionResult List()
+        public async Task<IActionResult> List()
         {
-            var user = _userService.GetDb()
-                            .Include(u => u.RoleFk)
-                            .Include(u => u.CartItems)
-                            .Include(u => u.ProductComments)
-                            .Include(u => u.Orders)
-                            .OrderBy(u => u.Enabled)
-                            .Where(u => u.RoleId != 3)
-                            .ToList();
+            var response = await _httpClient.GetAsync("AdminUser");
 
-            return View(user);
+            if (response.IsSuccessStatusCode)
+            {
+                var users = await response.Content.ReadFromJsonAsync<List<AdminUserListDTO>>() ?? new List<AdminUserListDTO>();
+                return View(users);
+            }
+
+            return View();
         }
-        public IActionResult Approve(int id)
-        {
-            var user = _userService.GetDb()
-                            .Include(u => u.RoleFk)
-                            .Include(u => u.CartItems)
-                            .Include(u => u.ProductComments)
-                            .Include(u => u.Orders)
-                            .FirstOrDefault(p => p.Id == id);
 
-            return View(user);
+        public async Task<IActionResult> Approve(int id)
+        {
+            using (var response = await _httpClient.GetAsync($"AdminUser/{id}"))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    AdminUserListDTO user = await response.Content.ReadFromJsonAsync<AdminUserListDTO>() ?? new();
+
+                    return View(user);
+                }
+
+                ViewBagMessage(response.ReasonPhrase);
+            }
+
+            return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Approve(User user)
+        public async Task<IActionResult> Approve(AdminUserListDTO user)
         {
-            try
+            var u = new AdminUserUpdateDTO()
             {
-                _userService.Update(user);
+                Id = user.Id,
+                Enabled = user.Enabled
+            };
+
+            var response = await _httpClient.PutAsJsonAsync($"AdminUser/{user.Id}", u);
+
+            if (response.IsSuccessStatusCode)
+            {
                 return RedirectToAction(nameof(List));
             }
-            catch
-            {
-                return View(user);
-            }
+
+            TempDataMessage(response.ReasonPhrase);
+
+            return RedirectToAction(nameof(List));
         }
 
-
-
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var user = _userService.GetDb()
-                            .Include(u => u.RoleFk)
-                            .Include(u => u.CartItems)
-                            .Include(u => u.ProductComments)
-                            .Include(u => u.Orders)
-                           .FirstOrDefault(p => p.Id == id);
+            using (var response = await _httpClient.GetAsync($"AdminUser/{id}"))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    AdminUserListDTO user = await response.Content.ReadFromJsonAsync<AdminUserListDTO>() ?? new();
 
-            return View(user);
+                    return View(user);
+                }
+
+                ViewBagMessage(response.ReasonPhrase);
+            }
+
+            return View();
         }
+
         [HttpPost]
-        public IActionResult Delete(int id, User comment)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id, User? user)
         {
-            try
-            {
-                _userService.Delete(comment);
-                return RedirectToAction(nameof(List));
-            }
-            catch
-            {
-                return View(id);
-            }
+            var response = await _httpClient.DeleteAsync($"AdminUser/{id}");
 
+            if (response.IsSuccessStatusCode) return RedirectToAction(nameof(List));
+
+            TempDataMessage(response.ReasonPhrase);
+
+            return RedirectToAction(nameof(List));
         }
     }
 }

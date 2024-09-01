@@ -1,4 +1,4 @@
-﻿@model ProductComment
+﻿@model AdminProductCommentListDTO
 @{
     ViewData["Title"] = "Delete Category";
     Layout = "_AdminLayout";
@@ -53,18 +53,18 @@
     </dl>
     <dl class="row">
         <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.UserFk!.Email)
+            @Html.DisplayNameFor(model => model.UserName)
         </dt>
         <dt class="col-sm-9">
-            @Html.DisplayFor(model => model.UserFk!.Email)
+            @Html.DisplayFor(model => model.UserName)
         </dt>
     </dl>
     <dl class="row">
         <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.ProductFk!.Name)
+            @Html.DisplayNameFor(model => model.ProductName)
         </dt>
         <dt class="col-sm-9">
-            @Html.DisplayFor(model => model.ProductFk!.Name)
+            @Html.DisplayFor(model => model.ProductName)
         </dt>
     </dl>
 

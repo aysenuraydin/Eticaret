@@ -1,4 +1,4 @@
-﻿@model Category
+﻿@model AdminCategoryListDTO
 @{
     ViewData["Title"] = "Delete Category";
     Layout = "_AdminLayout";
@@ -37,18 +37,18 @@
     </dl>
     <dl class="row">
         <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.IconCssClass)
+            @Html.DisplayNameFor(model => model.Css)
         </dt>
         <dt class="col-sm-9">
-            @Html.DisplayFor(model => model.IconCssClass)
+            @Html.DisplayFor(model => model.Css)
         </dt>
     </dl>
     <dl class="row">
         <dd class="col-sm-3">
-            @Html.DisplayNameFor(model => model.Products)
+            @Html.DisplayNameFor(model => model.ProductCount)
         </dd>
         <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.Products.Count)
+            @Html.DisplayFor(model => model.ProductCount)
         </dd>
     </dl>
     </dl>
