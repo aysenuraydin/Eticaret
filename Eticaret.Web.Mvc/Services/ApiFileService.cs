@@ -5,7 +5,7 @@ using Eticaret.Web.Mvc.Constants;
 namespace Eticaret.Web.Mvc.Services
 {
     public class ApiFileService(IHttpClientFactory httpFactory) : IFileService
-    {//!!!!
+    {//!!
         private HttpClient Client => httpFactory.CreateClient(ApplicationSettings.FILE_API_CLIENT);
         public async Task<bool> DeleteFileAsync(string fileName)
         {
@@ -45,7 +45,7 @@ namespace Eticaret.Web.Mvc.Services
             return $"{Client.BaseAddress}{response.Headers.Location?.ToString()}";
         }
 
-        Task<byte[]> IFileService.DownloadFileAsync(string fileName) //!!
+        Task<byte[]> IFileService.DownloadFileAsync(string fileName)
         {
             throw new NotImplementedException();
         }

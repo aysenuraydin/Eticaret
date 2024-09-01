@@ -1,6 +1,6 @@
-# e-ticaret-mvc
+# E-Ticaret
 
-ASP.NET Core MVC Project - Devam Ediyor
+ASP.NET Core MVC - WEB API Project - Devam Ediyor
 
 ### Features
 

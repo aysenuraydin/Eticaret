@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace Eticaret.Web.Mvc.Models.ConfigModels
-{ //!
+{
     public abstract class ApiAccessConfigModel
     {
         [Required]

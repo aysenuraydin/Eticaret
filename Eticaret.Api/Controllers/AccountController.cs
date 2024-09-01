@@ -123,7 +123,7 @@ namespace Eticaret.Api.Controllers
         private async Task<string> GenerateJwtToken(User user)
         {
             var userRoles = await _userManager.GetRolesAsync(user);
-            var secret = _configuration[ApplicationSettings.CONFIG_SECRET_KEY] //!
+            var secret = _configuration[ApplicationSettings.CONFIG_SECRET_KEY]
                 ?? throw new Exception("AppSettings Secret key not found");
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(secret);

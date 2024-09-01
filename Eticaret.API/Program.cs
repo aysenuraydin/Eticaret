@@ -18,7 +18,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(ApplicationSettings.CORS_KEY); //!
+app.UseCors(ApplicationSettings.CORS_KEY);
 app.UseRouting();
 app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseMiddleware<ExceptionHandlingMiddleware>();

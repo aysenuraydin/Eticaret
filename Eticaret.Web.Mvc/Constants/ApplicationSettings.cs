@@ -1,6 +1,6 @@
 ﻿namespace Eticaret.Web.Mvc.Constants
 {
-    public class ApplicationSettings //!
+    public class ApplicationSettings
     {
         public const string FILE_API_CLIENT = "fileApi";
         public const string FILE_API_CONFİG = "ExternalApis:FileApi";

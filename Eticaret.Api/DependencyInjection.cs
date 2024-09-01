@@ -36,7 +36,6 @@ namespace Eticaret.Api
                 .Enrich.FromLogContext()
                 .CreateLogger();
 
-            //!
             var key = Encoding.ASCII.GetBytes(configuration[ApplicationSettings.CONFIG_SECRET_KEY]!);
 
             services.AddAuthentication(options =>

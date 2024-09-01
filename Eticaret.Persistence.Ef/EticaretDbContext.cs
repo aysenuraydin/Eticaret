@@ -30,9 +30,6 @@ public class EticaretDbContext : IdentityDbContext<User, Role, int>
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-
-        // modelBuilder.ApplyConfiguration(new UserConfiguration());
-
         modelBuilder.ApplyConfigurationsFromAssembly(
         Assembly.GetExecutingAssembly(),
         t => t.GetInterfaces().Any(i =>

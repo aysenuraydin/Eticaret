@@ -15,8 +15,8 @@ namespace Eticaret.Web.Mvc.Controllers
 
         public ProductController(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);//!!!
-            _httpClientFile = httpClientFactory.CreateClient(ApplicationSettings.FILE_API_CLIENT);//!!!
+            _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
+            _httpClientFile = httpClientFactory.CreateClient(ApplicationSettings.FILE_API_CLIENT);
         }
 
         public async Task<IActionResult> Index()
@@ -221,7 +221,7 @@ namespace Eticaret.Web.Mvc.Controllers
 
             throw new Exception("File not upload");
         }
-        //  public async Task<string> AddImg(IFormFile image) => await fileService.UploadFileAsync(image) ?? string.Empty; //!
+        //  public async Task<string> AddImg(IFormFile image) => await fileService.UploadFileAsync(image) ?? string.Empty;
     }
 }
 //!!! listeleri foreach sız aktarma  addrange;?
