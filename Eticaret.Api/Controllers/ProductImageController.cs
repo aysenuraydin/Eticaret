@@ -1,116 +1,116 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using Eticaret.Domain.Constants;
 using Eticaret.Application.Abstract;
 using Eticaret.Domain;
-using Eticaret.Models.DTO;
+using Eticaret.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Api.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ProductImageController : ControllerBase
+    public class ProductImageController : AppController
     {
-        private readonly IProductImageRepository _productImageService;
-
-        public ProductImageController(IProductImageRepository productImageService)
+        private readonly IProductImageRepository _productImageRepo;
+        public ProductImageController(IProductImageRepository productImageRepo)
         {
-            _productImageService = productImageService;
+            _productImageRepo = productImageRepo;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllProduct()
+        public async Task<IActionResult> GetAllImages()
         {
-            var products = await _productImageService.GetAllAsync();
+            var images = (await _productImageRepo.GetAllIncludeAsync(
+                        p => p.UserFk
+                        ))
+                        .OrderByDescending(p => p.CreatedAt)
+                        .Select(p => ProductImageListToDTO(p))
+                        .ToList();
 
-            var ProductImagesDTO = new List<ProductImageDTO>();
+            if (images == null) return NotFound();
 
-            foreach (var p in products)
-            {
-                ProductImagesDTO.Add(ProductImageToDTO(p));
-            }
-
-            return Ok(ProductImagesDTO);
-
+            return Ok(images);
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProduct(int id)
+        public async Task<IActionResult> GetImages(int? id)
         {
-            var product = await _productImageService.FindAsync(id);
+            if (id == null) return NotFound();
 
-            if (product == null)
-            {
-                return NotFound(); // 404
-            }
-            return Ok(ProductImageToDTO(product)); // 200
+            var images = (await _productImageRepo.GetIdAllIncludeFilterAsync(
+                        p => p.ProductId == id,
+                        p => p.UserFk
+                        ))
+                        .OrderByDescending(p => p.CreatedAt)
+                        .Select(p => ProductImageListToDTO(p))
+                        .ToList();
+
+            if (images == null) return NotFound();
+
+            return Ok(images);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct(ProductImage productImage)
+        [Authorize(Roles = Roles.Seller)]
+        public async Task<IActionResult> CreateProduct(ProductImageCreateDTO image)
         {
-            await _productImageService.AddAsync(productImage);
-            return CreatedAtAction(nameof(GetProduct), new { id = productImage.Id }, ProductImageToDTO(productImage));
-        }
+            if (image == null) return NotFound();
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> EditProduct(int id, ProductImage productImage)
-        {
-            if (id != productImage.Id)
+            try
             {
-                return BadRequest();
+                var img = ProductImageCreateToDTO(image);
+                await _productImageRepo.AddAsync(img);
+
+                return CreatedAtAction(nameof(GetImages), new { id = img.ProductId }, img);
             }
-
-            var img = await _productImageService.FindAsync(id);
-
-            if (img == null)
+            catch (Exception)
             {
                 return NotFound();
             }
-
-            await _productImageService.UpdateAsync(img);
-            return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id, ProductImage productImage)
+        [Authorize(Roles = Roles.Seller)]
+        public async Task<IActionResult> DeleteImages(int? id)
         {
-            if (id != productImage.Id)
+            if (id == null) return NotFound();
+
+            var prd = await _productImageRepo.GetAllAsync(i => i.ProductId == id);
+
+            if (prd == null || !prd.Any()) return NotFound();
+
+            try
             {
-                return BadRequest();
+                var deleteTasks = prd
+                                .Where(i => i != null)
+                                .Select(i => _productImageRepo.DeleteAsync(i!));
+                await Task.WhenAll(deleteTasks);
             }
-
-            var img = await _productImageService.FindAsync(id);
-
-            if (img == null)
+            catch (Exception)
             {
                 return NotFound();
             }
 
-            await _productImageService.DeleteAsync(img);
             return NoContent();
         }
-        private static ProductImageDTO ProductImageToDTO(ProductImage p)
+
+        private static ProductImageListDTO ProductImageListToDTO(ProductImage p)
         {
-            return new ProductImageDTO
+            return new ProductImageListDTO
             {
                 Id = p.Id,
                 Url = p.Url,
-                CreatedAt = p.CreatedAt,
+                CreatedAt = p.CreatedAt.ToString("dd.MM.yyyy"),
                 ProductId = p.ProductId,
-                SellerId = p.SellerId,
+                SellerId = p.UserId
+            };
+        }
+
+        private static ProductImage ProductImageCreateToDTO(ProductImageCreateDTO p)
+        {
+            return new ProductImage
+            {
+                Url = p.Url ?? Guid.NewGuid().ToString(),
+                ProductId = p.ProductId,
+                UserId = p.SellerId
             };
         }
     }
 }
-
-
-
-
-
 

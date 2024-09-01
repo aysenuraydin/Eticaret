@@ -1,4 +1,4 @@
-﻿@model Product
+﻿@model SellerProductCreateOrUpdateDTO
 @{
     ViewData["Title"] = "Delete Product";
 }
@@ -7,7 +7,7 @@
     <hr>
     <div class="row">
         <div class="col-4">
-            @if (!Model.ProductImages.Any())
+            @if (Model.ImageList?.Count == 0 || Model.ImageList == null)
             {
                 <img src="https://via.placeholder.com/300x300" alt="Ürun resmi">
             }
@@ -19,16 +19,16 @@
                         <div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
 
                         <div class="slick3 gallery-lb">
-                            @if (Model.ProductImages != null && Model.ProductImages.Any())
+                            @if (Model.ImageList != null && Model.ImageList.Any())
                             {
-                                @foreach (var img in Model.ProductImages)
+                                @foreach (var img in Model.ImageList)
                                 {
-                                    <div class="item-slick3" data-thumb="/assets/img/@img.Url">
+                                    <div class="item-slick3" data-thumb="/UploadedFiles/@img">
                                         <div class="wrap-pic-w pos-relative">
-                                            <img src="/assets/img/@img.Url">
+                                            <img src="/UploadedFiles/@img">
 
                                             <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
-                                                href="/assets/img/@img.Url">
+                                                href="/UploadedFiles/@img">
                                                 <i class="fa fa-expand"></i>
                                             </a>
                                         </div>
@@ -68,49 +68,49 @@
                 <dd class="col-sm-9">
                     @Html.DisplayFor(model => model.StockAmount)
                 </dd>
-                <dd class="col-sm-3">
-                    @Html.DisplayNameFor(model => model.CreatedAt)
+                @* <dd class="col-sm-3">
+                @Html.DisplayNameFor(model => model.CreatedAt)
                 </dd>
                 <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.CreatedAt)
-                </dd>
+                @Html.DisplayFor(model => model.CreatedAt)
+                </dd> *@
                 <dd class="col-sm-3">
                     @Html.DisplayNameFor(model => model.Enabled)
                 </dd>
                 <dd class="col-sm-9">
                     @Html.DisplayFor(model => model.Enabled)
                 </dd>
-                <dt class="col-sm-3">
-                    Satıcı
-                    @Html.DisplayNameFor(model => model.SellerFk!.Email)
+                @* <dt class="col-sm-3">
+                Satıcı
+                @Html.DisplayNameFor(model => model.SellerName)
                 </dt>
                 <dt class="col-sm-9">
-                    @Html.DisplayFor(model => model.SellerFk!.Email)
+                @Html.DisplayFor(model => model.SellerName)
                 </dt>
                 <dd class="col-sm-3">
-                    @Html.DisplayNameFor(model => model.CategoryFk!.Name)
+                @Html.DisplayNameFor(model => model.CategoryName)
                 </dd>
                 <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.CategoryFk!.Name)
+                @Html.DisplayFor(model => model.CategoryName)
+                </dd> *@
+                @* <dd class="col-sm-3">
+                Comment Count
+                </dd>
+                <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.CommentCount)
                 </dd>
                 <dd class="col-sm-3">
-                    Comment Count
+                Order Count
                 </dd>
                 <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.ProductComments.Count)
+                @Html.DisplayFor(model => model.OrderCount)
                 </dd>
                 <dd class="col-sm-3">
-                    Order Count
+                Cart Count
                 </dd>
                 <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.OrderItems.Count)
-                </dd>
-                <dd class="col-sm-3">
-                    Cart Count
-                </dd>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.CartItems.Count)
-                </dd>
+                @Html.DisplayFor(model => model.CartCount)
+                </dd> *@
             </dl>
 
             <form asp-action="Delete">

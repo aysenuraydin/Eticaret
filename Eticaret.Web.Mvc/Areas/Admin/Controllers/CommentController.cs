@@ -1,82 +1,104 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Eticaret.Application.Abstract;
-using Eticaret.Domain;
-using Microsoft.AspNetCore.Authorization;
+using Eticaret.Dto;
+using Eticaret.Web.Mvc.Constants;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "admin")]
-    public class CommentController : Controller
+    public class CommentController : AppController
     {
-        private readonly IProductCommentRepository _commentService;
+        private readonly HttpClient _httpClient;
 
-        public CommentController(IProductCommentRepository commentService)
+        public CommentController(IHttpClientFactory httpClientFactory)
         {
-            _commentService = commentService;
+            _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
         }
 
-        public IActionResult List()
+        public async Task<IActionResult> List()
         {
-            var comments = _commentService.GetDb()
-                                .Include(c => c.UserFk)
-                                .Include(c => c.ProductFk)
-                                .OrderByDescending(p => !p.IsConfirmed)
-                                .ToList();
+            if (TempData["ErrorMessage"] != null) ViewBagMessage(TempData["ErrorMessage"].ToString());
 
-            return View(comments);
-        }
-        public IActionResult Approve(int id)
-        {
-            var comment = _commentService.GetDb()
-                                .Include(c => c.UserFk)
-                                .Include(c => c.ProductFk)
-                                .FirstOrDefault(p => p.Id == id);
+            var response = await _httpClient.GetAsync("AdminProductComment");
 
-            return View(comment);
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Approve(ProductComment comment)
-        {
-            try
+            if (response.IsSuccessStatusCode)
             {
-                _commentService.Update(comment);
-                return RedirectToAction(nameof(List));
+                var comments = await response.Content.ReadFromJsonAsync<List<AdminProductCommentListDTO>>() ?? new();
+
+                return View(comments);
             }
-            catch
+
+            ViewBagMessage(response.ReasonPhrase);
+
+            return View();
+        }
+
+        public async Task<IActionResult> Approve(int id)
+        {
+            var response = await _httpClient.GetAsync($"AdminProductComment/{id}");
+
+            if (response.IsSuccessStatusCode)
             {
+                AdminProductCommentListDTO comment = await response.Content.ReadFromJsonAsync<AdminProductCommentListDTO>() ?? new();
+
                 return View(comment);
             }
+
+            ViewBagMessage(response.ReasonPhrase);
+
+            return View();
+
         }
-        public IActionResult Delete(int id)
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Approve(AdminProductCommentListDTO comment)
         {
-            var comment = _commentService.GetDb()
-                                .Include(c => c.UserFk)
-                                .Include(c => c.ProductFk)
-                                .FirstOrDefault(p => p.Id == id);
+            AdminProductCommentUpdateDTO c = new()
+            {
+                Id = comment.Id,
+                IsConfirmed = comment.IsConfirmed
+
+            };
+
+            var response = await _httpClient.PutAsJsonAsync($"AdminProductComment/{comment.Id}", c);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(List));
+            }
+
+            ViewBagMessage(response.ReasonPhrase);
+            ModelState.AddModelError("", "Güncelleme sırasında bir hata oluştu.");
 
             return View(comment);
         }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            using (var response = await _httpClient.GetAsync($"AdminProductComment/{id}"))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    AdminProductCommentListDTO product = await response.Content.ReadFromJsonAsync<AdminProductCommentListDTO>() ?? new();
+
+                    return View(product);
+                }
+
+                ViewBagMessage(response.ReasonPhrase);
+            }
+
+            return View();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id, ProductComment comment)
+        public async Task<IActionResult> Delete(int id, AdminProductCommentListDTO? comment)
         {
-            try
-            {
-                _commentService.Delete(comment);
-                return RedirectToAction(nameof(List));
-            }
-            catch
-            {
-                return View(id);
-            }
+            var response = await _httpClient.DeleteAsync($"AdminProductComment/{id}");
+
+            if (response.IsSuccessStatusCode) return RedirectToAction(nameof(List));
+
+            TempDataMessage(response.ReasonPhrase);
+            return RedirectToAction(nameof(List));
         }
     }
 }

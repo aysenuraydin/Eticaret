@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ProductComment>
+﻿@model IEnumerable<AdminProductCommentListDTO>
 @{
     ViewData["Title"] = "List of Comment";
 }
@@ -32,45 +32,48 @@
             </th>
             <th>
                 Kullanıcı
-                @Html.DisplayNameFor(model => model.UserFk!.Email)
+                @Html.DisplayNameFor(model => model.UserName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ProductFk!.Name)
+                @Html.DisplayNameFor(model => model.ProductName)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @if (Model != null && Model.Any())
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Text)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StarCount)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CreatedAt)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UserFk!.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProductFk!.Name)
-                </td>
-                <td>
-                    <a class="btn btn-sm btn-@(item.IsConfirmed?"danger":"primary") btn-m" asp-action="Approve"
-                        asp-Controller="Comment" asp-route-id="@item.Id">@(item.IsConfirmed
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Text)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StarCount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreatedAt)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProductName)
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-@(item.IsConfirmed?"danger":"primary") btn-m" asp-action="Approve"
+                            asp-Controller="Comment" asp-route-id="@item.Id">@(item.IsConfirmed
                     ? "Onayı Kladır" : "Onayla")</a>
 
-                    <a class="btn btn-sm btn-outline-danger btn-m" asp-action="Delete" asp-Controller="Comment"
-                        asp-route-id="@item.Id">Sil</a>
-                </td>
-            </tr>
+                        <a class="btn btn-sm btn-outline-danger btn-m" asp-action="Delete" asp-Controller="Comment"
+                            asp-route-id="@item.Id">Sil</a>
+                    </td>
+                </tr>
+            }
         }
     </tbody>
 </table>

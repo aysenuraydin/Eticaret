@@ -1,121 +1,97 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Eticaret.Application.Abstract;
+﻿using Eticaret.Application.Abstract;
 using Eticaret.Domain;
-using Eticaret.Models.DTO;
-using Microsoft.AspNetCore.Authorization;
+using Eticaret.Dto;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.Api.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class Product2Controller : ControllerBase
+    public class ProductController : AppController
     {
-        private readonly IProductRepository _productService;
+        private readonly IProductRepository _productRepo;
 
-        public Product2Controller(IProductRepository productService)
+        public ProductController(IProductRepository productRepo)
         {
-            _productService = productService;
+            _productRepo = productRepo;
         }
+
         [HttpGet]
-        public async Task<IActionResult> GetAllProduct()
+        public async Task<IActionResult> GetProducts()
         {
-            var products = await _productService.GetAllAsync();
+            var products = (await _productRepo.GetIdAllIncludeFilterAsync(
+                            p => p.IsConfirmed && p.Enabled && p.StockAmount > 0,
+                            p => p.ProductImages
+                            ))
+                            .OrderByDescending(p => p.CreatedAt)
+                            .Select(p => ProductListToDTO(p))
+                            .ToList();
 
-            var productsDTO = new List<ProductDTO>();
-
-            foreach (var p in products)
-            {
-                productsDTO.Add(ProductToDTO(p));
-            }
-
-            return Ok(productsDTO);
-
+            return Ok(products);
         }
+
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProduct(int id)
+        public async Task<IActionResult> GetProduct(int? id)
         {
-            var product = await _productService.FindAsync(id);
+            if (id == null) return NotFound();
 
-            if (product == null)
-            {
-                return NotFound(); // 404
-            }
-            return Ok(ProductToDTO(product)); // 200
+            var product = (await _productRepo.GetIdAllIncludeFilterAsync(
+                            p => p.Id == id,
+                            p => p.CategoryFk!,
+                            p => p.UserFk!,
+                            p => p.ProductComments,
+                            p => p.ProductImages
+                            ))
+                            .FirstOrDefault();
+
+            if (product == null) return NotFound();
+
+            return Ok(ProductDetailToDTO(product));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateProduct(Product product)
+        private static ProductListDTO ProductListToDTO(Product p)
         {
-            await _productService.AddAsync(product);
-            return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, ProductToDTO(product));
+            ProductListDTO entity = new();
+            if (p != null)
+            {
+                entity.Id = p.Id;
+                entity.Name = p.Name;
+                entity.Price = p.Price;
+                entity.ImageUrl = p.ProductImages.FirstOrDefault()?.Url!;
+            }
+            return entity;
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> EditProduct(int id, Product p)
+        private static ProductDetailDTO ProductDetailToDTO(Product p)
         {
-            if (id != p.Id)
-            {
-                return BadRequest();
-            }
-
-            var product = await _productService.FindAsync(id);
-
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            await _productService.UpdateAsync(p);
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id, Product p)
-        {
-            if (id != p.Id)
-            {
-                return BadRequest();
-            }
-
-            var product = await _productService.FindAsync(id);
-
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            await _productService.DeleteAsync(p);
-            return NoContent();
-        }
-        private static ProductDTO ProductToDTO(Product p)
-        {
-            return new ProductDTO
+            return new ProductDetailDTO
             {
                 Id = p.Id,
                 Name = p.Name,
                 Price = p.Price,
                 Details = p.Details,
                 StockAmount = p.StockAmount,
-                CreatedAt = p.CreatedAt,
-                IsConfirmed = p.IsConfirmed,
-                Enabled = p.Enabled,
-                CategoryId = p.CategoryId,
-                SellerId = p.CategoryId,
+                CategoryName = p.CategoryFk?.Name ?? string.Empty,
+                SellerName = $"{p.UserFk?.FirstName ?? string.Empty} {p.UserFk?.LastName ?? string.Empty}".Trim(),
+                ProductImagesUrl = p.ProductImages.Select(p =>
+                                    new Images
+                                    {
+                                        Id = p.Id,
+                                        Url = p.Url,
+                                    })
+                                    .ToList(),
+
+                ProductComments = p.ProductComments.Select(p =>
+                                    new Comment
+                                    {
+                                        Id = p.Id,
+                                        Text = p.Text,
+                                        StarCount = p.StarCount,
+                                        IsConfirmed = p.IsConfirmed,
+                                        CreatedAt = p.CreatedAt.ToString("dd.MM.yyyy"),
+                                        UserName = p.UserFk?.Email ?? ""
+                                    })
+                                    .ToList()
             };
         }
     }
 }
-
-
-
-
-
 

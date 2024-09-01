@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Product>
+﻿@model IEnumerable<ProductListDTO>
 <!-- Related Products -->
 <section class="sec-relate-product bg0 p-t-45 p-b-45">
     <div class="container">
@@ -10,11 +10,14 @@
         <!-- Slide2 -->
         <div class="wrap-slick2">
             <div class="slick2">
-                @foreach (var item in Model)
+                @if (Model != null && Model.Any())
                 {
-                    <div class="item-slick2 p-3">
-                        @await Html.PartialAsync("_ProductListItem", item)
-                    </div>
+                    @foreach (var item in Model)
+                    {
+                        <div class="item-slick2 p-3">
+                            @await Html.PartialAsync("_ProductListItem", item)
+                        </div>
+                    }
                 }
             </div>
         </div>

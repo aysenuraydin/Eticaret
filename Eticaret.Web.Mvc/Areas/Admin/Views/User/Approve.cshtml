@@ -1,4 +1,4 @@
-﻿@model User
+﻿@model AdminUserListDTO
 @{
     ViewData["Title"] = "Products Approve";
 }
@@ -29,18 +29,10 @@
     </dl>
     <dl class="row">
         <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.FirstName)
+            @Html.DisplayNameFor(model => model.FullName)
         </dt>
         <dt class="col-sm-9">
-            @Html.DisplayFor(model => model.FirstName)
-        </dt>
-    </dl>
-    <dl class="row">
-        <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-        <dt class="col-sm-9">
-            @Html.DisplayFor(model => model.LastName)
+            @Html.DisplayFor(model => model.FullName)
         </dt>
     </dl>
     <dl class="row">
@@ -53,47 +45,39 @@
     </dl>
     <dl class="row">
         <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.RoleFk.Name)
+            @Html.DisplayNameFor(model => model.RoleName)
         </dt>
         <dt class="col-sm-9">
-            @Html.DisplayFor(model => model.RoleFk.Name)
+            @Html.DisplayFor(model => model.RoleName)
         </dt>
     </dl>
     <dl class="row">
         <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.CartItems)
+            @Html.DisplayNameFor(model => model.CartItemCount)
         </dt>
         <dt class="col-sm-9">
-            @Html.DisplayFor(model => model.CartItems.Count)
+            @Html.DisplayFor(model => model.CartItemCount)
         </dt>
     </dl>
     <dl class="row">
         <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.ProductComments)
+            @Html.DisplayNameFor(model => model.ProductCommentCount)
         </dt>
         <dt class="col-sm-9">
-            @Html.DisplayFor(model => model.ProductComments.Count)
+            @Html.DisplayFor(model => model.ProductCommentCount)
         </dt>
     </dl>
     <dl class="row">
         <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.Orders)
+            @Html.DisplayNameFor(model => model.OrderCount)
         </dt>
         <dt class="col-sm-9">
-            @Html.DisplayFor(model => model.Orders!.Count)
+            @Html.DisplayFor(model => model.OrderCount)
         </dt>
     </dl>
 
     <form asp-action="Approve" asp-Controller="User">
         <input type="hidden" asp-for="Id" />
-        <input type="hidden" asp-for="Email" />
-        <input type="hidden" asp-for="FirstName" />
-        <input type="hidden" asp-for="LastName" />
-        <input type="hidden" asp-for="Password" />
-        <input type="hidden" asp-for="RoleId" />
-        <input type="hidden" asp-for="CreatedAt" />
-        <input type="hidden" asp-for="CartItems" />
-        <input type="hidden" asp-for="Orders" />
 
         <div class="form-group">
             <div class="row">

@@ -1,95 +1,98 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Eticaret.Application.Abstract;
-using Eticaret.Domain;
-using Microsoft.AspNetCore.Authorization;
+using Eticaret.Dto;
+using Eticaret.Web.Mvc.Constants;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "admin")]
-    public class ProductController : Controller
+    public class ProductController : AppController
     {
-        private readonly IProductRepository _productService;
+        private readonly HttpClient _httpClient;
 
-        public ProductController(IProductRepository productService)
+        public ProductController(IHttpClientFactory httpClientFactory)
         {
-            _productService = productService;
+            _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
         }
 
-        public IActionResult List()
+        public async Task<IActionResult> List()
         {
-            var product = _productService.GetDb()
-                            .Include(i => i.CategoryFk)
-                            .Include(i => i.SellerFk)
-                            .Include(i => i.CartItems)
-                            .Include(i => i.ProductComments)
-                            .Include(i => i.ProductImages)
-                            .Include(i => i.OrderItems)
-                            .OrderBy(p => p.IsConfirmed)
-                            .ToList();
+            if (TempData["ErrorMessage"] != null) ViewBagMessage(TempData["ErrorMessage"].ToString());
 
-            return View(product);
+            using (var response = await _httpClient.GetAsync("AdminProduct"))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var products = await response.Content.ReadFromJsonAsync<List<AdminProductListDTO>>();
+
+                    return View(products);
+                }
+
+                ViewBagMessage(response.ReasonPhrase);
+            }
+
+            return View();
         }
-        public IActionResult Approve(int id)
+
+        public async Task<IActionResult> Approve(int id)
         {
-            var product = _productService.GetDb()
-                                .Include(i => i.CategoryFk)
-                                .Include(i => i.SellerFk)
-                                .Include(i => i.CartItems)
-                                .Include(i => i.ProductComments)
-                                .Include(i => i.ProductImages)
-                                .Include(i => i.OrderItems)
-                                .FirstOrDefault(p => p.Id == id);
+            using (var response = await _httpClient.GetAsync($"AdminProduct/{id}"))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    AdminProductListDTO product = await response.Content.ReadFromJsonAsync<AdminProductListDTO>() ?? new();
 
-            return View(product);
+                    return View(product);
+                }
+
+                ViewBagMessage(response.ReasonPhrase);
+            }
+
+            return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Approve(Product product)
+        public async Task<IActionResult> Approve(AdminProductListDTO product)
         {
-            try
+            var response = await _httpClient.PutAsJsonAsync($"AdminProduct/{product.Id}", product);
+
+            if (response.IsSuccessStatusCode)
             {
-                _productService.Update(product);
                 return RedirectToAction(nameof(List));
             }
-            catch
-            {
-                return View(product);
-            }
-        }
-        public IActionResult Delete(int id)
-        {
-            var product = _productService.GetDb()
-                                .Include(i => i.CategoryFk)
-                                .Include(i => i.SellerFk)
-                                .Include(i => i.CartItems)
-                                .Include(i => i.ProductComments)
-                                .Include(i => i.ProductImages)
-                                .Include(i => i.OrderItems)
-                                .FirstOrDefault(p => p.Id == id);
+
+            ViewBagMessage(response.ReasonPhrase);
 
             return View(product);
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id, Product product)
+
+        public async Task<IActionResult> Delete(int id)
         {
-            try
+            using (var response = await _httpClient.GetAsync($"AdminProduct/{id}"))
             {
-                _productService.Delete(product);
-                return RedirectToAction(nameof(List));
-            }
-            catch
-            {
-                return View(id);
+                if (response.IsSuccessStatusCode)
+                {
+                    AdminProductListDTO product = await response.Content.ReadFromJsonAsync<AdminProductListDTO>() ?? new();
+
+                    return View(product);
+                }
+
+                ViewBagMessage(response.ReasonPhrase);
             }
 
+            return View();
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var response = await _httpClient.DeleteAsync($"AdminProduct/{id}");
+
+            if (response.IsSuccessStatusCode) return RedirectToAction(nameof(List));
+
+            TempDataMessage(response.ReasonPhrase);
+
+            return RedirectToAction(nameof(List));
         }
     }
 }

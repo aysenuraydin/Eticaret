@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Product>
+﻿@model IEnumerable<AdminProductListDTO>
 
 <div class="container mt-5 pt-5" style="min-height: 70vh !important;">
     <h2>Ürün Listesi</h2>
@@ -18,7 +18,7 @@
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.ProductImages)
+                    @Html.DisplayNameFor(model => model.ImageUrlList)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Id)
@@ -43,45 +43,35 @@
                     @Html.DisplayNameFor(model => model.Enabled)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.CategoryFk!.Name)
+                    @Html.DisplayNameFor(model => model.CategoryName)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.ProductComments)
+                    @Html.DisplayNameFor(model => model.CommentCount)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.OrderItems)
+                    @Html.DisplayNameFor(model => model.OrderCount)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.CartItems)
+                    @Html.DisplayNameFor(model => model.CartCount)
                 </th>
                 <th></th>
             </tr>
         </thead>
 
         <tbody>
-
-            @if (!Model.Any())
-            {
-                <tr>
-                    <td class="alert alert-secondary p-4" colspan="12" role="alert">
-                        <i class="fa-solid fa-exclamation"></i>
-                        Görsterilecek ürününüz yok!
-                    </td>
-                </tr>
-            }
-            else
+            @if (Model != null && Model.Any())
             {
                 @foreach (var item in Model)
                 {
                     <tr>
                         <td>
-                            @if (!item.ProductImages.Any())
+                            @if (!item.ImageUrlList.Any())
                             {
-                                <img src="https://via.placeholder.com/300x300" alt="Ürun resmi">
+                                <img src="https://via.placeholder.com/65x65" alt="Ürun resmi">
                             }
                             else
                             {
-                                <img src="/assets/img/@item.ProductImages[0].Url" width="300px;">
+                                <img src="/UploadedFiles/@item.ImageUrlList[0]" width="65px;">
                             }
                         </td>
 
@@ -109,18 +99,18 @@
                             @Html.DisplayFor(modelItem => item.Enabled)
                         </td>
                         <td>
-                            <div class="badge badge-primary" style="background-color:@(item.CategoryFk!.Color);">
-                                @Html.DisplayFor(modelItem => item.CategoryFk!.Name)
+                            <div class="badge badge-primary" style="background-color:@(item.CategoryColor);">
+                                @Html.DisplayFor(modelItem => item.CategoryName)
                             </div>
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.ProductComments.Count)
+                            @Html.DisplayFor(modelItem => item.CommentCount)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.OrderItems.Count)
+                            @Html.DisplayFor(modelItem => item.OrderCount)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.CartItems.Count)
+                            @Html.DisplayFor(modelItem => item.CartCount)
                         </td>
                         <td>
                             <a class="btn btn-sm btn-@(item.IsConfirmed ? "primary" : "danger disabled") btn-m"
@@ -130,6 +120,15 @@
                         </td>
                     </tr>
                 }
+            }
+            else
+            {
+                <tr>
+                    <td class="alert alert-secondary p-4" colspan="13" role="alert">
+                        <i class="fa-solid fa-exclamation"></i>
+                        Gösterilecek ürününüz yok!
+                    </td>
+                </tr>
             }
         </tbody>
     </table>

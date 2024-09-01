@@ -1,32 +1,20 @@
-
-
-
-using Eticaret.Domain.Abstract;
 using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
+using Eticaret.Domain.Abstract;
+using Microsoft.AspNetCore.Identity;
 namespace Eticaret.Domain
 {
-    public class User : BaseEntity
+    public class User : IdentityUser<int>, IBaseEntity
     {
-        [Display(Name = "Mail Adresi")]
-        [Required(ErrorMessage = "Mail adresi alanı gereklidir.")]
-        [EmailAddress(ErrorMessage = "Geçerli bir e-posta adresi giriniz.")]
-        public string? Email { get; set; }
         [Display(Name = "Adı")]
         [Required(ErrorMessage = "Ad alanı gereklidir.")]
         [MinLength(2, ErrorMessage = "Ad en az 2 karakterden oluşmalıdır.")]
         [MaxLength(50, ErrorMessage = "Ad en fazla 50 karakter uzunluğunda olmalıdır.")]
-        public string? FirstName { get; set; }
+        public string FirstName { get; set; } = null!;
         [Display(Name = "Soyadı")]
         [Required(ErrorMessage = "Soyadı alanı gereklidir.")]
         [MinLength(2, ErrorMessage = "Soyadı en az 2 karakterden oluşmalıdır.")]
         [MaxLength(50, ErrorMessage = "Soyadı en fazla 50 karakter uzunluğunda olmalıdır.")]
-        public string? LastName { get; set; }
-        [Display(Name = "Şifre")]
-        [Required(ErrorMessage = "Şifre alanı gereklidir.")]
-        [MinLength(1, ErrorMessage = "Şifre en az 1 karakterden oluşmalıdır.")]
-        [DataType(DataType.Password)]
-        public string? Password { get; set; }
+        public string LastName { get; set; } = null!;
         [Display(Name = "Olaylı Mı?")]
         public bool Enabled { get; set; } = false;
         [Display(Name = "Oluşturma Tarihi")]
@@ -36,6 +24,7 @@ namespace Eticaret.Domain
         [Required(ErrorMessage = "Rol alanı gereklidir.")]
         public int RoleId { get; set; } = 2;
 
+        public string FullName => $"{FirstName} {LastName}";
         #region Navigation Properties
         public Role RoleFk { get; set; } = null!;
         [Display(Name = "Sepettekiler")]
@@ -44,6 +33,17 @@ namespace Eticaret.Domain
         public List<ProductComment> ProductComments { get; set; } = new();
         [Display(Name = "Ürün Siparişleri")]
         public List<Order> Orders { get; set; } = new();
+        #endregion
+
+        //Seller
+        #region Navigation Properties
+        [Display(Name = "Satıcı Ürünleri")]
+        public List<Product> Products { get; set; } = new();
+
+        [Display(Name = "Ürün Resimleri")]
+        public List<ProductImage> ProductImages { get; set; } = new();
+        [Display(Name = "Siparişleri")]
+        public List<OrderItem> OrderItems { get; set; } = new();
         #endregion
     }
 }

@@ -1,4 +1,4 @@
-﻿@model Category;
+﻿@model AdminCategoryUpdateDTO;
 @{
     ViewData["Title"] = "Edit Category";
     Layout = "_AdminLayout";
@@ -13,7 +13,6 @@
             @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            <input type="hidden" asp-for="CreatedAt" />
 
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -26,9 +25,9 @@
                 <span asp-validation-for="Color" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="IconCssClass" class="control-label"></label>
-                <input asp-for="IconCssClass" class="form-control" />
-                <span asp-validation-for="IconCssClass" class="text-danger"></span>
+                <label asp-for="Css" class="control-label"></label>
+                <input asp-for="Css" class="form-control" />
+                <span asp-validation-for="Css" class="text-danger"></span>
             </div>
 
 

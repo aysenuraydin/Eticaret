@@ -1,30 +1,29 @@
-using Eticaret.Application.Abstract;
-using Eticaret.Persistence.Ef;
+using Eticaret.Dto;
+using Eticaret.Web.Mvc.Constants;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace ticaret.Web.Mvc.ViewComponents
+namespace Eticaret.Web.Mvc.ViewComponents
 {
     public class RelatedProductsViewComponent : ViewComponent
     {
-        private IProductRepository _repository;//şimdilik bu şekilde
-
-        public RelatedProductsViewComponent(IProductRepository repo)
+        private readonly HttpClient _httpClient;
+        public RelatedProductsViewComponent(IHttpClientFactory httpClientFactory)
         {
-            _repository = repo;
+            _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
         }
-
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var p = await _repository.GetIdAllIncludeFilterAsync(
-                p => p.IsConfirmed && p.Enabled,
-                p => p.ProductImages
-            );
-            //search den al
-            return View(p);
+            using (var response = await _httpClient.GetAsync("Home"))
+            {
+                if (!response.IsSuccessStatusCode)
+                {
+                    return View();
+                }
+
+                List<ProductListDTO> products = await response.Content.ReadFromJsonAsync<List<ProductListDTO>>() ?? new();
+                // return View(products.Take(6).ToList());
+                return View(products);
+            }
         }
     }
 

@@ -12,7 +12,7 @@ namespace Eticaret.Persistence.Ef.Configurations
             builder.Property(u => u.Email).IsRequired();
             builder.Property(u => u.FirstName).IsRequired();
             builder.Property(u => u.LastName).IsRequired();
-            builder.Property(u => u.Password).IsRequired();
+            builder.Property(u => u.PasswordHash).IsRequired();
             builder.Property(u => u.RoleId).IsRequired();
             builder.Property(u => u.Enabled).IsRequired();
             builder.Property(u => u.CreatedAt).IsRequired();

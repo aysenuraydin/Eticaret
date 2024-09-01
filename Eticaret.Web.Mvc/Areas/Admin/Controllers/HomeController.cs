@@ -1,28 +1,31 @@
-﻿using Eticaret.Application.Abstract;
-using Eticaret.Domain;
-using Microsoft.AspNetCore.Authorization;
+﻿using Eticaret.Dto;
+using Eticaret.Web.Mvc.Constants;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
 
 namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "admin")]
-    public class HomeController : Controller
+    public class HomeController : AppController
     {
-        private readonly ICategoryRepository _categoryService;
+        private readonly HttpClient _httpClient;
 
-        public HomeController(ICategoryRepository categoryService)
+        public HomeController(IHttpClientFactory httpClientFactory)
         {
-            _categoryService = categoryService;
+            _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
         }
-
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var category = _categoryService.GetDb()
-                                        .Include(c => c.Products)
-                                        .ToList();
-            return View(category);
+            if (TempData["ErrorMessage"] != null) ViewBagMessage(TempData["ErrorMessage"].ToString());
+
+            using (var response = await _httpClient.GetAsync("AdminCategory"))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var products = await response.Content.ReadFromJsonAsync<List<AdminCategoryListDTO>>() ?? new List<AdminCategoryListDTO>();
+                    return View(products);
+                }
+                ViewBagMessage(response.ReasonPhrase);
+            }
+            return View();
         }
     }
 }

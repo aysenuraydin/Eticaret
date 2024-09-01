@@ -1,101 +1,87 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Eticaret.Application.Abstract;
-using Eticaret.Domain;
-using Eticaret.Web.Mvc.Models;
+using Eticaret.Dto;
+using Eticaret.Web.Mvc.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.Differencing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+
 
 namespace Eticaret.Web.Mvc.Controllers
 {
     [Authorize]
-    public class CartController : Controller
+    public class CartController : AppController
     {
-        private readonly ICartItemRepository _cartItemRepository;
+        private readonly HttpClient _httpClient;
 
-        public CartController(ICartItemRepository cartItemRepository)
+        public CartController(IHttpClientFactory httpClientFactory)
         {
-            _cartItemRepository = cartItemRepository;
+            _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
         }
 
-        public IActionResult AddProduct(int id)
+        public async Task<IActionResult> AddProduct(int id)
         {
-            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userId != null && int.TryParse(userId.Value, out int user))
-            {
-                var cartItem = _cartItemRepository.GetAll()
-                                .FirstOrDefault(c => c.ProductId == id && c.UserId == user);
+            var response = await _httpClient.PostAsync($"Cart/{id}", null);
 
-                if (cartItem == null)
-                {
-                    CartItem İtem = new()
-                    {
-                        Quantity = 1,
-                        UserId = user,
-                        ProductId = id
-                    };
-                    _cartItemRepository.Add(İtem);
-                }
-                else
-                {
-                    cartItem.Quantity += 1;
-                    _cartItemRepository.Update(cartItem);
-                }
+            if (response.IsSuccessStatusCode)
+            {
                 return RedirectToAction(nameof(Edit));
-
-            }
-            return RedirectToAction(nameof(Index), "home");
-        }
-        public IActionResult Edit()
-        {
-            var cartItems = _cartItemRepository.GetDb()
-                                            .Include(c => c.ProductFk!)
-                                            .ThenInclude(c => c.ProductImages)
-                                            .ToList();
-            var cartOrder = new OrderViewModel()
-            {
-                CartItems = cartItems
-            };
-            return View(cartOrder);
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(CartItem item)
-        {
-            var cartItem = _cartItemRepository.Find(item.Id);
-            if (cartItem != null)
-            {
-                cartItem.Quantity = item.Quantity;
-                _cartItemRepository.Update(cartItem);
             }
 
-            var cartItems = _cartItemRepository.GetDb()
-                                            .Include(c => c.ProductFk)
-                                            .ToList();
-            var cartOrder = new OrderViewModel()
-            {
-                CartItems = cartItems
-            };
-            return View(cartOrder);
+            TempDataMessage(response.ReasonPhrase);
+
+            return RedirectToAction(nameof(Edit));
         }
+
+        public async Task<IActionResult> Edit()
+        {
+            if (TempData["ErrorMessage"] != null) ViewBagMessage(TempData["ErrorMessage"].ToString().ToString());
+
+            using (var response = await _httpClient.GetAsync($"Cart"))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var carts = await response.Content.ReadFromJsonAsync<List<CartItemListDTO>>() ?? new();
+
+                    return View(carts);
+                }
+
+                ViewBagMessage(response.ReasonPhrase);
+            }
+
+            return View();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(CartItem item)
+        public async Task<IActionResult> Edit(CartItemListDTO item)
         {
-            var cartItem = _cartItemRepository.GetAll()
-                                 .FirstOrDefault(i => i.Id == item.Id);
-            if (cartItem != null)
+            if (!ModelState.IsValid) return View(item);
+
+            CartItemUpdateDTO cartItem = new() { Id = item.Id, Quantity = item.Quantity };
+
+            var response = await _httpClient.PutAsJsonAsync($"Cart/{item.Id}", cartItem);
+
+            if (response.IsSuccessStatusCode)
             {
-                _cartItemRepository.Delete(cartItem);
+                return RedirectToAction(nameof(Edit));
             }
-            return RedirectToAction(nameof(Edit), "Cart");
+
+            ViewBagMessage(response.ReasonPhrase);
+            ModelState.AddModelError("", "Güncelleme sırasında bir hata oluştu.");
+
+            return View(item);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var response = await _httpClient.DeleteAsync($"Cart/{id}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                TempDataMessage(response.ReasonPhrase);
+            }
+
+            return RedirectToAction(nameof(Edit));
         }
     }
 }

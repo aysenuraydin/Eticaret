@@ -1,98 +1,112 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Eticaret.Application.Abstract;
-using Eticaret.Domain;
-using Microsoft.AspNetCore.Authorization;
+using Eticaret.Dto;
+using Eticaret.Web.Mvc.Constants;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "admin")]
-    public class CategoryController : Controller
+    public class CategoryController : AppController
     {
-        private readonly ICategoryRepository _categoryService;
+        private readonly HttpClient _httpClient;
 
-        public CategoryController(ICategoryRepository categoryService)
+        public CategoryController(IHttpClientFactory httpClientFactory)
         {
-            _categoryService = categoryService;
+            _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
         }
 
         public IActionResult Create()
         {
-            return View(new Category());
+            return View();
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(Category category)
-        {
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _categoryService.Add(category);
-                    return RedirectToAction(nameof(Index), "Home");
-                }
-                catch
-                {
-                    ModelState.AddModelError("", "Hata Oluştu!");
-                }
-            }
-            return View(category);
-        }
-        public IActionResult Edit(int id)
-        {
-            var category = _categoryService.GetDb().
-                                Include(c => c.Products)
-                               .FirstOrDefault(p => p.Id == id);
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(AdminCategoryCreateDTO category)
+        {
+            if (!ModelState.IsValid) return View(category);
 
-            return View(category);
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(Category category)
-        {
-            if (ModelState.IsValid)
+            var response = await _httpClient.PostAsJsonAsync("AdminCategory", category);
+
+            if (response.IsSuccessStatusCode)
             {
-                try
-                {
-                    _categoryService.Update(category);
-                    return RedirectToAction(nameof(Index), "Home");
-                    //return RedirectToAction(nameof(Index), nameof(HomeController).Replace("Controller", string.Empty));
-                }
-                catch
-                {
-                    ModelState.AddModelError("", "Hata Oluştu!");
-                }
-            }
-            return View(category);
-        }
-        public IActionResult Delete(int id)
-        {
-            var category = _categoryService.GetDb().
-                                Include(c => c.Products)
-                               .FirstOrDefault(p => p.Id == id);
-            return View(category);
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id, Category category)
-        {
-            try
-            {
-                _categoryService.Delete(category);
                 return RedirectToAction(nameof(Index), "Home");
             }
-            catch
+
+            ViewBagMessage(response.ReasonPhrase);
+
+            return View(category);
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            using (var response = await _httpClient.GetAsync($"AdminCategory/{id}"))
             {
-                return View();
+                var product = await response.Content.ReadFromJsonAsync<AdminCategoryListDTO>() ?? new();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var p = new AdminCategoryUpdateDTO()
+                    {
+                        Id = product.Id,
+                        Name = product.Name,
+                        Css = product.Css,
+                        Color = product.Color
+                    };
+
+                    return View(p);
+                }
+
+                TempDataMessage(response.ReasonPhrase);
             }
 
+            return RedirectToAction(nameof(Index), "Home");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, AdminCategoryUpdateDTO category)
+        {
+            if (!ModelState.IsValid) return View(category);
+
+            var response = await _httpClient.PutAsJsonAsync($"AdminCategory/{id}", category);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index), "Home");
+            }
+
+            ViewBagMessage(response.ReasonPhrase);
+            ModelState.AddModelError("", "Güncelleme sırasında bir hata oluştu.");
+
+            return View(category);
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var response = await _httpClient.GetAsync($"AdminCategory/{id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var product = await response.Content.ReadFromJsonAsync<AdminCategoryListDTO>() ?? new();
+
+                return View(product);
+            }
+
+            TempDataMessage(response.ReasonPhrase);
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id, AdminCategoryListDTO category)
+        {
+            var response = await _httpClient.DeleteAsync($"AdminCategory/{id}");
+
+            if (response.IsSuccessStatusCode) RedirectToAction("Index", "Home");
+
+            TempDataMessage(response.ReasonPhrase);
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }

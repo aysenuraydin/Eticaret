@@ -1,6 +1,4 @@
 using Eticaret.Domain.Abstract;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Eticaret.Domain
@@ -43,10 +41,10 @@ namespace Eticaret.Domain
         public int CategoryId { get; set; }
         [Display(Name = "Satıcı")]
         [Required(ErrorMessage = "Satıcı alanı gereklidir.")]
-        public int SellerId { get; set; }
+        public int UserId { get; set; }
 
         #region Navigation Properties
-        public Seller? SellerFk { get; set; } = null!;
+        public User? UserFk { get; set; } = null!;
         public Category? CategoryFk { get; set; } = null!;
         [Display(Name = "Ürün Yorumları")]
         public List<ProductComment> ProductComments { get; set; } = new();
@@ -56,7 +54,6 @@ namespace Eticaret.Domain
         public List<CartItem> CartItems { get; set; } = new();
         [Display(Name = "Ürün Resimleri")]
         public List<ProductImage> ProductImages { get; set; } = new();
-
         #endregion
     }
 }

@@ -1,4 +1,6 @@
-﻿@model Product
+﻿@using IdentityModel
+@model SellerProductCreateOrUpdateDTO
+@* @model Product *@
 @{
     ViewData["Title"] = "Create Product";
 }
@@ -16,7 +18,8 @@
             <form asp-action="Create" enctype="multipart/form-data">
                 @Html.AntiForgeryToken()
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="SellerId" />
+                @* <input type="hidden" asp-for="Id" /> *@
+                <input type="hidden" asp-for="SellerId" value="@User.FindFirst(JwtClaimTypes.Subject)?.Value " />
                 <div class="form-group">
                     <label asp-for="Name" class="control-label"></label>
                     <input asp-for="Name" class="form-control" />
@@ -48,10 +51,11 @@
 
                 <div class="input-group my-3">
                     <div class="custom-file">
-                        <input asp-for="ProductImages" class="custom-file-input" type="file"
+                        <input asp-for="ImageList" class="custom-file-input" type="file"
                             aria-describedby="inputGroupFileAddon01" multiple />
                         <label class="custom-file-label" for="inputGroupFile01">Ürün Resimlerini Seç</label>
-                        <span asp-validation-for="ProductImages" class="text-danger"></span>
+                        @* <span asp-validation-for="ProductImages" class="text-danger"></span> *@
+                        <span asp-validation-for="ImageList" class="text-danger"></span>
                     </div>
                 </div>
 
@@ -77,7 +81,8 @@
 </div>
 @section Scripts {
     <script>
-        const ProductImages = document.getElementById('ProductImages');
+        //const ProductImages = document.getElementById('ProductImages');
+        const ProductImages = document.getElementById('ImageList');
         const imagePreview = document.getElementById('imagePreview');
 
         ProductImages.addEventListener('change', function (event) {
