@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "List of Products";
 }
+
 <h1>@ViewData["Title"]</h1>
 
 <div class="row">
@@ -70,7 +71,7 @@
                         }
                         else
                         {
-                            <img src="/UploadedFiles/@item.ImageUrlList[0]" max-height="100px;" width="65px">
+                            <img src="@(ViewBag.HostAdress + item.ImageUrlList[0])" max-height="100px;" width="65px">
                         }
                     </td>
                     <td>
@@ -130,7 +131,6 @@
                     Görsterilecek ürününüz yok!
                 </td>
             </tr>
-        }
         }
     </tbody>
 </table>

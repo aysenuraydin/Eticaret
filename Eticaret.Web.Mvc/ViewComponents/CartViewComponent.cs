@@ -1,20 +1,25 @@
 ﻿using Eticaret.Dto;
 using Eticaret.Web.Mvc.Constants;
+using Eticaret.Web.Mvc.Models.ConfigModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace Eticaret.Web.Mvc.ViewComponents
 {
     public class CartViewComponent : ViewComponent
     {
         private readonly HttpClient _httpClient;
+        private readonly FileDownloadConfigModels? _options;
 
-        public CartViewComponent(IHttpClientFactory httpClientFactory)
+        public CartViewComponent(IHttpClientFactory httpClientFactory, IOptions<FileDownloadConfigModels> options)
         {
             _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
+            _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
+            ViewBag.HostAdress = _options.BaseUrl;
             try
             {
                 using (var response = await _httpClient.GetAsync("Cart"))

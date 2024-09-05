@@ -1,7 +1,9 @@
 using Eticaret.Dto;
 using Eticaret.Web.Mvc.Constants;
+using Eticaret.Web.Mvc.Models.ConfigModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 
 namespace Eticaret.Web.Mvc.Controllers
@@ -10,10 +12,12 @@ namespace Eticaret.Web.Mvc.Controllers
     public class CartController : AppController
     {
         private readonly HttpClient _httpClient;
+        private readonly FileDownloadConfigModels? _options;
 
-        public CartController(IHttpClientFactory httpClientFactory)
+        public CartController(IHttpClientFactory httpClientFactory, IOptions<FileDownloadConfigModels> options)
         {
             _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
+            _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
         }
 
         public async Task<IActionResult> AddProduct(int id)
@@ -32,6 +36,7 @@ namespace Eticaret.Web.Mvc.Controllers
 
         public async Task<IActionResult> Edit()
         {
+            ViewBag.HostAdress = _options.BaseUrl;
             if (TempData["ErrorMessage"] != null) ViewBagMessage(TempData["ErrorMessage"].ToString().ToString());
 
             using (var response = await _httpClient.GetAsync($"Cart"))

@@ -9,6 +9,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
     {
         public void ViewBagMessage(string message)
         {
+            TempData["ErrorMessage"] = null;
             ViewBag.ErrorMessage = $"Error: {message}";
         }
         public void TempDataMessage(string message)

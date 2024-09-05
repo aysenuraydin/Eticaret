@@ -2,6 +2,7 @@
 
 using Eticaret.File;
 using Eticaret.File.Constants;
+using Eticaret.File.Seeders;
 using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,15 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<FileDbContext>();
+
+    var seeder = new FileSeeder();
+    await seeder.Seed(context);
+}
 app.Run();
 
 

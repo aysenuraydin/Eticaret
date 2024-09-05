@@ -1,9 +1,11 @@
 using Eticaret.Domain.Constants;
 using Eticaret.Dto;
 using Eticaret.Web.Mvc.Constants;
+using Eticaret.Web.Mvc.Models.ConfigModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Options;
 
 namespace Eticaret.Web.Mvc.Controllers
 {
@@ -12,15 +14,20 @@ namespace Eticaret.Web.Mvc.Controllers
     {
         private HttpClient _httpClient;
         private HttpClient _httpClientFile;
+        private readonly FileDownloadConfigModels? _options;
 
-        public ProductController(IHttpClientFactory httpClientFactory)
+        public ProductController(IHttpClientFactory httpClientFactory, IOptions<FileDownloadConfigModels> options)
         {
             _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
             _httpClientFile = httpClientFactory.CreateClient(ApplicationSettings.FILE_API_CLIENT);
+
+            _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
         }
 
         public async Task<IActionResult> Index()
         {
+            // ViewBag.HostAdress = _options.BaseUrl;
+
             var response = await _httpClient.GetAsync($"SellerProduct");
 
             if (response.IsSuccessStatusCode)
@@ -76,6 +83,7 @@ namespace Eticaret.Web.Mvc.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
+            ViewBag.HostAdress = _options.BaseUrl;
             ViewBag.Category = new SelectList(await GetCategories(), "Id", "Name");
 
             using (var response = await _httpClient.GetAsync($"SellerProduct/{id}"))
@@ -127,6 +135,8 @@ namespace Eticaret.Web.Mvc.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
+            ViewBag.HostAdress = _options.BaseUrl;
+
             using (var response = await _httpClient.GetAsync($"SellerProduct/{id}"))
             {
                 var product = await response.Content.ReadFromJsonAsync<SellerProductCreateOrUpdateDTO>() ?? new();
