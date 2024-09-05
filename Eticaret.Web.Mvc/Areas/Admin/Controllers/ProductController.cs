@@ -1,21 +1,26 @@
 using Eticaret.Dto;
 using Eticaret.Web.Mvc.Constants;
+using Eticaret.Web.Mvc.Models.ConfigModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 {
     public class ProductController : AppController
     {
         private readonly HttpClient _httpClient;
+        private readonly FileDownloadConfigModels? _options;
 
-        public ProductController(IHttpClientFactory httpClientFactory)
+        public ProductController(IHttpClientFactory httpClientFactory, IOptions<FileDownloadConfigModels> options)
         {
             _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
+            _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
         }
 
         public async Task<IActionResult> List()
         {
             if (TempData["ErrorMessage"] != null) ViewBagMessage(TempData["ErrorMessage"].ToString());
+            ViewBag.HostAdress = _options.BaseUrl;
 
             using (var response = await _httpClient.GetAsync("AdminProduct"))
             {
@@ -34,6 +39,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 
         public async Task<IActionResult> Approve(int id)
         {
+            ViewBag.HostAdress = _options.BaseUrl;
             using (var response = await _httpClient.GetAsync($"AdminProduct/{id}"))
             {
                 if (response.IsSuccessStatusCode)
@@ -67,6 +73,7 @@ namespace Eticaret.Web.Mvc.Areas.Admin.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
+            ViewBag.HostAdress = _options.BaseUrl;
             using (var response = await _httpClient.GetAsync($"AdminProduct/{id}"))
             {
                 if (response.IsSuccessStatusCode)

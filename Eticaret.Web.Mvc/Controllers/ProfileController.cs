@@ -1,8 +1,10 @@
 using Eticaret.Dto;
 using Eticaret.Web.Mvc.Constants;
 using Eticaret.Web.Mvc.Models;
+using Eticaret.Web.Mvc.Models.ConfigModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace Eticaret.Web.Mvc.Controllers
 {
@@ -11,10 +13,14 @@ namespace Eticaret.Web.Mvc.Controllers
     {
         private readonly HttpClient _httpClient;
 
-        public ProfileController(IHttpClientFactory httpClientFactory)
+        private readonly FileDownloadConfigModels? _options;
+
+        public ProfileController(IHttpClientFactory httpClientFactory, IOptions<FileDownloadConfigModels> options)
         {
             _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
+            _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
         }
+
 
         public async Task<IActionResult> Details()
         {
@@ -88,6 +94,7 @@ namespace Eticaret.Web.Mvc.Controllers
 
         public async Task<IActionResult> MyOrders()
         {
+            ViewBag.HostAdress = _options.BaseUrl;
             using (var response = await _httpClient.GetAsync($"Order"))
             {
                 if (response.IsSuccessStatusCode)

@@ -8,4 +8,13 @@ public class FileDbContext : DbContext
     }
 
     public DbSet<FileEntity> Files { get; set; }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+    }
 }
+
+
+
+
+

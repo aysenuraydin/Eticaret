@@ -33,6 +33,10 @@ namespace Eticaret.Web.Mvc
 
             services.AddHttpContextAccessor();
 
+            services.AddOptions<FileDownloadConfigModels>()
+                    .Bind(configuration.GetSection(ApplicationSettings.FILE_DOWNLOAD_CONFİG))
+                    .ValidateDataAnnotations();
+
             services.AddOptions<DataApiAccessConfigModel>()
                     .Bind(configuration.GetSection(ApplicationSettings.DATA_API_CONFİG))
                     .ValidateDataAnnotations();

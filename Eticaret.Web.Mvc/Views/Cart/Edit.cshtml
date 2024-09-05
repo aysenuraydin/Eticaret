@@ -48,15 +48,16 @@
                                                 }
                                                 else
                                                 {
-                                                    <img src="/UploadedFiles/@item.ProductImages" width="80px;">
+                                                    <img src="@(ViewBag.HostAdress + item.ProductImages)" width="80px;">
                                                 }
                                             </div>
                                         </td>
 
                                         <td class="column-2">
-                                            <a asp-action="ProductDetail" asp-Controller="Home" asp-route-id="@item.ProductId">
-                                                @item.ProductName
-                                            </a>
+                                            @* <a asp-action="ProductDetail" asp-Controller="Home"
+                                    asp-route-id="@item.ProductId"> *@
+                                            @item.ProductName
+                                            @* </a> *@
                                         </td>
                                         <td class="column-3">@item.ProductPrice ₺</td>
 

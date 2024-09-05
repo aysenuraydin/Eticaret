@@ -1,5 +1,8 @@
-﻿@model IEnumerable<AdminProductListDTO>
-
+﻿@inject Microsoft.Extensions.Options.IOptions<FileDownloadConfigModels> fileOptions
+@model IEnumerable<AdminProductListDTO>
+@{
+    var options = fileOptions.Value;
+}
 <div class="container mt-5 pt-5" style="min-height: 70vh !important;">
     <h2>Ürün Listesi</h2>
 
@@ -71,7 +74,8 @@
                             }
                             else
                             {
-                                <img src="/UploadedFiles/@item.ImageUrlList[0]" width="65px;">
+                                @* <img src="@(ViewBag.HostAdress + item.ImageUrlList[0])" width="65px;"> *@
+                                <img src="@(@options.BaseUrl + item.ImageUrlList[0])" width="65px;">
                             }
                         </td>
 

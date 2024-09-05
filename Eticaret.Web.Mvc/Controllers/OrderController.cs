@@ -1,18 +1,22 @@
 using System.Text.Json;
 using Eticaret.Dto;
 using Eticaret.Web.Mvc.Constants;
+using Eticaret.Web.Mvc.Models.ConfigModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 namespace Eticaret.Web.Mvc.Controllers
 {
     [Authorize]
     public class OrderController : AppController
     {
         private HttpClient _httpClient;
+        private readonly FileDownloadConfigModels? _options;
 
-        public OrderController(IHttpClientFactory httpClientFactory)
+        public OrderController(IHttpClientFactory httpClientFactory, IOptions<FileDownloadConfigModels> options)
         {
             _httpClient = httpClientFactory.CreateClient(ApplicationSettings.DATA_API_CLIENT);
+            _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
         }
 
         [HttpPost]
@@ -52,6 +56,7 @@ namespace Eticaret.Web.Mvc.Controllers
 
         public async Task<IActionResult> Details(string orderCode)
         {
+            ViewBag.HostAdress = _options.BaseUrl;
             using (var response = await _httpClient.GetAsync($"Order/{orderCode}"))
             {
                 if (response.IsSuccessStatusCode)

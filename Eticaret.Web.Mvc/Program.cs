@@ -18,16 +18,6 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
-var rootPath = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles");
-var provider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "../Eticaret.File/UploadedFiles"));
-
-
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = provider,
-    RequestPath = "/UploadedFiles"
-});
-
 app.UseRouting();
 
 app.UseMiddleware<CustomMiddleware>();
